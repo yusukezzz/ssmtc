@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginEnd="@dimen/media_photo_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            android:id="@+id/media_photo_four_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/media_photo_margin"
+            />
+
+        <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            android:id="@+id/media_photo_four_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/media_photo_margin"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/media_photo_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            android:id="@+id/media_photo_four_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/media_photo_margin"
+            />
+
+        <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            android:id="@+id/media_photo_four_4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/media_photo_margin"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

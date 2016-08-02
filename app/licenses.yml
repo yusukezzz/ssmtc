@@ -1,0 +1,128 @@
+- artifact: com.github.gfx.util.encrypt:android-encrypt-utils:+
+  name: Android EncryptUtils
+  copyrightHolder: Fuji Goro
+  license: apache2
+  url: https://github.com/gfx/Android-EncryptUtils
+- artifact: com.daimajia.slider:library:+
+  name: AndroidImageSlider Library
+  copyrightHolder: 代码家
+  license: MIT
+  url: https://github.com/daimajia/AndroidImageSlider
+- artifact: com.android.support:+:+
+  name: Android Support Libraries
+  copyrightHolder: The Android Open Source Project
+  license: apache2
+- artifact: org.apache.commons:commons-lang3:+
+  name: Apache Commons Lang
+  notice: |
+    Apache Commons Lang
+    Copyright 2001-2016 The Apache Software Foundation
+
+    This product includes software developed at
+    The Apache Software Foundation (http://www.apache.org/).
+
+    This product includes software from the Spring Framework,
+    under the Apache License 2.0 (see: StringUtils.containsWhitespace())
+  license: apache2
+  url: http://commons.apache.org/proper/commons-lang/
+- artifact: de.hdodenhof:circleimageview:+
+  name: CircleImageView
+  copyrightHolder: Henning Dodenhof
+  license: apache2
+  url: https://github.com/hdodenhof/CircleImageView
+- artifact: commons-codec:commons-codec:+
+  name: Apache Commons Codec
+  notice: |
+    Apache Commons Codec
+    Copyright 2002-2016 The Apache Software Foundation
+
+    This product includes software developed at
+    The Apache Software Foundation (http://www.apache.org/).
+
+    src/test/org/apache/commons/codec/language/DoubleMetaphoneTest.java
+    contains test data from http://aspell.net/test/orig/batch0.tab.
+    Copyright (C) 2002 Kevin Atkinson (kevina@gnu.org)
+
+    ===============================================================================
+
+    The content of package org.apache.commons.codec.language.bm has been translated
+    from the original php source code available at http://stevemorse.org/phoneticinfo.htm
+    with permission from the original authors.
+    Original source copyright:
+    Copyright (c) 2008 Alexander Beider & Stephen P. Morse.
+  license: apache2
+  url: http://jakarta.apache.org/commons/codec/
+- artifact: com.squareup.retrofit2:converter-gson:+
+  name: retrofit Gson Converter
+  copyrightHolder: Square, Inc.
+  license: apache2
+- artifact: com.google.code.gson:gson:+
+  name: Gson
+  copyrightHolder: Google Inc.
+  license: apache2
+- artifact: joda-time:joda-time:+
+  name: Joda-Time
+  notice: |
+    =============================================================================
+    = NOTICE file corresponding to section 4d of the Apache License Version 2.0 =
+    =============================================================================
+    This product includes software developed by
+    Joda.org (http://www.joda.org/).
+  license: apache2
+  url: http://www.joda.org/joda-time/
+- artifact: net.danlew:android.joda:+
+  name: joda-time-android Library
+  copyrightHolder: Daniel Lew
+  license: apache2
+  url: https://github.com/dlew/joda-time-android
+- artifact: org.jetbrains.kotlin:+:+
+  name: kotlin-runtime
+  notice: |
+    =========================================================================
+    ==  NOTICE file corresponding to the section 4 d of                    ==
+    ==  the Apache License, Version 2.0,                                   ==
+    ==  in this case for the Kotlin Compiler distribution.                 ==
+    =========================================================================
+
+    Kotlin Compiler
+    Copyright 2010-2015 JetBrains s.r.o and respective authors and developers
+  license: apache2
+- artifact: nl.komponents.kovenant:+:+
+  name: kovenant
+  copyrightHolder: Mark Platvoet
+  license: MIT License
+  url: http://kovenant.komponents.nl
+- artifact: com.nineoldandroids:library:+
+  name: Nine Old Androids
+  copyrightHolder: Jake Wharton
+  license: apache2
+- artifact: com.squareup.okhttp3:okhttp:+
+  name: OkHttp
+  copyrightHolder: Square, Inc.
+  license: apache2
+- artifact: se.akerfeldt:okhttp-signpost:+
+  name: OkHttp Signpost
+  copyrightHolder: Patrik Åkerfeldt
+  license: apache2
+  url: http://github.com/pakerfeldt/okhttp-signpost/
+- artifact: com.squareup.okio:okio:+
+  name: Okio
+  copyrightHolder: Square, Inc.
+  license: apache2
+- artifact: com.squareup.picasso:picasso:+
+  name: Picasso
+  copyrightHolder: Square, Inc.
+  license: apache2
+- artifact: com.squareup.retrofit2:retrofit:+
+  name: Retrofit
+  copyrightHolder: Square, Inc.
+  license: apache2
+- artifact: oauth.signpost:signpost-core:+
+  name: signpost-core
+  copyrightHolder: Matthias Kaeppler
+  license: apache2
+- artifact: com.github.grandstaish.paperparcel:+:+
+  name: grandstaish/paperparcel
+  copyrightHolder: Bradley Campbell
+  license: The Apache Software License, Version 2.0
+  url: https://github.com/grandstaish/paperparcel

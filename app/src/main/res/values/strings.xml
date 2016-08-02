@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">SSMTC</string>
+    <string name="authorize_step1">STEP1. 下記ボタンを押して認可を開始してください</string>
+    <string name="authorize_request">認可を開始</string>
+    <string name="authorize_step2">STEP2. ブラウザが起動するので画面の指示に従ってPINコードを入手し、このアプリに戻って送信してください</string>
+    <string name="hint_pin_code">PINコードを入力して下さい</string>
+    <string name="authorize">PINコードを送信</string>
+
+    <string name="retweeted_by"> さんがリツイートしました</string>
+    <string name="gap_load">ツイートをさらに表示</string>
+    <string name="photo_selector_title">画像選択（残り 4 枚）</string>
+    <string name="photo_selector_complete">完了</string>
+    <string name="input_tweet">ツイートを入力</string>
+    <string name="select_photos">画像選択</string>
+    <string name="status_send">送信</string>
+
+    <string name="account_selector_title">アカウントを選択</string>
+    <string name="account_selector_add">+ アカウントを追加する</string>
+    <string name="account_selector_cancel">戻る</string>
+
+    <string name="timeline_selector_title">タイムラインを選択</string>
+    <string name="timeline_selector_cancel">戻る</string>
+
+    <string name="lists_loading_title">リスト一覧取得中</string>
+    <string name="lists_selector_title">リストを選択</string>
+    <string name="lists_selector_cancel">戻る</string>
+
+    <string name="input_dialog_search">検索キーワードを入力</string>
+    <string name="input_dialog_user">screen_name を入力</string>
+    <string name="input_dialog_ok">OK</string>
+    <string name="input_dialog_cancel">戻る</string>
+
+    <string name="nav_drawer_open">Open drawer</string>
+    <string name="nav_drawer_close">Close drawer</string>
+    <string name="nav_timeline_add">タイムラインを追加</string>
+    <string name="nav_account_select">アカウントを変更</string>
+    <string name="nav_config">設定</string>
+    <string name="nav_account_remove">現在のアカウントを削除</string>
+
+    <string name="confirm_account_remove_message">選択中のアカウントを削除します</string>
+    <string name="confirm_account_remove_ok">削除</string>
+    <string name="confirm_account_remove_cancel">戻る</string>
+
+    <string name="menu_timeline_remove">タイムラインを削除</string>
+</resources>

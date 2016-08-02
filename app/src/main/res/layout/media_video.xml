@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <net.yusukezzz.ssmtc.views.AspectRatioImageView
+        android:id="@+id/media_video_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <View
+        android:background="#66000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <ImageView
+        android:id="@+id/ic_play_circle"
+        android:src="@drawable/ic_play_video"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_gravity="center"
+        android:tint="@android:color/white"
+        />
+
+    <TextView
+        android:id="@+id/media_video_time"
+        android:textColor="@android:color/white"
+        android:background="@color/videoTimeBackground"
+        android:layout_margin="16dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        />
+
+</FrameLayout>

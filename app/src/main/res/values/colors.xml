@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#292f33</color>
+    <color name="colorPrimaryDark">#222426</color>
+    <color name="colorAccent">#82b3d3</color>
+
+    <color name="background">#444448</color>
+
+    <color name="textWhite">#e1e8ed</color>
+    <color name="textBlack">#8899a6</color>
+    <color name="tweetButton">#2b7bb9</color>
+    <color name="videoTimeBackground">#339E9E9E</color>
+    <color name="inputBackground">#485865</color>
+    <color name="inputHint">#ccd6dd</color>
+    <color name="button">#66757f</color>
+    <color name="buttonText">#fefefe</color>
+
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="blue">#2196F3</color>
+    <color name="light_blue">#00B0FF</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="orange">#FF9800</color>
+    <color name="indigo">#3F51B5</color>
+
+    <color name="light_grey">#E0E0E0</color>
+    <color name="lighter_grey">#BDBDBD</color>
+    <color name="grey">#9E9E9E</color>
+    <color name="darker_grey">#757575</color>
+    <color name="dark_grey">#616161</color>
+
+    <color name="action_icon_default">#FFAAB8C2</color>
+    <color name="action_like_on">#FFE81C4F</color>
+    <color name="action_retweet_on">#FF19CF86</color>
+</resources>

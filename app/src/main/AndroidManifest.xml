@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="net.yusukezzz.ssmtc"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".Application"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".screens.timeline.TimelineActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".screens.authorize.AuthorizeActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".screens.media.photo.gallery.GalleryActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".screens.media.photo.selector.PhotoSelectorActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".screens.media.video.VideoPlayerActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".screens.status.update.StatusUpdateActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <service android:name=".screens.status.update.StatusUpdateService" />
+
+        <receiver android:exported="false" android:name=".screens.status.update.SuccessReceiver">
+            <intent-filter>
+                <action android:name="net.yusukezzz.ssmtc.screens.status.update.TWEET_SUCCESS"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:exported="false" android:name=".screens.status.update.FailureReceiver">
+            <intent-filter>
+                <action android:name="net.yusukezzz.ssmtc.screens.status.update.TWEET_FAILURE"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

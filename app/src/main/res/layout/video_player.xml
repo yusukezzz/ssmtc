@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <VideoView
+        android:id="@+id/media_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:id="@+id/video_time"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        android:background="@color/videoTimeBackground"
+        android:layout_margin="16dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        />
+
+    <ProgressBar
+        android:id="@+id/video_loading_bar"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Large"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</FrameLayout>
