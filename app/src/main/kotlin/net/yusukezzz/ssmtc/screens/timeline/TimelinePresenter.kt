@@ -25,14 +25,6 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): 
         }
     }
 
-    override fun loadGapTweets(gapPosition: Int, sinceId: Long, maxId: Long) {
-        task {
-            twitter.timeline(param.gap(sinceId, maxId))
-        } doneUi {
-            view.addGapTweets(gapPosition, it)
-        }
-    }
-
     override fun loadOlderTweets() {
         task {
             twitter.timeline(param.previous(view.getLastTweetId()))
@@ -42,7 +34,9 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): 
     }
 
     override fun like(tweet: Tweet) {
-        task { twitter.like(tweet.id) } doneUi {
+        task {
+            twitter.like(tweet.id)
+        } doneUi {
             tweet.favorite_count++
             tweet.favorited = true
             view.updateReactedTweet()
@@ -50,7 +44,9 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): 
     }
 
     override fun unlike(tweet: Tweet) {
-        task { twitter.unlike(tweet.id) } doneUi {
+        task {
+            twitter.unlike(tweet.id)
+        } doneUi {
             tweet.favorite_count--
             tweet.favorited = false
             view.updateReactedTweet()
@@ -58,7 +54,9 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): 
     }
 
     override fun retweet(tweet: Tweet) {
-        task { twitter.retweet(tweet.id) } doneUi {
+        task {
+            twitter.retweet(tweet.id)
+        } doneUi {
             tweet.retweet_count++
             tweet.retweeted = true
             view.updateReactedTweet()
@@ -66,7 +64,9 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): 
     }
 
     override fun unretweet(tweet: Tweet) {
-        task { twitter.unretweet(tweet.id) } doneUi {
+        task {
+            twitter.unretweet(tweet.id)
+        } doneUi {
             tweet.retweet_count--
             tweet.retweeted = false
             view.updateReactedTweet()

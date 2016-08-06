@@ -9,7 +9,6 @@ interface TimelineContract {
     interface Presenter: BasePresenter {
         fun setParameter(param: TimelineParameter)
         fun loadNewerTweets()
-        fun loadGapTweets(gapPosition: Int, sinceId: Long, maxId: Long)
         fun loadOlderTweets()
         fun like(tweet: Tweet)
         fun unlike(tweet: Tweet)
@@ -21,7 +20,6 @@ interface TimelineContract {
         fun getLatestTweetId(): Long?
         fun getLastTweetId(): Long?
         fun addHeadTweets(tweets: List<Tweet>)
-        fun addGapTweets(gapPosition: Int, tweets: List<Tweet>)
         fun addTailTweets(tweets: List<Tweet>)
         fun updateReactedTweet()
         fun initialize()

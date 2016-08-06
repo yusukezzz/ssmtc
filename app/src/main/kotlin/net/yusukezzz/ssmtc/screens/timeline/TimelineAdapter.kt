@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.screens.timeline
 
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
@@ -14,15 +15,12 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.util.TextUtil
 import net.yusukezzz.ssmtc.util.inflate
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
 
-class TimelineAdapter(val listener: TimelineEventListener,
-                      val loadTweetLimit: Int = TimelineParameter.MAX_RETRIEVE_COUNT
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter<ViewHolder>() {
     companion object {
         const val VIEW_TYPE_NO_MEDIA = 0
         const val VIEW_TYPE_HAS_PHOTO_1 = 1
@@ -30,8 +28,7 @@ class TimelineAdapter(val listener: TimelineEventListener,
         const val VIEW_TYPE_HAS_PHOTO_3 = 3
         const val VIEW_TYPE_HAS_PHOTO_4 = 4
         const val VIEW_TYPE_HAS_VIDEO = 5
-        const val VIEW_TYPE_GAP = 99
-        val LIST_VIEW_TYPE_PHOTO = listOf<Int>(
+        val LIST_VIEW_TYPE_PHOTO: List<Int> = listOf(
             VIEW_TYPE_HAS_PHOTO_1,
             VIEW_TYPE_HAS_PHOTO_2,
             VIEW_TYPE_HAS_PHOTO_3,
@@ -43,7 +40,6 @@ class TimelineAdapter(val listener: TimelineEventListener,
         fun onImageClick(images: List<String>, pos: Int)
         fun onVideoClick(video: VideoInfo)
         fun onUrlClick(url: String)
-        fun onGapClick(gapPosition: Int)
         fun onTweetClick(tweet: Tweet)
         fun onReplyClick(tweet: Tweet)
         fun onLikeClick(tweet: Tweet)
@@ -60,7 +56,7 @@ class TimelineAdapter(val listener: TimelineEventListener,
         R.layout.media_photo_four
     )
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val tweetView = parent.inflate(R.layout.tweet_with_media)
 
         return when (viewType) {
@@ -78,21 +74,14 @@ class TimelineAdapter(val listener: TimelineEventListener,
                 tweetView.tweet_media_container.addView(container)
                 TweetWithVideoViewHolder(tweetView, listener)
             }
-            VIEW_TYPE_GAP -> {
-                val gapView = parent.inflate(R.layout.timeline_gap)
-                GapViewHolder(gapView, listener)
-            }
             else -> throw RuntimeException("unknown view type: " + viewType)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val tw = timeline[position]
-        if (tw.is_gap) {
-            return VIEW_TYPE_GAP
-        }
-
         val size = tw.allMedia.size
+
         if (size > 0) {
             val media = tw.allMedia.first()
             if (null != media.video_info) {
@@ -105,10 +94,8 @@ class TimelineAdapter(val listener: TimelineEventListener,
         return VIEW_TYPE_NO_MEDIA
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int): Unit {
-        if (holder.itemViewType != VIEW_TYPE_GAP) {
-            (holder as TweetViewHolder).bindTweet(timeline[position])
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit {
+        (holder as TweetViewHolder).bindTweet(timeline[position])
     }
 
     override fun getItemCount(): Int = timeline.size
@@ -117,37 +104,21 @@ class TimelineAdapter(val listener: TimelineEventListener,
     fun first(): Tweet? = timeline.firstOrNull()
     fun last(): Tweet? = timeline.lastOrNull()
 
-    fun clear() {
+    fun clear() = timeline.clear()
+
+    fun set(tweets: List<Tweet>) {
         timeline.clear()
-        notifyDataSetChanged()
-    }
-
-    fun addAll(tweets: List<Tweet>, insertPos: Int = 0) {
-        timeline.getOrNull(insertPos - 1)?.is_gap = false
-        if (insertPos > 0 && tweets.size > (loadTweetLimit / 2)) {
-            tweets.last().is_gap = true
-        }
-        timeline.addAll(insertPos, tweets)
-        notifyDataSetChanged()
-    }
-
-    fun addTailAll(tweets: List<Tweet>) {
         timeline.addAll(tweets)
         notifyDataSetChanged()
     }
 
-    class GapViewHolder(val view: View, val listener: TimelineEventListener): RecyclerView.ViewHolder(view), View.OnClickListener {
-        init {
-            view.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            listener.onGapClick(layoutPosition)
-        }
+    fun add(tweets: List<Tweet>) {
+        timeline.addAll(tweets)
+        notifyDataSetChanged()
     }
 
     open class TweetViewHolder(val view: View,
-                               val listener: TimelineEventListener): RecyclerView.ViewHolder(view) {
+                               val listener: TimelineEventListener): ViewHolder(view) {
         companion object {
             val LARGE_IMAGE_TAG = "large_image_tag"
         }

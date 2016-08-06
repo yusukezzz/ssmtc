@@ -6,7 +6,6 @@ import android.text.style.ClickableSpan
 import android.view.View
 import net.yusukezzz.ssmtc.data.FormattedMedia
 import net.yusukezzz.ssmtc.data.FormattedUrl
-import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.screens.timeline.TimelineAdapter.TimelineEventListener
 import org.apache.commons.lang3.StringEscapeUtils
@@ -30,58 +29,40 @@ class TextUtil {
             if (null == entities.urls) return decodedText
 
             val urls = entities.urls.map { FormattedUrl(it) }
-            val medias = entities.media?.map { FormattedMedia(it) }
-            val spannable = SpannableStringBuilder(decodedText)
+            val medias = entities.media?.map { FormattedMedia(it) } ?: listOf()
+            val combined = (urls + medias).sortedBy { it.start }
 
-            val combined = if (null == medias) urls else (urls + medias).sortedBy { it.start }
-            val lastPhoto = medias?.filter { Media.TYPE_PHOTO == it.type }?.last()
+            val lastUrl = if (removeQuote) {
+                urls
+            } else {
+                medias
+            }.lastOrNull()?.shortUrl ?: ""
+            val spannable = SpannableStringBuilder(decodedText.replace(lastUrl, ""))
 
-            replaceUrlEntities(spannable, combined, lastPhoto, removeQuote, listener)
+            replaceUrlEntities(spannable, combined, listener)
             replaceScreenName(spannable, listener)
             replaceHashTag(spannable, listener)
 
             return spannable
         }
 
-        // from twitter-kit-android TweetTextLinkifier class
         private fun replaceUrlEntities(spannable: SpannableStringBuilder,
                                        entities: List<FormattedUrl>,
-                                       lastPhoto: FormattedMedia?,
-                                       removeQuote: Boolean,
                                        listener: TimelineEventListener) {
-            var offset = 0
-            var len: Int
-            var start: Int
-            var end: Int
+            entities.forEachIndexed { i, entity ->
+                val start = spannable.indexOf(entity.shortUrl)
+                val end = start + entity.shortUrl.length
 
-            entities.forEachIndexed { index, entity ->
-                start = entity.start - offset
-                end = entity.end - offset
-                if (start >= 0 && end <= spannable.length) {
-                    if (null != lastPhoto && lastPhoto.start == entity.start) {
-                        spannable.replace(start, end, "")
-                        len = end - start
-                        end -= len
-                        offset += len
-                    } else if (removeQuote && index == entities.lastIndex) {
-                        spannable.replace(start, end, "")
-                        len = end - start
-                        end -= len
-                        offset += len
-                    } else if (entity.displayUrl.isNotEmpty()) {
-                        spannable.replace(start, end, entity.displayUrl)
-                        len = end - (start + entity.displayUrl.length)
-                        end -= len
-                        offset += len
-
-                        val span = object: ClickableSpan() {
-                            override fun onClick(widget: View?) {
-                                listener.onUrlClick(entity.url)
-                            }
+                if (start >= 0) {
+                    spannable.replace(start, end, entity.displayUrl)
+                    val displayEnd = start + entity.displayUrl.length
+                    val span = object: ClickableSpan() {
+                        override fun onClick(widget: View?) {
+                            listener.onUrlClick(entity.url)
                         }
-
-                        spannable.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
+
+                    spannable.setSpan(span, start, displayEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             }
         }

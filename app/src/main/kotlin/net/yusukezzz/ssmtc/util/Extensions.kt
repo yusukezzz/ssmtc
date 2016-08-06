@@ -4,11 +4,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.VectorDrawable
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
+import android.widget.Toast
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -27,6 +30,9 @@ fun ViewGroup.children(func: (View) -> Unit): Unit {
         }
     }
 }
+
+fun AppCompatActivity.toast(message: String?) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+fun Fragment.toast(message: String?) = Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
 
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable

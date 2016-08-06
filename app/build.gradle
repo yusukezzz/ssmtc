@@ -99,7 +99,7 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.cookpad.android.licensetools:license-tools-plugin:0.16.0'
+        classpath 'com.cookpad.android.licensetools:license-tools-plugin:0.17.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.13.0'
     }
 }

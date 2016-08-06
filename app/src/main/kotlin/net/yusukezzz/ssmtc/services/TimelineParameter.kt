@@ -30,7 +30,6 @@ data class TimelineParameter(
     }
 
     fun next(sinceId: Long?): TimelineParameter = copy(sinceId = sinceId, maxId = null)
-    fun gap(sinceId: Long, maxId: Long): TimelineParameter = copy(sinceId = sinceId, maxId = maxId)
     fun previous(maxId: Long?): TimelineParameter = copy(sinceId = null, maxId = maxId)
 }
 

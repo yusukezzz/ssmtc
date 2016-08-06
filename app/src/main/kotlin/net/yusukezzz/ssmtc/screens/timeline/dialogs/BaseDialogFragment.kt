@@ -5,7 +5,7 @@ import net.yusukezzz.ssmtc.services.TimelineParameter
 
 open class BaseDialogFragment: AppCompatDialogFragment() {
     interface TimelineSelectListener {
-        fun onTimelineSelected(param: TimelineParameter)
+        fun onTimelineSelected(timeline: TimelineParameter)
         fun openListsDialog()
         fun openSearchInputDialog()
         fun openUserInputDialog()

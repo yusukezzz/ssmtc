@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Tweet
@@ -22,6 +21,7 @@ import net.yusukezzz.ssmtc.screens.media.video.VideoPlayerActivity
 import net.yusukezzz.ssmtc.screens.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.util.getVectorDrawable
 import net.yusukezzz.ssmtc.util.toBitmap
+import net.yusukezzz.ssmtc.util.toast
 
 class TimelineFragment: Fragment(),
     TimelineContract.View,
@@ -100,18 +100,12 @@ class TimelineFragment: Fragment(),
     override fun getLastTweetId(): Long? = timelineAdapter.last()?.id
 
     override fun addHeadTweets(tweets: List<Tweet>) {
-        timelineAdapter.addAll(tweets)
+        timelineAdapter.set(tweets)
         swipe_refresh.isRefreshing = false
     }
 
-    override fun addGapTweets(gapPosition: Int, tweets: List<Tweet>) {
-        timelineAdapter.addAll(tweets, gapPosition + 1)
-        println("gap loaded")
-        // TODO: gap loading progress off
-    }
-
     override fun addTailTweets(tweets: List<Tweet>) {
-        timelineAdapter.addTailAll(tweets)
+        timelineAdapter.add(tweets)
         println("tweets pushed")
         // TODO: more loading progress off
     }
@@ -151,15 +145,6 @@ class TimelineFragment: Fragment(),
         chromeIntent.launchUrl(activity, Uri.parse(url))
     }
 
-    override fun onGapClick(gapPosition: Int) {
-        val maxId = timelineAdapter.get(gapPosition).id
-        val sinceId = timelineAdapter.get(gapPosition + 1).id
-        println("maxId=$maxId")
-        println("sinceId=$sinceId")
-        println("pos=$gapPosition")
-        presenter.loadGapTweets(gapPosition, sinceId, maxId)
-    }
-
     override fun onImageClick(images: List<String>, pos: Int) {
         startActivity(GalleryActivity.newIntent(activity, images, pos))
     }
@@ -172,7 +157,7 @@ class TimelineFragment: Fragment(),
     }
 
     override fun onReplyClick(tweet: Tweet) {
-        Toast.makeText(activity, "未実装", Toast.LENGTH_LONG).show()
+        toast("未実装")
     }
 
     override fun onLikeClick(tweet: Tweet) {
@@ -193,11 +178,11 @@ class TimelineFragment: Fragment(),
 
     override fun onScreenNameClick(screenName: String) {
         println(screenName)
-        Toast.makeText(activity, "未実装", Toast.LENGTH_LONG).show()
+        toast("未実装")
     }
 
     override fun onHashTagClick(hashTag: String) {
-        Toast.makeText(activity, "未実装", Toast.LENGTH_LONG).show()
+        toast("未実装")
     }
 
     override fun updateReactedTweet() {
@@ -206,7 +191,7 @@ class TimelineFragment: Fragment(),
 
     override fun handleError(error: Throwable) {
         println(error)
-        Toast.makeText(activity, error.message, Toast.LENGTH_LONG).show()
+        toast(error.message)
         swipe_refresh.isRefreshing = false
     }
 }

@@ -16,8 +16,7 @@ data class Tweet(
     var retweeted: Boolean,
     var favorited: Boolean,
     val retweeted_status: Tweet?,
-    val quoted_status: Tweet?,
-    var is_gap: Boolean = false
+    val quoted_status: Tweet?
 ) {
     val allMedia: List<Media>
         get() = extended_entities?.media ?: listOf()

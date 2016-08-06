@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_content.*
 import kotlinx.android.synthetic.main.main_drawer.*
@@ -24,6 +23,7 @@ import net.yusukezzz.ssmtc.screens.timeline.dialogs.*
 import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 import net.yusukezzz.ssmtc.util.picasso.CircleTransformation
+import net.yusukezzz.ssmtc.util.toast
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
@@ -65,12 +65,10 @@ class TimelineActivity: AppCompatActivity(),
         }
 
         presenter = TimelinePresenter(fragment as TimelineFragment, app.twitter)
-
-        loadAccount()
     }
 
     override fun onTimelineReady() {
-        showCurrentTimeline()
+        loadAccount()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -82,7 +80,7 @@ class TimelineActivity: AppCompatActivity(),
         when (item.itemId) {
             R.id.remove_timeline -> {
                 prefs.removeCurrentTimeline()
-                showCurrentTimeline()
+                switchTimeline(prefs.currentTimeline)
             }
         }
         return true
@@ -104,7 +102,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun handleTimelineNavigation(item: MenuItem): Boolean {
         prefs.currentTimelineIndex = item.order
-        showCurrentTimeline()
+        switchTimeline(prefs.currentTimeline)
         return true
     }
 
@@ -138,6 +136,8 @@ class TimelineActivity: AppCompatActivity(),
             .centerCrop()
             .into(profileImage)
         screenName.text = account.user.screenName
+
+        switchTimeline(prefs.currentTimeline)
     }
 
     fun confirmRemoveAccount() {
@@ -154,7 +154,6 @@ class TimelineActivity: AppCompatActivity(),
             launchAuthorizeActivity()
         } else {
             loadAccount()
-            showCurrentTimeline()
         }
     }
 
@@ -177,8 +176,7 @@ class TimelineActivity: AppCompatActivity(),
         else -> R.drawable.ic_timeline_home
     }
 
-    fun showCurrentTimeline() {
-        val timeline = prefs.currentTimeline
+    fun switchTimeline(timeline: TimelineParameter) {
         toolbar_title.text = timeline.title
         presenter.setParameter(timeline)
         updateTimelineMenu()
@@ -190,9 +188,9 @@ class TimelineActivity: AppCompatActivity(),
             .show(supportFragmentManager, "TimelineSelectDialog")
     }
 
-    override fun onTimelineSelected(param: TimelineParameter) {
-        prefs.addTimeline(param)
-        showCurrentTimeline()
+    override fun onTimelineSelected(timeline: TimelineParameter) {
+        prefs.addTimeline(timeline)
+        switchTimeline(timeline)
     }
 
     override fun openListsDialog() {
@@ -212,7 +210,7 @@ class TimelineActivity: AppCompatActivity(),
                 .show(supportFragmentManager, "ListsSelectDialog")
         } failUi {
             println(it)
-            Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+            toast(it.message)
         } alwaysUi {
             progress.dismiss()
         }
@@ -240,7 +238,6 @@ class TimelineActivity: AppCompatActivity(),
         if (prefs.currentUserId != account.user.id) {
             prefs.currentUserId = account.user.id
             loadAccount()
-            showCurrentTimeline()
         }
     }
 
