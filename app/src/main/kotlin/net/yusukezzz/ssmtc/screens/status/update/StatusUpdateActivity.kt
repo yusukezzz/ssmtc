@@ -10,6 +10,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.screens.media.photo.selector.PhotoSelectorActivity
+import net.yusukezzz.ssmtc.util.PreferencesHolder
+import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.io.File
@@ -41,6 +43,7 @@ class StatusUpdateActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.status_update)
         window.statusBarColor = resources.getColor(R.color.colorPrimaryDark, null)
+        setSupportActionBar(status_update_toolbar)
 
         status_input.requestFocus()
 
@@ -54,6 +57,13 @@ class StatusUpdateActivity: AppCompatActivity() {
             this.startService(i)
             finish()
         }
+
+        val account = PreferencesHolder.prefs.currentAccount!!
+        Picasso.with(this).load(account.user.profileImageUrl)
+            .transform(RoundedTransformation(8))
+            .centerCrop().fit()
+            .into(toolbar_avatar)
+        toolbar_screen_name.text = "@" + account.user.screenName
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
