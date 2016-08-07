@@ -51,7 +51,11 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
 
     override fun onHandleIntent(intent: Intent) {
         val status = intent.getStringExtra(ARG_STATUS_TEXT)
-        val inReplyToStatusId = intent.getLongExtra(ARG_IN_REPLY_TO_STATUS_ID, 0)
+        val inReplyToStatusId = if (intent.hasExtra(ARG_IN_REPLY_TO_STATUS_ID)) {
+            intent.getLongExtra(ARG_IN_REPLY_TO_STATUS_ID, 0)
+        } else {
+            null
+        }
         val photos = intent.getStringArrayExtra(ARG_PHOTOS)
 
         val manager = NotificationManagerCompat.from(this)
@@ -68,7 +72,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
                 twitter.upload(compressImage(it)).media_id
             }
 
-            val res = twitter.tweet(status = status, mediaIds = mediaIds)
+            val res = twitter.tweet(status, inReplyToStatusId, mediaIds)
             println(res)
             sendSuccessBroadcast()
         } catch (e: Throwable) {

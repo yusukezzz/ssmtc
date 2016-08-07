@@ -157,7 +157,8 @@ class TimelineFragment: Fragment(),
     }
 
     override fun onReplyClick(tweet: Tweet) {
-        toast("未実装")
+        val i = StatusUpdateActivity.newIntent(activity, tweet.id, tweet.user.screenName)
+        startActivity(i)
     }
 
     override fun onLikeClick(tweet: Tweet) {

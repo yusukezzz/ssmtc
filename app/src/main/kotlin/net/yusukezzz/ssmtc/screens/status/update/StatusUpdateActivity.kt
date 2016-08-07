@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.screens.status.update
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -20,6 +21,14 @@ import java.io.File
 class StatusUpdateActivity: AppCompatActivity() {
     companion object {
         val REQUEST_PHOTO_SELECT = 0
+        val ARG_REPLY_STATUS_ID = "reply_status_id"
+        val ARG_REPLY_SCREEN_NAME = "reply_screen_name"
+
+        fun newIntent(context: Context, replyStatusId: Long? = null, replyScreenName: String? = null): Intent =
+            Intent(context, StatusUpdateActivity::class.java).apply {
+                putExtra(ARG_REPLY_STATUS_ID, replyStatusId)
+                putExtra(ARG_REPLY_SCREEN_NAME, replyScreenName)
+            }
     }
 
     private var photos: Array<String>? = null
@@ -45,6 +54,18 @@ class StatusUpdateActivity: AppCompatActivity() {
         window.statusBarColor = resources.getColor(R.color.colorPrimaryDark, null)
         setSupportActionBar(status_update_toolbar)
 
+        val replyStatusId = if (intent.hasExtra(ARG_REPLY_STATUS_ID)) {
+            intent.getLongExtra(ARG_REPLY_STATUS_ID, 0)
+        } else {
+            null
+        }
+        val replyScreenName = if (intent.hasExtra(ARG_REPLY_SCREEN_NAME)) {
+            intent.getStringExtra(ARG_REPLY_SCREEN_NAME)
+        } else {
+            null
+        }
+
+        replyScreenName?.run { status_input.setText("@${this} ") }
         status_input.requestFocus()
 
         select_photos.setOnClickListener {
@@ -53,7 +74,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         send_tweet.setOnClickListener {
             val tweet = status_input.text.toString()
-            val i = StatusUpdateService.newIntent(this, tweet, null, photos)
+            val i = StatusUpdateService.newIntent(this, tweet, replyStatusId, photos)
             this.startService(i)
             finish()
         }
