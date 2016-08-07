@@ -153,9 +153,6 @@ class TimelineFragment: Fragment(),
         startActivity(VideoPlayerActivity.newIntent(activity, video))
     }
 
-    override fun onTweetClick(tweet: Tweet) {
-    }
-
     override fun onReplyClick(tweet: Tweet) {
         val i = StatusUpdateActivity.newIntent(activity, tweet.id, tweet.user.screenName)
         startActivity(i)

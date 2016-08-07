@@ -40,7 +40,6 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         fun onImageClick(images: List<String>, pos: Int)
         fun onVideoClick(video: VideoInfo)
         fun onUrlClick(url: String)
-        fun onTweetClick(tweet: Tweet)
         fun onReplyClick(tweet: Tweet)
         fun onLikeClick(tweet: Tweet)
         fun onRetweetClick(tweet: Tweet)
