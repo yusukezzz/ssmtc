@@ -72,7 +72,7 @@ class TextUtil {
             Regex(SCREEN_NAME_PATTERN).findAll(spannable).forEach {
                 val span = object: ClickableSpan() {
                     override fun onClick(widget: View?) {
-                        listener.onScreenNameClick(it.value)
+                        listener.onScreenNameClick(it.value.removePrefix("@"))
                     }
                 }
                 spannable.setSpan(span, it.range.first, it.range.last + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

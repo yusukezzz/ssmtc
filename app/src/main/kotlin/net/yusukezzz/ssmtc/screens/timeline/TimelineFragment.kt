@@ -19,6 +19,7 @@ import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.screens.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.screens.media.video.VideoPlayerActivity
 import net.yusukezzz.ssmtc.screens.status.update.StatusUpdateActivity
+import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.util.getVectorDrawable
 import net.yusukezzz.ssmtc.util.toBitmap
 import net.yusukezzz.ssmtc.util.toast
@@ -41,6 +42,7 @@ class TimelineFragment: Fragment(),
     private lateinit var listener: TimelineFragmentListener
     private lateinit var endlessScrollListener: EndlessRecyclerOnScrollListener
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
+    private val act: TimelineActivity by lazy { activity as TimelineActivity }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -175,12 +177,11 @@ class TimelineFragment: Fragment(),
     }
 
     override fun onScreenNameClick(screenName: String) {
-        println(screenName)
-        toast("未実装")
+        act.onTimelineSelected(TimelineParameter.user(screenName))
     }
 
     override fun onHashTagClick(hashTag: String) {
-        toast("未実装")
+        act.onTimelineSelected(TimelineParameter.search(hashTag))
     }
 
     override fun updateReactedTweet() {
