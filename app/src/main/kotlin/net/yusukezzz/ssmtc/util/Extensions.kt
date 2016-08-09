@@ -31,8 +31,8 @@ fun ViewGroup.children(func: (View) -> Unit): Unit {
     }
 }
 
-fun AppCompatActivity.toast(message: String?) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-fun Fragment.toast(message: String?) = Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+fun AppCompatActivity.toast(message: String?) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+fun Fragment.toast(message: String?) = Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
 
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable

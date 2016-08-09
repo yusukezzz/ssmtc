@@ -36,6 +36,11 @@ class EndlessRecyclerOnScrollListener(private val context: Context,
         totalItemCount = 0
     }
 
+    fun forceLoadingStop() {
+        // force stop when error occurred
+        loading = false
+    }
+
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         val picasso = Picasso.with(context)
         if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_TOUCH_SCROLL) {

@@ -17,10 +17,10 @@ class RetryWithDelayInterceptor(
         var res = chain.proceed(req)
 
         for (tryCount in 1.rangeTo(maxRetryCount)) {
-            // not 5xx response
             if ((res.code() / 100) != 5) break
 
-            Log.d(TAG, "http request failed, retrying... " + tryCount)
+            // retry if 5xx response
+            Log.d(TAG, "[status=${res.code()}] http request failed, retrying... " + tryCount)
             Thread.sleep(retryDelayMillis)
             res = chain.proceed(req)
         }

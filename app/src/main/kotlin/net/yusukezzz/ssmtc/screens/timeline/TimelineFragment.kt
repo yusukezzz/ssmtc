@@ -192,5 +192,6 @@ class TimelineFragment: Fragment(),
         println(error)
         toast(error.message)
         swipe_refresh.isRefreshing = false
+        endlessScrollListener.forceLoadingStop()
     }
 }
