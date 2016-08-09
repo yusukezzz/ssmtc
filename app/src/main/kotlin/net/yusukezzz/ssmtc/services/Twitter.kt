@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.services
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.data.json.*
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
+import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import net.yusukezzz.ssmtc.util.toRequestBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -25,7 +26,10 @@ class Twitter {
     }
 
     private val oauthConsumer = OkHttpOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
-    private val okhttp = OkHttpClient.Builder().addInterceptor(SigningInterceptor(oauthConsumer)).build()
+    private val okhttp = OkHttpClient.Builder()
+        .addInterceptor(SigningInterceptor(oauthConsumer))
+        .addInterceptor(RetryWithDelayInterceptor())
+        .build()
     private val builder = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create(GsonHolder.gson))
         .client(okhttp)
