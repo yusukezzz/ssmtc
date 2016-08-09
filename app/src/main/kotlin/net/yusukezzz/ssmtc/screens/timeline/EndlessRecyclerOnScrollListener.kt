@@ -36,8 +36,7 @@ class EndlessRecyclerOnScrollListener(private val context: Context,
         totalItemCount = 0
     }
 
-    fun forceLoadingStop() {
-        // force stop when error occurred
+    fun stopLoading() {
         loading = false
     }
 

@@ -108,6 +108,7 @@ class TimelineFragment: Fragment(),
 
     override fun addTailTweets(tweets: List<Tweet>) {
         timelineAdapter.add(tweets)
+        endlessScrollListener.stopLoading()
         println("tweets pushed")
         // TODO: more loading progress off
     }
@@ -192,6 +193,6 @@ class TimelineFragment: Fragment(),
         println(error)
         toast(error.message)
         swipe_refresh.isRefreshing = false
-        endlessScrollListener.forceLoadingStop()
+        endlessScrollListener.stopLoading()
     }
 }
