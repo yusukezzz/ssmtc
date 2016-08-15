@@ -82,8 +82,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         val size = tw.allMedia.size
 
         if (size > 0) {
-            val media = tw.allMedia.first()
-            if (null != media.video_info) {
+            if (tw.hasVideo) {
                 return VIEW_TYPE_HAS_VIDEO
             }
 

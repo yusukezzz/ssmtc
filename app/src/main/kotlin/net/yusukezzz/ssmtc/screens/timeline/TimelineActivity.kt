@@ -82,6 +82,9 @@ class TimelineActivity: AppCompatActivity(),
                 prefs.removeCurrentTimeline()
                 switchTimeline(prefs.currentTimeline)
             }
+            R.id.setting_timeline -> {
+                showTimelineSettingDialog()
+            }
         }
         return true
     }
@@ -243,6 +246,11 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onAccountAdd() {
         launchAuthorizeActivity()
+    }
+
+    fun showTimelineSettingDialog() {
+        TimelineSettingDialog.newInstance(prefs.currentTimeline)
+            .show(supportFragmentManager, "TimelineSettingDialog")
     }
 }
 

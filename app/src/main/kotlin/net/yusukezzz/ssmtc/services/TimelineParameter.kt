@@ -7,6 +7,7 @@ data class TimelineParameter(
     val type: Int,
     val title: String,
     val count: Int = TimelineParameter.MAX_RETRIEVE_COUNT,
+    val filter: TimelineFilter = TimelineFilter.default(),
     val sinceId: Long? = null,
     val maxId: Long? = null,
     val screenName: String? = null,

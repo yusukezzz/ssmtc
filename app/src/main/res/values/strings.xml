@@ -30,6 +30,10 @@
     <string name="input_dialog_ok">OK</string>
     <string name="input_dialog_cancel">戻る</string>
 
+    <string name="setting_dialog_title">タイムライン設定</string>
+    <string name="setting_dialog_ok">保存</string>
+    <string name="setting_dialog_cancel">戻る</string>
+
     <string name="nav_drawer_open">Open drawer</string>
     <string name="nav_drawer_close">Close drawer</string>
     <string name="nav_timeline_add">タイムラインを追加</string>
@@ -42,4 +46,12 @@
     <string name="confirm_account_remove_cancel">戻る</string>
 
     <string name="menu_timeline_remove">タイムラインを削除</string>
+    <string name="menu_timeline_setting">タイムライン設定</string>
+
+    <string-array name="filter_contents">
+        <item>全て</item>
+        <item>画像又は動画を含む</item>
+        <item>画像を含む</item>
+        <item>動画を含む</item>
+    </string-array>
 </resources>

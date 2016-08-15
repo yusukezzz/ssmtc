@@ -40,6 +40,12 @@ data class Media(
         val TYPE_VIDEO = "video"
     }
 
+    val isPhoto: Boolean
+        get() = type == TYPE_PHOTO
+
+    val isVideo: Boolean
+        get() = type == TYPE_GIF || type == TYPE_VIDEO
+
     val urlEntity: Url
         get() = Url(url, expanded_url, display_url, indices)
 
