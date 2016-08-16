@@ -31,6 +31,7 @@ import nl.komponents.kovenant.ui.successUi
 
 class TimelineActivity: AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
+    TimelineSettingDialog.TimelineSettingListener,
     AccountSelectDialog.AccountSelectListener,
     TimelineFragment.TimelineFragmentListener,
     BaseDialogFragment.TimelineSelectListener {
@@ -250,7 +251,13 @@ class TimelineActivity: AppCompatActivity(),
 
     fun showTimelineSettingDialog() {
         TimelineSettingDialog.newInstance(prefs.currentTimeline)
+            .setTimelineSettingListener(this)
             .show(supportFragmentManager, "TimelineSettingDialog")
+    }
+
+    override fun onSaveTimeline(timeline: TimelineParameter) {
+        println("TODO: update timeline view")
+        println(timeline)
     }
 }
 

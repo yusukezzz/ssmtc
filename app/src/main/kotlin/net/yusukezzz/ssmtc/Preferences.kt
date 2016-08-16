@@ -70,6 +70,15 @@ open class Preferences(private val context: Context) {
         currentTimelineIndex = account.timelines.lastIndex
     }
 
+    fun saveTimeline(old: TimelineParameter, new: TimelineParameter) {
+        val account = currentAccount!!
+        val tmpList = account.timelines.toMutableList()
+        val pos = tmpList.indexOf(old)
+        tmpList[pos] = new
+        account.timelines = tmpList
+        saveAccount(account)
+    }
+
     fun removeCurrentTimeline() {
         val account = currentAccount!!
         account.timelines = account.timelines.minus(currentTimeline)

@@ -8,8 +8,10 @@ import android.view.View
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.timeline_setting.view.*
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.services.TimelineFilter
 import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.services.TimelineParameterParcel
+import net.yusukezzz.ssmtc.util.PreferencesHolder
 
 class TimelineSettingDialog: AppCompatDialogFragment() {
     companion object {
@@ -20,6 +22,18 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
                 putParcelable(ARG_TIMELINE, TimelineParameterParcel(timeline))
             }
         }
+    }
+
+    interface TimelineSettingListener {
+        fun onSaveTimeline(timeline: TimelineParameter)
+    }
+
+    private var listener: TimelineSettingListener? = null
+
+    fun setTimelineSettingListener(listener: TimelineSettingListener): TimelineSettingDialog {
+        this.listener = listener
+
+        return this
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -41,7 +55,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         return AlertDialog.Builder(context).apply {
             setTitle(R.string.setting_dialog_title)
             setView(view)
-            setPositiveButton(R.string.setting_dialog_ok, { dialog, which -> save() })
+            setPositiveButton(R.string.setting_dialog_ok, { dialog, which -> save(timeline, view) })
             setNegativeButton(R.string.setting_dialog_cancel, { d, w -> /* do nothing */ })
         }.create()
     }
@@ -50,7 +64,20 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun save() {
-        println("TODO: save timeline setting")
+    private fun save(oldTimeline: TimelineParameter, view: View) {
+        val newTitle = view.timeline_title_edit.text.toString()
+        val newQuery = view.timeline_query_edit.text.toString()
+
+        val pos = view.timeline_contents_spinner.selectedItemPosition
+        val showing = TimelineFilter.Showing.values()[pos]
+        val include = view.timeline_include.text.toString().split("\n")
+        val exclude = view.timeline_exclude.text.toString().split("\n")
+        val newFilter = TimelineFilter(showing, include, exclude)
+
+        val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter)
+        println(newTimeline)
+        PreferencesHolder.prefs.saveTimeline(oldTimeline, newTimeline)
+
+        listener?.onSaveTimeline(newTimeline)
     }
 }
