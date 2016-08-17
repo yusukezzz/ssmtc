@@ -49,6 +49,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         val adapter = ArrayAdapter.createFromResource(context, R.array.filter_contents, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.timeline_contents_spinner.adapter = adapter
+        view.timeline_contents_spinner.setSelection(TimelineFilter.Showing.values().indexOf(timeline.filter.showing))
         view.timeline_include.setText(timeline.filter.includeWords.joinToString("\n"))
         view.timeline_exclude.setText(timeline.filter.excludeWords.joinToString("\n"))
 
