@@ -256,8 +256,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     override fun onSaveTimeline(timeline: TimelineParameter) {
-        println("TODO: update timeline view")
-        println(timeline)
+        switchTimeline(timeline)
     }
 }
 

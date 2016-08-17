@@ -19,7 +19,7 @@ data class TimelineFilter(
         ALL, ANY_MEDIA, PHOTO, VIDEO
     }
 
-    fun filter(tweets: List<Tweet>): List<Tweet> = tweets.filter {
+    fun apply(tweets: List<Tweet>): List<Tweet> = tweets.filter {
         filterMedia(it) && filterText(it)
     }
 
