@@ -61,10 +61,6 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         }.create()
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     private fun save(oldTimeline: TimelineParameter, view: View) {
         val newTitle = view.timeline_title_edit.text.toString()
         val newQuery = view.timeline_query_edit.text.toString()
