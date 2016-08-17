@@ -70,8 +70,8 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
 
         val pos = view.timeline_contents_spinner.selectedItemPosition
         val showing = TimelineFilter.Showing.values()[pos]
-        val include = view.timeline_include.text.toString().split("\n")
-        val exclude = view.timeline_exclude.text.toString().split("\n")
+        val include = view.timeline_include.text.toString().lines().filter { it.isNotEmpty() }
+        val exclude = view.timeline_exclude.text.toString().lines().filter { it.isNotEmpty() }
         val newFilter = TimelineFilter(showing, include, exclude)
 
         val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter)

@@ -19,8 +19,8 @@ data class TimelineFilter(
         ALL, ANY_MEDIA, PHOTO, VIDEO
     }
 
-    fun apply(tweets: List<Tweet>): List<Tweet> = tweets.filter {
-        filterMedia(it) && filterText(it)
+    fun apply(tweets: List<Tweet>): List<Tweet> = tweets.map {
+        it.apply { it.visible = filterMedia(it) && filterText(it) }
     }
 
     private fun filterMedia(tweet: Tweet): Boolean = when (showing) {

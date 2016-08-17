@@ -30,8 +30,9 @@ class Twitter {
         .addInterceptor(SigningInterceptor(oauthConsumer))
         .addInterceptor(RetryWithDelayInterceptor())
         .build()
+    private val converter = GsonConverterFactory.create(GsonHolder.gson)
     private val builder = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create(GsonHolder.gson))
+        .addConverterFactory(converter)
         .client(okhttp)
     private val apiService = builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
     private val uploadService = builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
@@ -104,7 +105,8 @@ class Twitter {
 
     private fun <T> handleError(res: Response<T>) {
         val statusCode = res.code()
-        val errRes = GsonHolder.gson.fromJson(res.errorBody().string(), TwitterErrorResponse::class.java)
+        val errConverter = converter.responseBodyConverter(TwitterErrorResponse::class.java, arrayOf(), null)
+        val errRes = errConverter.convert(res.errorBody()) as TwitterErrorResponse
 
         throw TwitterApiException("Twitter API error: status=$statusCode, cause=$errRes", statusCode, errRes.errors)
     }
@@ -127,7 +129,7 @@ class TwitterApiException(message: String, val statusCode: Int, val errors: List
         |$details
         |
         |[stacktrace]
-        |$stackTrace
+        |${stackTrace.joinToString("\n")}
         |
         """.trimMargin()
 
