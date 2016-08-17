@@ -1,8 +1,10 @@
 package net.yusukezzz.ssmtc.screens.timeline.dialogs
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.services.TimelineParameter
@@ -25,7 +27,7 @@ class TextInputDialog: BaseDialogFragment() {
         val type = arguments.getInt(ARG_TIMELINE_TYPE)
         val edit = EditText(context)
 
-        return AlertDialog.Builder(context).apply {
+        val dialog = AlertDialog.Builder(context).apply {
             setTitle(title)
             setView(edit) // TODO: use layout
             setPositiveButton(R.string.input_dialog_ok, { dialog, which ->
@@ -39,5 +41,12 @@ class TextInputDialog: BaseDialogFragment() {
             })
             setNegativeButton(R.string.input_dialog_cancel, { d, w -> /* do nothing */ })
         }.create()
+
+        dialog.setOnShowListener {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(edit, 0)
+        }
+
+        return dialog
     }
 }
