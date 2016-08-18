@@ -57,7 +57,7 @@ class Twitter {
             else -> throw RuntimeException("unknown parameter type: ${params.javaClass}")
         }
 
-        return params.filter.apply(tweets)
+        return params.filter.reduce(tweets)
     }
 
     fun like(id: Long): Tweet = execute(apiService.like(id))
