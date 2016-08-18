@@ -28,7 +28,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         fun onSaveTimeline(timeline: TimelineParameter)
     }
 
-    private var listener: TimelineSettingListener? = null
+    private lateinit var listener: TimelineSettingListener
 
     fun setTimelineSettingListener(listener: TimelineSettingListener): TimelineSettingDialog {
         this.listener = listener
@@ -75,6 +75,6 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         println(newTimeline)
         PreferencesHolder.prefs.saveTimeline(oldTimeline, newTimeline)
 
-        listener?.onSaveTimeline(newTimeline)
+        listener.onSaveTimeline(newTimeline)
     }
 }

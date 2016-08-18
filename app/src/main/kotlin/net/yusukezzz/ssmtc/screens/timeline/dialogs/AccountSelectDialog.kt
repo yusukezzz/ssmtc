@@ -25,7 +25,7 @@ class AccountSelectDialog: AppCompatDialogFragment() {
         fun onAccountAdd()
     }
 
-    private var listener: AccountSelectListener? = null
+    private lateinit var listener: AccountSelectListener
 
     fun setAccountSelectListener(listener: AccountSelectListener): AccountSelectDialog {
         this.listener = listener
@@ -43,9 +43,9 @@ class AccountSelectDialog: AppCompatDialogFragment() {
             setTitle(R.string.account_selector_title)
             setItems(items) { dialog, which ->
                 if (which == addItemPos) {
-                    listener?.onAccountAdd()
+                    listener.onAccountAdd()
                 } else {
-                    listener?.onAccountSelect(accounts[which])
+                    listener.onAccountSelect(accounts[which])
                 }
             }
             setNegativeButton(R.string.account_selector_cancel) { d, w -> /* do nothing */ }
