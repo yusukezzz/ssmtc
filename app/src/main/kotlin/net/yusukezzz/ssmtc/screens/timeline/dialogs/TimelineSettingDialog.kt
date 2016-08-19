@@ -73,7 +73,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
 
         val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter)
         println(newTimeline)
-        PreferencesHolder.prefs.saveTimeline(oldTimeline, newTimeline)
+        PreferencesHolder.prefs.updateCurrentTimeline(newTimeline)
 
         listener.onSaveTimeline(newTimeline)
     }
