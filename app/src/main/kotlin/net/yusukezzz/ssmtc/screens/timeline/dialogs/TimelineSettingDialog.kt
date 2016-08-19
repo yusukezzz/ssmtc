@@ -62,8 +62,8 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
     }
 
     private fun save(oldTimeline: TimelineParameter, view: View) {
-        val newTitle = view.timeline_title_edit.text.toString()
-        val newQuery = view.timeline_query_edit.text.toString()
+        val newTitle = view.timeline_title_edit.text.toString().trim()
+        val newQuery = view.timeline_query_edit.text.toString().trim()
 
         val pos = view.timeline_contents_spinner.selectedItemPosition
         val showing = TimelineFilter.Showing.values()[pos]
