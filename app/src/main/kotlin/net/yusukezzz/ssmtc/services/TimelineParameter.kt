@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.services
 
 import nz.bradcampbell.paperparcel.PaperParcel
+import nz.bradcampbell.paperparcel.PaperParcelable
 
 @PaperParcel
 data class TimelineParameter(
@@ -13,8 +14,10 @@ data class TimelineParameter(
     val screenName: String? = null,
     val query: String? = null,
     val listId: Long? = null
-) {
+): PaperParcelable {
     companion object {
+        @JvmField val CREATOR = PaperParcelable.Creator(TimelineParameter::class.java)
+
         val MAX_RETRIEVE_COUNT = 50
 
         val TYPE_HOME = 0

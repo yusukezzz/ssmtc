@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.TwList
-import net.yusukezzz.ssmtc.data.json.TwListParcel
 import net.yusukezzz.ssmtc.services.TimelineParameter
 
 class ListsSelectDialog: BaseDialogFragment() {
@@ -14,13 +13,13 @@ class ListsSelectDialog: BaseDialogFragment() {
 
         fun newInstance(lists: List<TwList>): ListsSelectDialog = ListsSelectDialog().apply {
             arguments = Bundle().apply {
-                putParcelableArray(ARG_TW_LISTS, lists.map { TwListParcel(it) }.toTypedArray())
+                putParcelableArray(ARG_TW_LISTS, lists.toTypedArray())
             }
         }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val twLists = arguments.getParcelableArray(ARG_TW_LISTS).map { (it as TwListParcel).data }
+        val twLists: List<TwList> = arguments.getParcelableArrayList(ARG_TW_LISTS)
         val items = twLists.map { it.fullName }.toTypedArray()
 
         return AlertDialog.Builder(activity).apply {
