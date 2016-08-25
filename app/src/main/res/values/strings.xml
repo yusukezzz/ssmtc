@@ -48,8 +48,8 @@
     <string name="menu_timeline_remove">タイムラインを削除</string>
     <string name="menu_timeline_setting">タイムライン設定</string>
 
-    <string-array name="filter_contents">
-        <item>全て</item>
+    <string-array name="filter_media">
+        <item>制限しない</item>
         <item>画像又は動画を含む</item>
         <item>画像を含む</item>
         <item>動画を含む</item>

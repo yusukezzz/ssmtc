@@ -13,7 +13,8 @@ data class TimelineParameter(
     val maxId: Long? = null,
     val screenName: String? = null,
     val query: String? = null,
-    val listId: Long? = null
+    val listId: Long? = null,
+    val includeRetweets: Boolean = true
 ): PaperParcelable {
     companion object {
         @JvmField val CREATOR = PaperParcelable.Creator(TimelineParameter::class.java)

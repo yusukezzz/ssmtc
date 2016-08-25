@@ -45,10 +45,11 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         }
 
         view.timeline_title_edit.setText(timeline.title)
-        val adapter = ArrayAdapter.createFromResource(context, R.array.filter_contents, android.R.layout.simple_spinner_item)
+        view.include_rts.isChecked = timeline.includeRetweets
+        val adapter = ArrayAdapter.createFromResource(context, R.array.filter_media, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        view.timeline_contents_spinner.adapter = adapter
-        view.timeline_contents_spinner.setSelection(TimelineFilter.Showing.values().indexOf(timeline.filter.showing))
+        view.timeline_media_spinner.adapter = adapter
+        view.timeline_media_spinner.setSelection(TimelineFilter.Showing.values().indexOf(timeline.filter.showing))
         view.timeline_include.setText(timeline.filter.includeWords.joinToString("\n"))
         view.timeline_exclude.setText(timeline.filter.excludeWords.joinToString("\n"))
 
@@ -63,14 +64,15 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
     private fun save(oldTimeline: TimelineParameter, view: View) {
         val newTitle = view.timeline_title_edit.text.toString().trim()
         val newQuery = view.timeline_query_edit.text.toString().trim()
+        val includeRts = view.include_rts.isChecked
 
-        val pos = view.timeline_contents_spinner.selectedItemPosition
+        val pos = view.timeline_media_spinner.selectedItemPosition
         val showing = TimelineFilter.Showing.values()[pos]
-        val include = view.timeline_include.text.toString().lines().filter { it.isNotEmpty() }
-        val exclude = view.timeline_exclude.text.toString().lines().filter { it.isNotEmpty() }
-        val newFilter = TimelineFilter(showing, include, exclude)
+        val includeWords = view.timeline_include.text.toString().lines().filter { it.isNotEmpty() }
+        val excludeWords = view.timeline_exclude.text.toString().lines().filter { it.isNotEmpty() }
+        val newFilter = TimelineFilter(showing, includeWords, excludeWords)
 
-        val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter)
+        val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter, includeRetweets = includeRts)
         println(newTimeline)
         PreferencesHolder.prefs.updateCurrentTimeline(newTimeline)
 

@@ -52,7 +52,7 @@ class Twitter {
             TimelineParameter.TYPE_HOME -> homeTimeline(params.count, params.sinceId, maxId)
             TimelineParameter.TYPE_MENTIONS -> mentionsTimeline(params.count, params.sinceId, maxId)
             TimelineParameter.TYPE_LISTS -> listTimeline(params.listId, params.count, params.sinceId, params.maxId)
-            TimelineParameter.TYPE_SEARCH -> searchTimeline(params.query, params.count, params.sinceId, maxId)
+            TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(params), params.count, params.sinceId, maxId)
             TimelineParameter.TYPE_USER -> userTimeline(params.screenName, params.count, params.sinceId, maxId)
             else -> throw RuntimeException("unknown parameter type: ${params.javaClass}")
         }
@@ -176,7 +176,7 @@ interface TwitterApi {
         @Query("lang") lang: String,
         @Query("locale") locale: String,
         @Query("result_type") resultType: String,
-        @Query("q") query: String?,
+        @Query("q", encoded = true) query: String?,
         @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<Search>

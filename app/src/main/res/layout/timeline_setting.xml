@@ -42,9 +42,16 @@
         android:text="表示コンテンツ" />
 
     <Spinner
-        android:id="@+id/timeline_contents_spinner"
+        android:id="@+id/timeline_media_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:layout_marginTop="16dp"
+        android:id="@+id/include_rts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="リツイートを含める" />
 
     <TextView
         android:layout_marginTop="16dp"
