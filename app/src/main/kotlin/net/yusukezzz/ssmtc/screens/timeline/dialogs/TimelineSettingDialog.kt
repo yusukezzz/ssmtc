@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.timeline_setting.view.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.services.TimelineFilter
 import net.yusukezzz.ssmtc.services.TimelineParameter
-import net.yusukezzz.ssmtc.services.TimelineParameterParcel
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 
 class TimelineSettingDialog: AppCompatDialogFragment() {
@@ -19,7 +18,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
 
         fun newInstance(timeline: TimelineParameter): TimelineSettingDialog = TimelineSettingDialog().apply {
             arguments = Bundle().apply {
-                putParcelable(ARG_TIMELINE, TimelineParameterParcel(timeline))
+                putParcelable(ARG_TIMELINE, timeline)
             }
         }
     }
@@ -37,7 +36,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val timeline = arguments.getParcelable<TimelineParameterParcel>(ARG_TIMELINE).data
+        val timeline: TimelineParameter = arguments.getParcelable(ARG_TIMELINE)
         val view = activity.layoutInflater.inflate(R.layout.timeline_setting, null, false)
 
         if (timeline.type == TimelineParameter.TYPE_SEARCH) {

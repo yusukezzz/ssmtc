@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.data.json
 
 import nz.bradcampbell.paperparcel.PaperParcel
+import nz.bradcampbell.paperparcel.PaperParcelable
 
 @PaperParcel
 data class Entity(
@@ -64,8 +65,10 @@ data class VideoInfo(
     val aspect_ratio: List<Int>,
     val duration_millis: Int,
     val variants: List<VideoVariant>
-) {
+): PaperParcelable {
     companion object {
+        @JvmField val CREATOR = PaperParcelable.Creator(VideoInfo::class.java)
+
         val TYPE_MP4 = "video/mp4"
     }
 

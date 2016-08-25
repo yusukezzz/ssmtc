@@ -10,7 +10,6 @@ import android.view.View
 import kotlinx.android.synthetic.main.video_player.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.data.json.VideoInfoParcel
 import net.yusukezzz.ssmtc.screens.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.TextUtil
 
@@ -23,7 +22,7 @@ class VideoPlayerActivity: MediaBaseActivity(),
 
         fun newIntent(context: Context, video: VideoInfo): Intent =
             Intent(context, VideoPlayerActivity::class.java).apply {
-                putExtra(ARG_VIDEO_INFO, VideoInfoParcel(video))
+                putExtra(ARG_VIDEO_INFO, video)
             }
     }
 
@@ -41,7 +40,7 @@ class VideoPlayerActivity: MediaBaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.video_player)
 
-        val info = intent.getParcelableExtra<VideoInfoParcel>(ARG_VIDEO_INFO).data
+        val info: VideoInfo = intent.getParcelableExtra(ARG_VIDEO_INFO)
 
         media_video.setOnPreparedListener(this)
         media_video.setOnCompletionListener(this)

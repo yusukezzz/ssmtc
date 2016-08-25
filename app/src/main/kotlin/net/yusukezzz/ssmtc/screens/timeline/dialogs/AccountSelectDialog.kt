@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatDialogFragment
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.Account
-import net.yusukezzz.ssmtc.data.AccountParcel
 
 
 class AccountSelectDialog: AppCompatDialogFragment() {
@@ -15,7 +14,7 @@ class AccountSelectDialog: AppCompatDialogFragment() {
 
         fun newInstance(accounts: List<Account>): AccountSelectDialog = AccountSelectDialog().apply {
             arguments = Bundle().apply {
-                putParcelableArray(ARG_ACCOUNTS, accounts.map { AccountParcel(it) }.toTypedArray())
+                putParcelableArray(ARG_ACCOUNTS, accounts.toTypedArray())
             }
         }
     }
@@ -34,7 +33,7 @@ class AccountSelectDialog: AppCompatDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val accounts = arguments.getParcelableArray(ARG_ACCOUNTS).map { (it as AccountParcel).data }
+        val accounts: List<Account> = arguments.getParcelableArrayList(ARG_ACCOUNTS)
         val items = accounts.map { "@" + it.user.screenName }.toTypedArray() +
             resources.getString(R.string.account_selector_add)
         val addItemPos = items.lastIndex
