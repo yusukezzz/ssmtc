@@ -208,13 +208,13 @@ class TimelineActivity: AppCompatActivity(),
             val ownedTwList = app.twitter.ownedLists(userId)
             val subscribedTwList = app.twitter.subscribedLists(userId)
             ownedTwList + subscribedTwList
-        } successUi {
-            ListsSelectDialog.newInstance(it)
+        } successUi { twlist ->
+            ListsSelectDialog.newInstance(twlist)
                 .setTimelineSelectListener(this)
                 .show(supportFragmentManager, "ListsSelectDialog")
-        } failUi {
-            println(it)
-            toast(it.message)
+        } failUi { e ->
+            println(e)
+            e.message?.let { toast(it) }
         } alwaysUi {
             progress.dismiss()
         }

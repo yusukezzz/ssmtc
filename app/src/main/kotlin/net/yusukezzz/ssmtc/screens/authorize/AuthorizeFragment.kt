@@ -45,6 +45,6 @@ class AuthorizeFragment: Fragment(), AuthorizeContract.View {
 
     override fun handleError(error: Throwable) {
         println(error)
-        toast(error.message)
+        error.message?.let { toast(it) }
     }
 }

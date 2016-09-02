@@ -190,7 +190,7 @@ class TimelineFragment: Fragment(),
 
     override fun handleError(error: Throwable) {
         println(error)
-        toast(error.message)
+        error.message?.let { toast(it) }
         swipe_refresh.isRefreshing = false
         endlessScrollListener.stopLoading()
     }

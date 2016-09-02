@@ -18,7 +18,7 @@ fun ViewGroup.inflate(id: Int, attachToRoot: Boolean = false) =
     LayoutInflater.from(context).inflate(id, this, attachToRoot)
 
 fun Context.toast(message: CharSequence) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-inline fun Fragment.toast(message: CharSequence) = activity.toast(message)
+fun Fragment.toast(message: CharSequence) = activity.toast(message)
 
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable
