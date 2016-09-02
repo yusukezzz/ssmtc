@@ -13,13 +13,13 @@ apply plugin: 'com.cookpad.android.licensetools'
 apply plugin: 'com.github.ben-manes.versions'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "24.0.1"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
@@ -42,7 +42,7 @@ kapt {
 
 dependencies {
     ext {
-        support_version = '23.4.0'
+        support_version = '24.2.0'
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.0'
