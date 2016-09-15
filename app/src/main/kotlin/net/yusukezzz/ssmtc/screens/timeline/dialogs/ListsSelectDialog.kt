@@ -19,7 +19,7 @@ class ListsSelectDialog: BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val twLists: List<TwList> = arguments.getParcelableArrayList(ARG_TW_LISTS)
+        val twLists = arguments.getParcelableArray(ARG_TW_LISTS).map { it as TwList }
         val items = twLists.map { it.fullName }.toTypedArray()
 
         return AlertDialog.Builder(activity).apply {

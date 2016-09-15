@@ -33,7 +33,7 @@ class AccountSelectDialog: AppCompatDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val accounts: List<Account> = arguments.getParcelableArrayList(ARG_ACCOUNTS)
+        val accounts = arguments.getParcelableArray(ARG_ACCOUNTS).map { it as Account }
         val items = accounts.map { "@" + it.user.screenName }.toTypedArray() +
             resources.getString(R.string.account_selector_add)
         val addItemPos = items.lastIndex
