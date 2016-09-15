@@ -14,7 +14,7 @@ apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "24.0.2"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
@@ -42,7 +42,7 @@ kapt {
 
 dependencies {
     ext {
-        support_version = '24.2.0'
+        support_version = '24.2.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.0'
