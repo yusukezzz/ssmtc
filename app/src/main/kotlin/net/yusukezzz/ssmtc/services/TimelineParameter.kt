@@ -2,6 +2,7 @@ package net.yusukezzz.ssmtc.services
 
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
+import kotlin.comparisons.compareValuesBy
 
 @PaperParcel
 data class TimelineParameter(
@@ -15,7 +16,9 @@ data class TimelineParameter(
     val query: String? = null,
     val listId: Long? = null,
     val includeRetweets: Boolean = true
-): PaperParcelable {
+) : PaperParcelable, Comparable<TimelineParameter> {
+    override fun compareTo(other: TimelineParameter): Int = compareValuesBy(this, other, { it.type }, { it.title })
+
     companion object {
         @JvmField val CREATOR = PaperParcelable.Creator(TimelineParameter::class.java)
 
