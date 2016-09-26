@@ -40,8 +40,8 @@
     <string name="nav_timeline_add">タイムラインを追加</string>
     <string name="nav_config">設定</string>
 
-    <string name="confirm_account_remove_message">選択中のアカウントを削除します</string>
-    <string name="confirm_account_remove_ok">削除</string>
+    <string name="confirm_account_remove_message">選択中のアカウントを連携解除します</string>
+    <string name="confirm_account_remove_ok">解除</string>
     <string name="confirm_account_remove_cancel">戻る</string>
 
     <string name="menu_timeline_remove">タイムラインを削除</string>

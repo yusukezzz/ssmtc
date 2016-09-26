@@ -14,7 +14,6 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_content.*
 import kotlinx.android.synthetic.main.main_drawer.*
-import kotlinx.android.synthetic.main.nav_header_main.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
@@ -133,6 +132,8 @@ class TimelineActivity: AppCompatActivity(),
 
         val profileImage = nav_view.getHeaderView(0).findViewById(R.id.profile_image) as ImageView
         val screenName = nav_view.getHeaderView(0).findViewById(R.id.screen_name) as TextView
+        val accountSelectBtn = nav_view.getHeaderView(0).findViewById(R.id.btn_account_selector) as ImageView
+        println(accountSelectBtn)
         Picasso.with(this)
             .load(account.user.profileImageUrl)
             .fit()
@@ -141,7 +142,7 @@ class TimelineActivity: AppCompatActivity(),
             .into(profileImage)
         screenName.text = account.user.screenName
 
-        btn_account_selector.setOnClickListener {
+        accountSelectBtn.setOnClickListener {
             showAccountSelector()
         }
 
@@ -229,7 +230,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun showAccountSelector() {
-        AccountSelectDialog.newInstance(prefs.accounts)
+        AccountSelectDialog.newInstance(prefs.accounts - prefs.currentAccount!!)
             .setAccountSelectListener(this)
             .show(supportFragmentManager, "AccountSelectDialog")
     }

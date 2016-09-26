@@ -3,16 +3,10 @@
     android:id="@+id/nav_header"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:gravity="bottom"
-    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:background="@color/background"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
-    <LinearLayout
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/profile_image"
@@ -25,6 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:text="screen_name"
             android:textColor="@color/textWhite"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -35,7 +30,5 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_arrow_drop_down"
             android:tint="@android:color/white" />
-
-    </LinearLayout>
 
 </LinearLayout>
