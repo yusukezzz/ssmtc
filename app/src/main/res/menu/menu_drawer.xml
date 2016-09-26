@@ -15,14 +15,7 @@
             android:id="@+id/nav_timeline_selector"
             android:icon="@drawable/ic_timeline_add"
             android:title="@string/nav_timeline_add" />
-        <item
-            android:id="@+id/nav_account_selector"
-            android:icon="@drawable/ic_accounts"
-            android:title="@string/nav_account_select" />
-        <item
-            android:id="@+id/nav_account_remove"
-            android:icon="@drawable/ic_remove"
-            android:title="@string/nav_account_remove" />
+
         <!--item
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_menu_config"

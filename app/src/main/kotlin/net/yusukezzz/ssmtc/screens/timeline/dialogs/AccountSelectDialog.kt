@@ -21,6 +21,7 @@ class AccountSelectDialog: AppCompatDialogFragment() {
 
     interface AccountSelectListener {
         fun onAccountSelect(account: Account)
+        fun onAccountRemove()
         fun onAccountAdd()
     }
 
@@ -35,20 +36,30 @@ class AccountSelectDialog: AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val accounts = arguments.getParcelableArray(ARG_ACCOUNTS).map { it as Account }
         val items = accounts.map { "@" + it.user.screenName }.toTypedArray() +
-            resources.getString(R.string.account_selector_add)
-        val addItemPos = items.lastIndex
+            resources.getString(R.string.account_selector_add) +
+            resources.getString(R.string.account_selector_remove)
+        val addItemPos = items.lastIndex - 1
+        val removeItemPos = items.lastIndex
 
         return AlertDialog.Builder(activity).apply {
             setTitle(R.string.account_selector_title)
             setItems(items) { dialog, which ->
-                if (which == addItemPos) {
-                    listener.onAccountAdd()
-                } else {
-                    listener.onAccountSelect(accounts[which])
+                when (which) {
+                    addItemPos -> listener.onAccountAdd()
+                    removeItemPos -> confirmRemoveAccount()
+                    else -> listener.onAccountSelect(accounts[which])
                 }
             }
             setNegativeButton(R.string.account_selector_cancel) { d, w -> /* do nothing */ }
         }.create()
+    }
+
+    fun confirmRemoveAccount() {
+        AlertDialog.Builder(activity)
+            .setMessage(R.string.confirm_account_remove_message)
+            .setPositiveButton(R.string.confirm_account_remove_ok, { dialog, which -> listener.onAccountRemove() })
+            .setNegativeButton(R.string.confirm_account_remove_cancel, { d, w -> /* do nothing */ })
+            .show()
     }
 }
 

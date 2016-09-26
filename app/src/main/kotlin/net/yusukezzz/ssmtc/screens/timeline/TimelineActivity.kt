@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_content.*
 import kotlinx.android.synthetic.main.main_drawer.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
@@ -113,8 +114,7 @@ class TimelineActivity: AppCompatActivity(),
     fun handleManageNavigation(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_timeline_selector -> showTimelineSelector()
-            R.id.nav_account_selector -> showAccountSelector()
-            R.id.nav_account_remove -> confirmRemoveAccount()
+            else -> toast("unknown menu item: ${item.title}")
         }
 
         return false
@@ -141,15 +141,11 @@ class TimelineActivity: AppCompatActivity(),
             .into(profileImage)
         screenName.text = account.user.screenName
 
-        switchTimeline(prefs.currentTimeline)
-    }
+        btn_account_selector.setOnClickListener {
+            showAccountSelector()
+        }
 
-    fun confirmRemoveAccount() {
-        AlertDialog.Builder(this)
-            .setMessage(R.string.confirm_account_remove_message)
-            .setPositiveButton(R.string.confirm_account_remove_ok, { dialog, which -> removeAccount() })
-            .setNegativeButton(R.string.confirm_account_remove_cancel, { d, w -> /* do nothing */ })
-            .show()
+        switchTimeline(prefs.currentTimeline)
     }
 
     fun removeAccount() {
@@ -243,6 +239,10 @@ class TimelineActivity: AppCompatActivity(),
             prefs.currentUserId = account.user.id
             loadAccount()
         }
+    }
+
+    override fun onAccountRemove() {
+        removeAccount()
     }
 
     override fun onAccountAdd() {

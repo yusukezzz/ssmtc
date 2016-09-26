@@ -16,6 +16,7 @@
 
     <string name="account_selector_title">アカウントを選択</string>
     <string name="account_selector_add">+ アカウントを追加する</string>
+    <string name="account_selector_remove">- アカウントを連携解除する</string>
     <string name="account_selector_cancel">戻る</string>
 
     <string name="timeline_selector_title">タイムラインを選択</string>
@@ -37,9 +38,7 @@
     <string name="nav_drawer_open">Open drawer</string>
     <string name="nav_drawer_close">Close drawer</string>
     <string name="nav_timeline_add">タイムラインを追加</string>
-    <string name="nav_account_select">アカウントを変更</string>
     <string name="nav_config">設定</string>
-    <string name="nav_account_remove">現在のアカウントを削除</string>
 
     <string name="confirm_account_remove_message">選択中のアカウントを削除します</string>
     <string name="confirm_account_remove_ok">削除</string>
