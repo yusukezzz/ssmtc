@@ -202,6 +202,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             handleTweet(tweet, true)
             val quoted = tweet.quoted_status!!
             itemView.quote_text.text = TextUtil.formattedText(quoted, listener)
+            itemView.quote_text.movementMethod = LinkMovementMethod.getInstance()
             itemView.quote_user_name.text = quoted.user.name
             itemView.quote_user_screen_name.text = "@" + quoted.user.screenName
             itemView.quote_container.visibility = View.VISIBLE
