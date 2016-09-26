@@ -22,7 +22,7 @@ import net.yusukezzz.ssmtc.screens.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.screens.timeline.dialogs.*
 import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
-import net.yusukezzz.ssmtc.util.picasso.CircleTransformation
+import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import net.yusukezzz.ssmtc.util.toast
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
@@ -135,9 +135,9 @@ class TimelineActivity: AppCompatActivity(),
         val screenName = nav_view.getHeaderView(0).findViewById(R.id.screen_name) as TextView
         Picasso.with(this)
             .load(account.user.profileImageUrl)
-            .transform(CircleTransformation())
             .fit()
             .centerCrop()
+            .transform(RoundedTransformation(8))
             .into(profileImage)
         screenName.text = account.user.screenName
 
