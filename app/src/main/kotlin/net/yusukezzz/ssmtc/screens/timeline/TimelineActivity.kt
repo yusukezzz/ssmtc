@@ -9,15 +9,16 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_content.*
 import kotlinx.android.synthetic.main.main_drawer.*
+import kotlinx.android.synthetic.main.nav_header_main.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.Account
 import net.yusukezzz.ssmtc.screens.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.screens.timeline.dialogs.*
 import net.yusukezzz.ssmtc.services.TimelineParameter
@@ -32,7 +33,6 @@ import nl.komponents.kovenant.ui.successUi
 class TimelineActivity: AppCompatActivity(),
     NavigationView.OnNavigationItemSelectedListener,
     TimelineSettingDialog.TimelineSettingListener,
-    AccountSelectDialog.AccountSelectListener,
     TimelineFragment.TimelineFragmentListener,
     BaseDialogFragment.TimelineSelectListener {
 
@@ -51,8 +51,14 @@ class TimelineActivity: AppCompatActivity(),
         setContentView(R.layout.main_drawer)
         setSupportActionBar(toolbar)
 
-        val drawerToggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close)
+        val drawerToggle = object : ActionBarDrawerToggle(
+            this, drawer_layout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+                // always back to timeline navigation
+                showTimelineNavigation()
+            }
+        }
         drawer_layout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
@@ -98,20 +104,33 @@ class TimelineActivity: AppCompatActivity(),
         }
 
         when (item.groupId) {
+            R.id.menu_account -> return handleAccountNavigation(item)
             R.id.menu_timeline -> return handleTimelineNavigation(item)
             R.id.menu_manage -> return handleManageNavigation(item)
             else -> return false
         }
     }
 
+    fun handleAccountNavigation(item: MenuItem): Boolean {
+        val accounts = (prefs.accounts - prefs.currentAccount!!)
+        prefs.currentUserId = accounts[item.order].user.id
+        loadAccount()
+        showTimelineNavigation()
+
+        return false
+    }
+
     fun handleTimelineNavigation(item: MenuItem): Boolean {
         prefs.currentTimelineIndex = item.order
         switchTimeline(prefs.currentTimeline)
+
         return true
     }
 
     fun handleManageNavigation(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_account_add -> launchAuthorizeActivity()
+            R.id.nav_account_remove -> confirmRemoveAccount()
             R.id.nav_timeline_selector -> showTimelineSelector()
             else -> toast("unknown menu item: ${item.title}")
         }
@@ -133,7 +152,6 @@ class TimelineActivity: AppCompatActivity(),
         val profileImage = nav_view.getHeaderView(0).findViewById(R.id.profile_image) as ImageView
         val screenName = nav_view.getHeaderView(0).findViewById(R.id.screen_name) as TextView
         val accountSelectBtn = nav_view.getHeaderView(0).findViewById(R.id.btn_account_selector) as ImageView
-        println(accountSelectBtn)
         Picasso.with(this)
             .load(account.user.profileImageUrl)
             .fit()
@@ -143,10 +161,46 @@ class TimelineActivity: AppCompatActivity(),
         screenName.text = account.user.screenName
 
         accountSelectBtn.setOnClickListener {
-            showAccountSelector()
+            toggleNavigationMenu()
         }
 
         switchTimeline(prefs.currentTimeline)
+    }
+
+    /**
+     * toggle timeline and account navigation menu
+     */
+    fun toggleNavigationMenu() {
+        val isAccountNav = (nav_view.menu.findItem(R.id.nav_account_add) != null)
+        if (isAccountNav) {
+            showTimelineNavigation()
+        } else {
+            showAccountNavigation()
+        }
+    }
+
+    fun showTimelineNavigation() {
+        nav_view.menu.clear()
+        btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_down)
+        nav_view.inflateMenu(R.menu.menu_drawer_timeline)
+        updateTimelineMenu()
+    }
+
+    fun showAccountNavigation() {
+        nav_view.menu.clear()
+        btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_up)
+        nav_view.inflateMenu(R.menu.menu_drawer_account)
+        (prefs.accounts - prefs.currentAccount!!).forEachIndexed { i, account ->
+            nav_view.menu.add(R.id.menu_account, Menu.NONE, i, account.user.screenName)
+        }
+    }
+
+    fun confirmRemoveAccount() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.confirm_account_remove_message)
+            .setPositiveButton(R.string.confirm_account_remove_ok, { dialog, which -> removeAccount() })
+            .setNegativeButton(R.string.confirm_account_remove_cancel, { d, w -> /* do nothing */ })
+            .show()
     }
 
     fun removeAccount() {
@@ -227,27 +281,6 @@ class TimelineActivity: AppCompatActivity(),
         TextInputDialog.newInstance(TimelineParameter.TYPE_USER, R.string.input_dialog_user)
             .setTimelineSelectListener(this)
             .show(supportFragmentManager, "TextInputDialog")
-    }
-
-    fun showAccountSelector() {
-        AccountSelectDialog.newInstance(prefs.accounts - prefs.currentAccount!!)
-            .setAccountSelectListener(this)
-            .show(supportFragmentManager, "AccountSelectDialog")
-    }
-
-    override fun onAccountSelect(account: Account) {
-        if (prefs.currentUserId != account.user.id) {
-            prefs.currentUserId = account.user.id
-            loadAccount()
-        }
-    }
-
-    override fun onAccountRemove() {
-        removeAccount()
-    }
-
-    override fun onAccountAdd() {
-        launchAuthorizeActivity()
     }
 
     fun showTimelineSettingDialog() {

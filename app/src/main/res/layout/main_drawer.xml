@@ -21,7 +21,7 @@
         android:layout_gravity="start"
         app:itemBackground="@drawable/drawer_item_background"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/menu_drawer"
+        app:menu="@menu/menu_drawer_timeline"
         />
 
 </android.support.v4.widget.DrawerLayout>

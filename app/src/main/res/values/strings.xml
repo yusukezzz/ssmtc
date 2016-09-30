@@ -15,9 +15,8 @@
     <string name="status_send">送信</string>
 
     <string name="account_selector_title">アカウントを選択</string>
-    <string name="account_selector_add">+ アカウントを追加する</string>
-    <string name="account_selector_remove">- アカウントを連携解除する</string>
-    <string name="account_selector_cancel">戻る</string>
+    <string name="nav_account_add">アカウントを追加する</string>
+    <string name="nav_account_remove">アカウントを連携解除する</string>
 
     <string name="timeline_selector_title">タイムラインを選択</string>
     <string name="timeline_selector_cancel">戻る</string>
