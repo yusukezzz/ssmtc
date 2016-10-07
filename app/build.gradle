@@ -14,7 +14,7 @@ apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
@@ -46,7 +46,7 @@ dependencies {
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.0'
-        permission_dispatcher_version = '2.1.3'
+        permission_dispatcher_version = '2.2.0'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -66,7 +66,7 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'net.danlew:android.joda:2.9.4.1'
+    compile 'net.danlew:android.joda:2.9.4.2'
     compile 'se.akerfeldt:okhttp-signpost:1.1.0'
     compile 'id.zelory:compressor:1.0.2'
 
@@ -83,7 +83,7 @@ dependencies {
     compile "com.github.grandstaish.paperparcel:paperparcel-kotlin:$paperparcel_version"
     kapt "com.github.grandstaish.paperparcel:compiler:$paperparcel_version"
 
-    compile 'com.facebook.stetho:stetho:1.3.1'
+    compile 'com.facebook.stetho:stetho:1.4.1'
     testCompile 'junit:junit:4.12'
 }
 repositories {
