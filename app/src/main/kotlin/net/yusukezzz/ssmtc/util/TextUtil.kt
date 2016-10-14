@@ -12,8 +12,8 @@ import org.apache.commons.lang3.StringEscapeUtils
 
 class TextUtil {
     companion object {
-        val SCREEN_NAME_PATTERN = "@[a-zA-Z0-9_]+"
-        val HASH_TAG_PATTERN = "#\\w+"
+        val SCREEN_NAME_PATTERN = Regex("@[a-zA-Z0-9_]+")
+        val HASH_TAG_PATTERN = Regex("#\\w+")
 
         fun milliSecToTime(millis: Int): String {
             val sec = millis / 1000
@@ -28,8 +28,8 @@ class TextUtil {
             val decodedText = StringEscapeUtils.unescapeHtml4(tweet.text)
             if (null == entities.urls) return decodedText
 
-            val urls = entities.urls.map { FormattedUrl(it) }
-            val medias = entities.media?.map { FormattedMedia(it) } ?: listOf()
+            val urls = entities.urls.map(::FormattedUrl)
+            val medias = entities.media?.map(::FormattedMedia) ?: listOf()
             val combined = (urls + medias).sortedBy { it.start }
 
             val lastUrl = if (removeQuote) {
@@ -69,7 +69,7 @@ class TextUtil {
 
         private fun replaceScreenName(spannable: SpannableStringBuilder,
                                       listener: TimelineEventListener) {
-            Regex(SCREEN_NAME_PATTERN).findAll(spannable).forEach {
+            SCREEN_NAME_PATTERN.findAll(spannable).forEach {
                 val span = object: ClickableSpan() {
                     override fun onClick(widget: View?) {
                         listener.onScreenNameClick(it.value.removePrefix("@"))
@@ -81,7 +81,7 @@ class TextUtil {
 
         private fun replaceHashTag(spannable: SpannableStringBuilder,
                                    listener: TimelineEventListener) {
-            Regex(HASH_TAG_PATTERN).findAll(spannable).forEach {
+            HASH_TAG_PATTERN.findAll(spannable).forEach {
                 val span = object: ClickableSpan() {
                     override fun onClick(widget: View?) {
                         listener.onHashTagClick(it.value)

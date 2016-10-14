@@ -40,5 +40,5 @@ data class TimelineFilter(
         return false
     }
 
-    private fun List<String>.toRegex(): Regex = Regex(this.map { Pattern.quote(it) }.joinToString("|"))
+    private fun List<String>.toRegex(): Regex = Regex(this.map(Pattern::quote).joinToString("|"))
 }
