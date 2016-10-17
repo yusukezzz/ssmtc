@@ -6,7 +6,7 @@ class SearchQueryBuilder {
     companion object {
         val urlencoder = URLCodec("UTF-8")
 
-        fun build(params: TimelineParameter): String {
+        fun build(params: TimelineParameter): TimelineParameter {
             val queries = mutableListOf(params.query)
 
             if (!params.includeRetweets) {
@@ -19,7 +19,7 @@ class SearchQueryBuilder {
                 TimelineFilter.Showing.VIDEO -> queries.add("filter:videos")
             }
 
-            return urlencoder.encode(queries.joinToString(" "))
+            return params.copy(query = urlencoder.encode(queries.joinToString(" ")))
         }
     }
 }
