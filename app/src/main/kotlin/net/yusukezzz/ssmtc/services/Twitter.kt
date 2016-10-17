@@ -51,7 +51,7 @@ class Twitter {
         val tweets = when (params.type) {
             TimelineParameter.TYPE_HOME -> homeTimeline(params.count, params.sinceId, maxId)
             TimelineParameter.TYPE_MENTIONS -> mentionsTimeline(params.count, params.sinceId, maxId)
-            TimelineParameter.TYPE_LISTS -> listTimeline(params.listId, params.count, params.sinceId, params.maxId)
+            TimelineParameter.TYPE_LISTS -> listTimeline(params.listId, params.count, params.sinceId, maxId)
             TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(params), params.count, params.sinceId, maxId)
             TimelineParameter.TYPE_USER -> userTimeline(params.screenName, params.count, params.sinceId, maxId)
             else -> throw RuntimeException("unknown parameter type: ${params.javaClass}")
