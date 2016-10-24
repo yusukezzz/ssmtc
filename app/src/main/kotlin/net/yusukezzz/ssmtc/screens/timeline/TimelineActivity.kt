@@ -25,6 +25,7 @@ import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import net.yusukezzz.ssmtc.util.toast
+import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
@@ -254,13 +255,13 @@ class TimelineActivity: AppCompatActivity(),
             .create()
         progress.show()
 
+        val userId = prefs.currentUserId
         task {
-            val userId = prefs.currentUserId
-            val ownedTwList = app.twitter.ownedLists(userId)
-            val subscribedTwList = app.twitter.subscribedLists(userId)
-            ownedTwList + subscribedTwList
-        } successUi { twlist ->
-            ListsSelectDialog.newInstance(twlist)
+            app.twitter.ownedLists(userId)
+        } and task {
+            app.twitter.subscribedLists(userId)
+        } successUi {
+            ListsSelectDialog.newInstance(it.first + it.second)
                 .setTimelineSelectListener(this)
                 .show(supportFragmentManager, "ListsSelectDialog")
         } failUi { e ->

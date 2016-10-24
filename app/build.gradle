@@ -61,6 +61,7 @@ dependencies {
     kapt "com.github.hotchemi:permissionsdispatcher-processor:$permission_dispatcher_version"
 
     compile "nl.komponents.kovenant:kovenant:$kovenant_version"
+    compile "nl.komponents.kovenant:kovenant-combine:$kovenant_version"
     compile "nl.komponents.kovenant:kovenant-android:$kovenant_version"
 
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
