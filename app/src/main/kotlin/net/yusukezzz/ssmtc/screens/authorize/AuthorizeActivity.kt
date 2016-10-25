@@ -1,14 +1,19 @@
 package net.yusukezzz.ssmtc.screens.authorize
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.FrameLayout
+import kotlinx.android.synthetic.main.authorize.*
 import kotlinx.android.synthetic.main.main_content.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.PreferencesHolder
+import net.yusukezzz.ssmtc.util.toast
 
-class AuthorizeActivity: AppCompatActivity() {
+class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
+
     private val app: Application by lazy { application as Application }
     private lateinit var presenter: AuthorizeContract.Presenter
 
@@ -16,22 +21,36 @@ class AuthorizeActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_content)
 
-        var fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-        if (null == fragment) {
-            fragment = AuthorizeFragment.newInstance()
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, fragment)
-                .commit()
-        }
+        val container = findViewById(R.id.fragment_container) as FrameLayout
+        val authorizeView = layoutInflater.inflate(R.layout.authorize, container, false)
+        container.addView(authorizeView, 0)
 
         toolbar_title.text = "Authorization"
-        presenter = AuthorizePresenter(fragment as AuthorizeFragment, PreferencesHolder.prefs, app.twitter)
+        presenter = AuthorizePresenter(this, PreferencesHolder.prefs, app.twitter)
+
+        btn_authorize_request.setOnClickListener { presenter.authorizeRequest() }
+        btn_authorize.setOnClickListener { presenter.authorize(edit_pin_code.text.toString()) }
     }
 
-    fun onAuthorized() {
+    override fun setPresenter(presenter: AuthorizeContract.Presenter) {
+        this.presenter = presenter
+    }
+
+    override fun showAuthorizeWeb(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
+    }
+
+    override fun authorized() {
         val i = baseContext.packageManager.getLaunchIntentForPackage(baseContext.packageName)
         i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(i)
         finish()
+    }
+
+    override fun handleError(error: Throwable) {
+        println(error)
+        error.message?.let { toast(it) }
     }
 }
