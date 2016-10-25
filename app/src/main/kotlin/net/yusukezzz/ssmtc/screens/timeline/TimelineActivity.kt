@@ -162,7 +162,7 @@ class TimelineActivity: AppCompatActivity(),
         screenName.text = account.user.screenName
 
         accountSelectBtn.setOnClickListener {
-            toggleNavigationMenu()
+            toggleNavigationContents()
         }
 
         switchTimeline(prefs.currentTimeline)
@@ -171,7 +171,7 @@ class TimelineActivity: AppCompatActivity(),
     /**
      * toggle timeline and account navigation menu
      */
-    fun toggleNavigationMenu() {
+    fun toggleNavigationContents() {
         val isAccountNav = (nav_view.menu.findItem(R.id.nav_account_add) != null)
         if (isAccountNav) {
             showTimelineNavigation()
@@ -292,6 +292,18 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onSaveTimeline(timeline: TimelineParameter) {
         switchTimeline(timeline)
+    }
+
+    override fun onBackPressed() {
+        toggleDrawer()
+    }
+
+    private fun toggleDrawer() {
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
+        } else {
+            drawer_layout.openDrawer(GravityCompat.START)
+        }
     }
 }
 
