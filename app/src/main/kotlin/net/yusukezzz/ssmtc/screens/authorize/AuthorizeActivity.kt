@@ -4,9 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.authorize.*
-import kotlinx.android.synthetic.main.main_content.*
+import kotlinx.android.synthetic.main.base_layout.*
+import kotlinx.android.synthetic.main.main_container.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.PreferencesHolder
@@ -19,11 +19,10 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_content)
+        setContentView(R.layout.base_layout)
 
-        val container = findViewById(R.id.fragment_container) as FrameLayout
-        val authorizeView = layoutInflater.inflate(R.layout.authorize, container, false)
-        container.addView(authorizeView, 0)
+        val authorizeView = layoutInflater.inflate(R.layout.authorize, main_container, false)
+        main_container.addView(authorizeView, 0)
 
         toolbar_title.text = "Authorization"
         presenter = AuthorizePresenter(this, PreferencesHolder.prefs, app.twitter)

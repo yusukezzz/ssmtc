@@ -28,6 +28,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/fragment_container" />
+    <include layout="@layout/main_container" />
 
 </android.support.design.widget.CoordinatorLayout>

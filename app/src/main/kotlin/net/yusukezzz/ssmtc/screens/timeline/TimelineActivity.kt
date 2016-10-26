@@ -13,9 +13,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.main_content.*
-import kotlinx.android.synthetic.main.main_drawer.*
+import kotlinx.android.synthetic.main.base_layout.*
 import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.android.synthetic.main.timeline_layout.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
@@ -49,26 +49,26 @@ class TimelineActivity: AppCompatActivity(),
             return
         }
 
-        setContentView(R.layout.main_drawer)
+        setContentView(R.layout.timeline_layout)
         setSupportActionBar(toolbar)
 
         val drawerToggle = object : ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+            this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
             override fun onDrawerClosed(drawerView: View) {
                 super.onDrawerClosed(drawerView)
                 // always back to timeline navigation
                 showTimelineNavigation()
             }
         }
-        drawer_layout.addDrawerListener(drawerToggle)
+        drawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
 
-        var fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        var fragment = supportFragmentManager.findFragmentById(R.id.main_container)
         if (null == fragment) {
             fragment = TimelineFragment.newInstance(this)
             supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, fragment)
+                .add(R.id.main_container, fragment)
                 .commit()
         }
 
@@ -98,7 +98,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawer_layout.closeDrawer(GravityCompat.START)
+        drawer.closeDrawer(GravityCompat.START)
 
         if (item.isChecked) {
             return true
@@ -299,10 +299,10 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun toggleDrawer() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
         } else {
-            drawer_layout.openDrawer(GravityCompat.START)
+            drawer.openDrawer(GravityCompat.START)
         }
     }
 }
