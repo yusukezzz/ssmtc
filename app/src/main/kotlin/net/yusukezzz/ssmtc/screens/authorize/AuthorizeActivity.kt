@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.authorize.*
 import kotlinx.android.synthetic.main.base_layout.*
-import kotlinx.android.synthetic.main.main_container.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.PreferencesHolder
+import net.yusukezzz.ssmtc.util.setView
 import net.yusukezzz.ssmtc.util.toast
 
 class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
@@ -20,9 +20,7 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.base_layout)
-
-        val authorizeView = layoutInflater.inflate(R.layout.authorize, main_container, false)
-        main_container.addView(authorizeView, 0)
+        main_contents.setView(R.layout.authorize)
 
         toolbar_title.text = "Authorization"
         presenter = AuthorizePresenter(this, PreferencesHolder.prefs, app.twitter)

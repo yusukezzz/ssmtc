@@ -64,11 +64,11 @@ class TimelineActivity: AppCompatActivity(),
         drawerToggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
 
-        var fragment = supportFragmentManager.findFragmentById(R.id.main_container)
+        var fragment = supportFragmentManager.findFragmentById(R.id.main_contents)
         if (null == fragment) {
             fragment = TimelineFragment.newInstance(this)
             supportFragmentManager.beginTransaction()
-                .add(R.id.main_container, fragment)
+                .add(R.id.main_contents, fragment)
                 .commit()
         }
 

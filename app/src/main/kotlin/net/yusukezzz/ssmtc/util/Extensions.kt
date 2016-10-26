@@ -7,6 +7,7 @@ import android.graphics.drawable.VectorDrawable
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
@@ -14,8 +15,8 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
 
-fun ViewGroup.inflate(id: Int, attachToRoot: Boolean = false) =
-    LayoutInflater.from(context).inflate(id, this, attachToRoot)
+fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
+fun ViewGroup.setView(resId: Int): Unit = this.addView(inflate(resId), 0)
 
 fun Context.toast(message: CharSequence) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 fun Fragment.toast(message: CharSequence) = activity.toast(message)
