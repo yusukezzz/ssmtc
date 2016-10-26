@@ -154,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="36dp">
 
-            <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
                 android:id="@+id/ic_twitter_reply"
                 android:src="@drawable/ic_twitter_reply"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
@@ -173,7 +173,7 @@
                 android:layout_weight="1"
                 />
 
-            <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
                 android:id="@+id/ic_twitter_retweet"
                 android:src="@drawable/ic_twitter_retweet"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
@@ -196,7 +196,7 @@
                 android:layout_weight="1"
                 />
 
-            <net.yusukezzz.ssmtc.views.AspectRatioImageView
+            <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
                 android:id="@+id/ic_twitter_like"
                 android:src="@drawable/ic_twitter_like"
                 android:background="?android:attr/selectableItemBackgroundBorderless"

@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
 >
 
-    <net.yusukezzz.ssmtc.views.AspectRatioImageView
+    <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
             android:layout_weight="1"
             android:id="@+id/media_photo_three_1"
             android:layout_width="match_parent"
@@ -25,14 +25,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <net.yusukezzz.ssmtc.views.AspectRatioImageView
+        <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
             android:id="@+id/media_photo_three_2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/media_photo_margin"
             />
 
-        <net.yusukezzz.ssmtc.views.AspectRatioImageView
+        <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
             android:id="@+id/media_photo_three_3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

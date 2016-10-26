@@ -7,7 +7,7 @@ import android.view.View
 import net.yusukezzz.ssmtc.data.FormattedMedia
 import net.yusukezzz.ssmtc.data.FormattedUrl
 import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.screens.timeline.TimelineAdapter.TimelineEventListener
+import net.yusukezzz.ssmtc.ui.timeline.TimelineAdapter.TimelineEventListener
 import org.apache.commons.lang3.StringEscapeUtils
 
 object TextUtil {
