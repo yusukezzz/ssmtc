@@ -62,6 +62,7 @@ class TimelineActivity: AppCompatActivity(),
 
         if (null == prefs.currentAccount) {
             launchAuthorizeActivity()
+            finish()
             return
         }
 
@@ -167,10 +168,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun launchAuthorizeActivity() {
-        val i = Intent(this, AuthorizeActivity::class.java)
-        i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        startActivity(i)
-        finish()
+        startActivity(Intent(this, AuthorizeActivity::class.java))
     }
 
     fun loadAccount() {
