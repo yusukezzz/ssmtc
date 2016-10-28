@@ -15,7 +15,6 @@ import net.yusukezzz.ssmtc.util.toast
 class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
 
     private val app: Application by lazy { application as Application }
-    private lateinit var presenter: AuthorizeContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,14 +22,10 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
         main_contents.setView(R.layout.authorize)
 
         toolbar_title.text = "Authorization"
-        presenter = AuthorizePresenter(this, PreferencesHolder.prefs, app.twitter)
+        val presenter = AuthorizePresenter(this, PreferencesHolder.prefs, app.twitter)
 
         btn_authorize_request.setOnClickListener { presenter.authorizeRequest() }
         btn_authorize.setOnClickListener { presenter.authorize(edit_pin_code.text.toString()) }
-    }
-
-    override fun setPresenter(presenter: AuthorizeContract.Presenter) {
-        this.presenter = presenter
     }
 
     override fun showAuthorizeWeb(url: String) {

@@ -15,9 +15,6 @@ class AuthorizePresenter(
     val view: AuthorizeContract.View,
     val prefs: Preferences,
     val twitter: Twitter): AuthorizeContract.Presenter {
-    init {
-        view.setPresenter(this)
-    }
 
     private val consumer = DefaultOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
     private val provider = DefaultOAuthProvider(

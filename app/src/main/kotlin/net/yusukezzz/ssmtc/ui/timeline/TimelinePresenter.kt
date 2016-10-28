@@ -6,10 +6,6 @@ import net.yusukezzz.ssmtc.services.Twitter
 import nl.komponents.kovenant.task
 
 class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): TimelineContract.Presenter {
-    init {
-        view.setPresenter(this)
-    }
-
     private lateinit var param: TimelineParameter
 
     override fun setParameter(param: TimelineParameter) {

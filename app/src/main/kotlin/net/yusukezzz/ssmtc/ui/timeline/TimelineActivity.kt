@@ -333,10 +333,6 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onRefresh() = presenter.loadNewerTweets()
 
-    override fun setPresenter(presenter: TimelineContract.Presenter) {
-        this.presenter = presenter
-    }
-
     override fun getLatestTweetId(): Long? = timelineAdapter.first()?.id
 
     override fun getLastTweetId(): Long? = timelineAdapter.last()?.id

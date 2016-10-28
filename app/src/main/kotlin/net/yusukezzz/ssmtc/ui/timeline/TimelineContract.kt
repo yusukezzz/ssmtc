@@ -1,7 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import net.yusukezzz.ssmtc.BasePresenter
-import net.yusukezzz.ssmtc.BaseView
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.services.TimelineParameter
 
@@ -16,12 +15,13 @@ interface TimelineContract {
         fun unretweet(tweet: Tweet)
     }
 
-    interface View: BaseView<Presenter> {
+    interface View {
         fun getLatestTweetId(): Long?
         fun getLastTweetId(): Long?
         fun addHeadTweets(tweets: List<Tweet>)
         fun addTailTweets(tweets: List<Tweet>)
         fun updateReactedTweet()
         fun initialize()
+        fun handleError(error: Throwable)
     }
 }
