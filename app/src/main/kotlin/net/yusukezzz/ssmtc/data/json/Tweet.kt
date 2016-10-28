@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.data.json
 
 import nz.bradcampbell.paperparcel.PaperParcel
+import nz.bradcampbell.paperparcel.PaperParcelable
 import org.joda.time.DateTime
 
 @PaperParcel
@@ -18,7 +19,11 @@ data class Tweet(
     var retweeted: Boolean,
     var favorited: Boolean,
     var visible: Boolean = true
-) {
+) : PaperParcelable {
+    companion object {
+        @JvmField val CREATOR = PaperParcelable.Creator(Tweet::class.java)
+    }
+
     val allMedia: List<Media>
         get() = extended_entities?.media ?: listOf()
 
