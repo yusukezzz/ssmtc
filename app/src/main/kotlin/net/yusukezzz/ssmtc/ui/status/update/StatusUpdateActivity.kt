@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.ui.status.update
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.util.PreferencesHolder
+import net.yusukezzz.ssmtc.util.getImagePath
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -77,6 +79,13 @@ class StatusUpdateActivity: AppCompatActivity() {
             val i = StatusUpdateService.newIntent(this, tweet, replyStatusId, photos)
             this.startService(i)
             finish()
+        }
+
+        // initial photo from intent
+        // TODO: check login and permission
+        intent.extras?.get(Intent.EXTRA_STREAM)?.let {
+            val path = contentResolver.getImagePath(it as Uri)
+            showSelectedPhotos(arrayOf(path))
         }
 
         val account = PreferencesHolder.prefs.currentAccount!!

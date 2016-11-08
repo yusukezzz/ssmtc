@@ -1,10 +1,12 @@
 package net.yusukezzz.ssmtc.util
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.VectorDrawable
-import android.support.v4.app.Fragment
+import android.net.Uri
+import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -19,13 +21,10 @@ fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(r
 fun ViewGroup.setView(resId: Int): Unit = this.addView(inflate(resId), 0)
 
 fun Context.toast(message: CharSequence) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-fun Fragment.toast(message: CharSequence) = activity.toast(message)
 
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable
-    if (null != tint) {
-        drawable.setTint(ContextCompat.getColor(this, tint))
-    }
+    tint?.let { drawable.setTint(ContextCompat.getColor(this, it)) }
 
     return drawable
 }
@@ -39,11 +38,23 @@ fun VectorDrawable.toBitmap(): Bitmap {
     return bitmap
 }
 
+fun ContentResolver.getImagePath(content: Uri): String {
+    val column = MediaStore.Images.Media.DATA
+    val cursor = this.query(content, arrayOf(column), null, null, null) ?: return content.path
+    val realpath = cursor.use {
+        it.moveToFirst()
+        val index = cursor.getColumnIndex(column)
+        cursor.getString(index)
+    }
+
+    return realpath
+}
+
 fun File.mimeType(): String {
-    if (extension.isEmpty()) {
-        return "application/octet-stream" // default
+    return if (extension.isEmpty()) {
+        "application/octet-stream" // default
     } else {
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
     }
 }
 
