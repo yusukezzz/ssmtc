@@ -45,7 +45,7 @@ dependencies {
         support_version = '24.2.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
-        paperparcel_version = '1.0.0'
+        paperparcel_version = '1.0.1'
         permission_dispatcher_version = '2.2.0'
     }
 
@@ -67,7 +67,7 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'net.danlew:android.joda:2.9.4.2'
+    compile 'net.danlew:android.joda:2.9.5'
     compile 'se.akerfeldt:okhttp-signpost:1.1.0'
     compile 'id.zelory:compressor:1.0.3'
 
@@ -78,7 +78,7 @@ dependencies {
     compile 'com.daimajia.slider:library:1.1.5@aar'
 
     // html entity decoding
-    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.apache.commons:commons-lang3:3.5'
 
     compile "com.github.grandstaish.paperparcel:paperparcel:$paperparcel_version"
     compile "com.github.grandstaish.paperparcel:paperparcel-kotlin:$paperparcel_version"
