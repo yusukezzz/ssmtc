@@ -7,6 +7,8 @@ import nl.komponents.kovenant.task
 
 class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): TimelineContract.Presenter {
     private lateinit var param: TimelineParameter
+    private var latestTweetId: Long? = null
+    private var lastTweetId: Long? = null
 
     override fun setParameter(param: TimelineParameter) {
         this.param = param
@@ -15,17 +17,20 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): 
 
     override fun loadNewerTweets() {
         task {
-            twitter.timeline(param.next(view.getLatestTweetId()))
+            twitter.timeline(param.next(latestTweetId))
         } doneUi {
+            latestTweetId = it.first()?.id
             view.addHeadTweets(it)
         }
     }
 
     override fun loadOlderTweets() {
         task {
-            twitter.timeline(param.previous(view.getLastTweetId()))
+            twitter.timeline(param.previous(lastTweetId))
         } doneUi {
-            view.addTailTweets(it)
+            // save last tweet id before filtering
+            lastTweetId = it.last()?.id
+            view.addTailTweets(param.filter.shorten(it))
         }
     }
 

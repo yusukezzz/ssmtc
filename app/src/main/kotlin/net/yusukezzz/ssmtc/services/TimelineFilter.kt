@@ -19,7 +19,7 @@ data class TimelineFilter(
         ALL, ANY_MEDIA, PHOTO, VIDEO
     }
 
-    fun reduce(tweets: List<Tweet>): List<Tweet> = tweets.map {
+    fun shorten(tweets: List<Tweet>): List<Tweet> = tweets.map {
         it.apply { it.visible = filterMedia(it) && filterText(it) }
     }
 

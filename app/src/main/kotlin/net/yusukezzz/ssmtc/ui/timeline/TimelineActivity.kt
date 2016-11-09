@@ -332,10 +332,6 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onRefresh() = presenter.loadNewerTweets()
 
-    override fun getLatestTweetId(): Long? = timelineAdapter.first()?.id
-
-    override fun getLastTweetId(): Long? = timelineAdapter.last()?.id
-
     override fun addHeadTweets(tweets: List<Tweet>) {
         timelineAdapter.set(tweets)
         swipe_refresh.isRefreshing = false

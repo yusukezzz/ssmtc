@@ -45,19 +45,15 @@ class Twitter {
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())
 
-    fun timeline(params: TimelineParameter): List<Tweet> {
-        val p = params.copy(maxId = params.maxId?.dec()) // ignore same id
-
-        val tweets = when (p.type) {
-            TimelineParameter.TYPE_HOME -> homeTimeline(p)
-            TimelineParameter.TYPE_MENTIONS -> mentionsTimeline(p)
-            TimelineParameter.TYPE_LISTS -> listTimeline(p)
-            TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(p))
-            TimelineParameter.TYPE_USER -> userTimeline(p)
-            else -> throw RuntimeException("unknown parameter type: ${p.javaClass}")
+    fun timeline(params: TimelineParameter): List<Tweet> = params.copy(maxId = params.maxId?.dec()).let {
+        when (it.type) {
+            TimelineParameter.TYPE_HOME -> homeTimeline(it)
+            TimelineParameter.TYPE_MENTIONS -> mentionsTimeline(it)
+            TimelineParameter.TYPE_LISTS -> listTimeline(it)
+            TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(it))
+            TimelineParameter.TYPE_USER -> userTimeline(it)
+            else -> throw RuntimeException("unknown parameter type: ${it.type.javaClass}")
         }
-
-        return p.filter.reduce(tweets)
     }
 
     fun like(id: Long): Tweet = execute(apiService.like(id))
