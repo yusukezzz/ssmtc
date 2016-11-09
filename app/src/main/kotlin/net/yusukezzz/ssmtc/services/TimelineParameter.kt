@@ -10,8 +10,6 @@ data class TimelineParameter(
     val title: String,
     val count: Int = TimelineParameter.MAX_RETRIEVE_COUNT,
     val filter: TimelineFilter = TimelineFilter.default(),
-    val sinceId: Long? = null,
-    val maxId: Long? = null,
     val screenName: String? = null,
     val query: String? = null,
     val listId: Long? = null,
@@ -36,8 +34,5 @@ data class TimelineParameter(
         fun search(query: String) = TimelineParameter(type = TYPE_SEARCH, title = query, query = query)
         fun user(screenName: String) = TimelineParameter(type = TYPE_USER, title = screenName, screenName = screenName)
     }
-
-    fun next(sinceId: Long?): TimelineParameter = copy(sinceId = sinceId, maxId = null)
-    fun previous(maxId: Long?): TimelineParameter = copy(sinceId = null, maxId = maxId)
 }
 

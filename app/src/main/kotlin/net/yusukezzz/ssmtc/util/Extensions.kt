@@ -47,8 +47,7 @@ fun ContentResolver.getImagePath(content: Uri): String {
     val cursor = this.query(content, arrayOf(column), null, null, null) ?: return content.path
     val realpath = cursor.use {
         it.moveToFirst()
-        val index = cursor.getColumnIndex(column)
-        cursor.getString(index)
+        cursor.getString(cursor.getColumnIndex(column))
     }
 
     return realpath

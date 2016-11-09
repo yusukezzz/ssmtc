@@ -45,13 +45,14 @@ class Twitter {
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())
 
-    fun timeline(params: TimelineParameter): List<Tweet> = params.copy(maxId = params.maxId?.dec()).let {
+    fun timeline(params: TimelineParameter, maxId: Long? = null): List<Tweet> = params.let {
+        val max = maxId?.dec()
         when (it.type) {
-            TimelineParameter.TYPE_HOME -> homeTimeline(it)
-            TimelineParameter.TYPE_MENTIONS -> mentionsTimeline(it)
-            TimelineParameter.TYPE_LISTS -> listTimeline(it)
-            TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(it))
-            TimelineParameter.TYPE_USER -> userTimeline(it)
+            TimelineParameter.TYPE_HOME -> homeTimeline(it, max)
+            TimelineParameter.TYPE_MENTIONS -> mentionsTimeline(it, max)
+            TimelineParameter.TYPE_LISTS -> listTimeline(it, max)
+            TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(it), max)
+            TimelineParameter.TYPE_USER -> userTimeline(it, max)
             else -> throw RuntimeException("unknown parameter type: ${it.type.javaClass}")
         }
     }
@@ -72,23 +73,23 @@ class Twitter {
 
     fun upload(media: File): UploadResult = execute(uploadService.upload(media.toRequestBody()))
 
-    private fun homeTimeline(params: TimelineParameter): List<Tweet> =
-        execute(apiService.homeTimeline(params.count, params.sinceId, params.maxId))
+    private fun homeTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
+        execute(apiService.homeTimeline(params.count, maxId))
 
-    private fun mentionsTimeline(params: TimelineParameter): List<Tweet> =
-        execute(apiService.mentionsTimeline(params.count, params.sinceId, params.maxId))
+    private fun mentionsTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
+        execute(apiService.mentionsTimeline(params.count, maxId))
 
-    private fun directMessages(params: TimelineParameter): List<Tweet> =
-        execute(apiService.directMessages(params.count, params.sinceId, params.maxId))
+    private fun directMessages(params: TimelineParameter, maxId: Long?): List<Tweet> =
+        execute(apiService.directMessages(params.count, maxId))
 
-    private fun listTimeline(params: TimelineParameter): List<Tweet> =
-        execute(apiService.listStatuses(params.listId, params.count, params.sinceId, params.maxId))
+    private fun listTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
+        execute(apiService.listStatuses(params.listId, params.count, maxId))
 
-    private fun searchTimeline(params: TimelineParameter): List<Tweet> =
-        execute(apiService.search(params.count, LANG, LOCALE, SEARCH_RESULT_TYPE, params.query, params.sinceId, params.maxId)).statuses
+    private fun searchTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
+        execute(apiService.search(params.count, LANG, LOCALE, SEARCH_RESULT_TYPE, params.query, maxId)).statuses
 
-    private fun userTimeline(params: TimelineParameter): List<Tweet> =
-        execute(apiService.userTimeline(params.count, params.screenName, params.sinceId, params.maxId))
+    private fun userTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
+        execute(apiService.userTimeline(params.count, params.screenName, maxId))
 
     private fun <T> execute(req: Call<T>): T {
         val res = req.execute()
@@ -140,21 +141,18 @@ interface TwitterApi {
     @GET("/1.1/statuses/home_timeline.json")
     fun homeTimeline(
         @Query("count") count: Int?,
-        @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
     @GET("/1.1/statuses/mentions_timeline.json")
     fun mentionsTimeline(
         @Query("count") count: Int?,
-        @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
     @GET("/1.1/direct_messages.json")
     fun directMessages(
         @Query("count") count: Int?,
-        @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
@@ -162,7 +160,6 @@ interface TwitterApi {
     fun userTimeline(
         @Query("count") count: Int?,
         @Query("screen_name") screenName: String?,
-        @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
@@ -173,7 +170,6 @@ interface TwitterApi {
         @Query("locale") locale: String,
         @Query("result_type") resultType: String,
         @Query("q", encoded = true) query: String?,
-        @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<Search>
 
@@ -193,7 +189,6 @@ interface TwitterApi {
     fun listStatuses(
         @Query("list_id") listId: Long?,
         @Query("count") count: Int?,
-        @Query("since_id") sinceId: Long?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 

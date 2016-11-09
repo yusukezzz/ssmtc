@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.method.LinkMovementMethod
@@ -108,10 +109,6 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
     override fun getItemCount(): Int = timeline.size
 
     fun get(pos: Int): Tweet = timeline[pos]
-    fun getAll(): List<Tweet> = timeline.toList()
-    fun first(): Tweet? = timeline.firstOrNull()
-    fun last(): Tweet? = timeline.lastOrNull()
-
     fun clear() = timeline.clear()
 
     fun set(tweets: List<Tweet>) {
@@ -178,7 +175,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             } else {
                 R.color.action_icon_default
             }
-            itemView.ic_twitter_retweet.setColorFilter(itemView.resources.getColor(retweetColor, null))
+            itemView.ic_twitter_retweet.setColorFilter(ContextCompat.getColor(itemView.context, retweetColor))
             itemView.ic_twitter_retweet.setOnClickListener { listener.onRetweetClick(tweet) }
 
             if (0 < tweet.favorite_count) {
@@ -189,7 +186,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             } else {
                 R.color.action_icon_default
             }
-            itemView.ic_twitter_like.setColorFilter(itemView.resources.getColor(likeColor, null))
+            itemView.ic_twitter_like.setColorFilter(ContextCompat.getColor(itemView.context, likeColor))
             itemView.ic_twitter_like.setOnClickListener { listener.onLikeClick(tweet) }
         }
 

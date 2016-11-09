@@ -7,31 +7,34 @@ import nl.komponents.kovenant.task
 
 class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): TimelineContract.Presenter {
     private lateinit var param: TimelineParameter
-    private var latestTweetId: Long? = null
     private var lastTweetId: Long? = null
 
     override fun setParameter(param: TimelineParameter) {
         this.param = param
+        lastTweetId = null
         view.initialize()
     }
 
     override fun loadNewerTweets() {
         task {
-            twitter.timeline(param.next(latestTweetId))
+            twitter.timeline(param)
         } doneUi {
-            latestTweetId = it.first()?.id
-            view.addHeadTweets(it)
+            view.addHeadTweets(applyFilter(it))
         }
     }
 
     override fun loadOlderTweets() {
         task {
-            twitter.timeline(param.previous(lastTweetId))
+            twitter.timeline(param, lastTweetId)
         } doneUi {
-            // save last tweet id before filtering
-            lastTweetId = it.last()?.id
-            view.addTailTweets(param.filter.shorten(it))
+            view.addTailTweets(applyFilter(it))
         }
+    }
+
+    private fun applyFilter(tweets: List<Tweet>): List<Tweet> {
+        // save last tweet id before filtering
+        tweets.lastOrNull()?.let { lastTweetId = it.id }
+        return param.filter.shorten(tweets)
     }
 
     override fun like(tweet: Tweet) {
