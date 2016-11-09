@@ -289,9 +289,8 @@ class TimelineActivity: AppCompatActivity(),
             ListsSelectDialog.newInstance(it.first + it.second)
                 .setTimelineSelectListener(this)
                 .show(supportFragmentManager, "ListsSelectDialog")
-        } failUi { e ->
-            println(e)
-            e.message?.let { toast(it) }
+        } failUi {
+            toast(it)
         } alwaysUi {
             progress.dismiss()
         }
@@ -424,8 +423,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     override fun handleError(error: Throwable) {
-        println(error)
-        error.message?.let { toast(it) }
+        toast(error)
         swipe_refresh.isRefreshing = false
         endlessScrollListener.stopLoading()
     }

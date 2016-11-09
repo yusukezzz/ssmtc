@@ -4,13 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
-import android.widget.Toast
+import net.yusukezzz.ssmtc.util.toast
 
 class FailureReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val manager = NotificationManagerCompat.from(context)
         manager.cancelAll()
-        Toast.makeText(context, "tweet failed...", Toast.LENGTH_SHORT).show()
+        context.toast("tweet failed...")
     }
 
 }

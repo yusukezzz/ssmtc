@@ -20,7 +20,11 @@ import java.io.File
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
 fun ViewGroup.setView(resId: Int): Unit = this.addView(inflate(resId), 0)
 
-fun Context.toast(message: CharSequence) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+fun Context.toast(error: Throwable) {
+    println(error)
+    toast(error.toString())
+}
 
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable

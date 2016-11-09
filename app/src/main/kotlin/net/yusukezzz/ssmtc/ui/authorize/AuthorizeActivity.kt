@@ -42,7 +42,6 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     }
 
     override fun handleError(error: Throwable) {
-        println(error)
-        error.message?.let { toast(it) }
+        toast(error)
     }
 }
