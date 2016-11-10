@@ -21,7 +21,11 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, p
         } doneUi { tweets ->
             // save last tweet id before filtering
             tweets.lastOrNull()?.let { view.setLastTweetId(it.id) }
-            view.addTweets(applyFilter(tweets))
+            if (maxId == null) {
+                view.setTweets(applyFilter(tweets))
+            } else {
+                view.addTweets(applyFilter(tweets))
+            }
         }
     }
 

@@ -260,6 +260,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun switchTimeline(timeline: TimelineParameter) {
         toolbar_title.text = timeline.title
+        timelineAdapter.clear()
         presenter = TimelinePresenter(this, app.twitter, timeline)
         updateTimelineMenu()
     }
@@ -331,15 +332,27 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
-    override fun onRefresh() = presenter.loadTweets()
+    override fun onRefresh() {
+        presenter.loadTweets()
+    }
 
     override fun setLastTweetId(id: Long?) {
         this.lastTweetId = id
     }
 
+    /**
+     * Set initial tweets
+     */
+    override fun setTweets(tweets: List<Tweet>) {
+        timelineAdapter.set(tweets)
+        swipe_refresh.isRefreshing = false
+    }
+
+    /**
+     * Add more loaded tweets
+     */
     override fun addTweets(tweets: List<Tweet>) {
         timelineAdapter.add(tweets)
-        swipe_refresh.isRefreshing = false
         println("tweets pushed")
         // TODO: more loading progress off
     }
@@ -352,12 +365,11 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun initialize() {
         endlessScrollListener.reset()
-        timelineAdapter.clear()
+        timeline_list.scrollToPosition(0)
         swipe_refresh.post({
             swipe_refresh.isRefreshing = true
             onRefresh()
         })
-        timeline_list.scrollToPosition(0)
     }
 
     override fun onUrlClick(url: String) {
