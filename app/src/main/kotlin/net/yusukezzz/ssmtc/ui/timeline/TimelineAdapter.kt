@@ -111,12 +111,6 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
     fun get(pos: Int): Tweet = timeline[pos]
     fun clear() = timeline.clear()
 
-    fun set(tweets: List<Tweet>) {
-        timeline.clear()
-        timeline.addAll(tweets)
-        notifyDataSetChanged()
-    }
-
     fun add(tweets: List<Tweet>) {
         timeline.addAll(tweets)
         notifyDataSetChanged()

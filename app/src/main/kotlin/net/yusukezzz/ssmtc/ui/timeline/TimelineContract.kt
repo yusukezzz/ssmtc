@@ -14,7 +14,6 @@ interface TimelineContract {
 
     interface View {
         fun setLastTweetId(id: Long?)
-        fun setTweets(tweets: List<Tweet>)
         fun addTweets(tweets: List<Tweet>)
         fun updateReactedTweet()
         fun initialize()

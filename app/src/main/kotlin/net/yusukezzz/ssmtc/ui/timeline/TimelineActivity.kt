@@ -337,13 +337,9 @@ class TimelineActivity: AppCompatActivity(),
         this.lastTweetId = id
     }
 
-    override fun setTweets(tweets: List<Tweet>) {
-        timelineAdapter.set(tweets)
-        swipe_refresh.isRefreshing = false
-    }
-
     override fun addTweets(tweets: List<Tweet>) {
         timelineAdapter.add(tweets)
+        swipe_refresh.isRefreshing = false
         println("tweets pushed")
         // TODO: more loading progress off
     }
