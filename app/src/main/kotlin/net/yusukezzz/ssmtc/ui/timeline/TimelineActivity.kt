@@ -260,7 +260,6 @@ class TimelineActivity: AppCompatActivity(),
 
     fun switchTimeline(timeline: TimelineParameter) {
         toolbar_title.text = timeline.title
-        timelineAdapter.clear()
         presenter = TimelinePresenter(this, app.twitter, timeline)
         updateTimelineMenu()
     }
@@ -365,6 +364,7 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun initialize() {
         endlessScrollListener.reset()
+        timelineAdapter.clear()
         timeline_list.scrollToPosition(0)
         swipe_refresh.post({
             swipe_refresh.isRefreshing = true
