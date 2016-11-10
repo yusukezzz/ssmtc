@@ -57,6 +57,9 @@ class TimelineActivity: AppCompatActivity(),
     private val app: Application by lazy { application as Application }
     private val prefs: Preferences by lazy { PreferencesHolder.prefs }
 
+    // Oldest tweet id on current timeline
+    private var lastTweetId: Long? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -101,8 +104,6 @@ class TimelineActivity: AppCompatActivity(),
             val i = Intent(this, StatusUpdateActivity::class.java)
             startActivity(i)
         }
-
-        presenter = TimelinePresenter(this, app.twitter)
 
         loadAccount()
     }
@@ -259,7 +260,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun switchTimeline(timeline: TimelineParameter) {
         toolbar_title.text = timeline.title
-        presenter.setParameter(timeline)
+        presenter = TimelinePresenter(this, app.twitter, timeline)
         updateTimelineMenu()
     }
 
@@ -330,14 +331,18 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
-    override fun onRefresh() = presenter.loadNewerTweets()
+    override fun onRefresh() = presenter.loadTweets()
 
-    override fun addHeadTweets(tweets: List<Tweet>) {
+    override fun setLastTweetId(id: Long?) {
+        this.lastTweetId = id
+    }
+
+    override fun setTweets(tweets: List<Tweet>) {
         timelineAdapter.set(tweets)
         swipe_refresh.isRefreshing = false
     }
 
-    override fun addTailTweets(tweets: List<Tweet>) {
+    override fun addTweets(tweets: List<Tweet>) {
         timelineAdapter.add(tweets)
         println("tweets pushed")
         // TODO: more loading progress off
@@ -345,7 +350,7 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onLoadMore(currentPage: Int) {
         println("onLoadMore")
-        presenter.loadOlderTweets()
+        presenter.loadTweets(lastTweetId)
         // TODO: more loading progress on
     }
 

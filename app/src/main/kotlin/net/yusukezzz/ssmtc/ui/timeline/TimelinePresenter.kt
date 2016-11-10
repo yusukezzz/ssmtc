@@ -5,35 +5,33 @@ import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.services.Twitter
 import nl.komponents.kovenant.task
 
-class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter): TimelineContract.Presenter {
-    private lateinit var param: TimelineParameter
-    private var lastTweetId: Long? = null
-
-    override fun setParameter(param: TimelineParameter) {
-        this.param = param
-        lastTweetId = null
+class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, private val param: TimelineParameter) : TimelineContract.Presenter {
+    init {
         view.initialize()
     }
 
-    override fun loadNewerTweets() {
+    /**
+     * Load tweet from timeline API
+     *
+     * @param maxId
+     */
+    override fun loadTweets(maxId: Long?) {
         task {
-            twitter.timeline(param)
-        } doneUi {
-            view.addHeadTweets(applyFilter(it))
-        }
-    }
+            twitter.timeline(param, maxId)
+        } doneUi { tweets ->
+            // save last tweet id before filtering
+            tweets.lastOrNull()?.let { view.setLastTweetId(it.id) }
+            val filtered = applyFilter(tweets)
 
-    override fun loadOlderTweets() {
-        task {
-            twitter.timeline(param, lastTweetId)
-        } doneUi {
-            view.addTailTweets(applyFilter(it))
+            if (maxId == null) {
+                view.setTweets(filtered)
+            } else {
+                view.addTweets(filtered)
+            }
         }
     }
 
     private fun applyFilter(tweets: List<Tweet>): List<Tweet> {
-        // save last tweet id before filtering
-        tweets.lastOrNull()?.let { lastTweetId = it.id }
         return param.filter.shorten(tweets)
     }
 
