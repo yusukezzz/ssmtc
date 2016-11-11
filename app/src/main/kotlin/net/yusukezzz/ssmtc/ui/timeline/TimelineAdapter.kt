@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Space
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_body.view.*
@@ -30,7 +29,6 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         const val VIEW_TYPE_HAS_PHOTO_3 = 3
         const val VIEW_TYPE_HAS_PHOTO_4 = 4
         const val VIEW_TYPE_HAS_VIDEO = 5
-        const val VIEW_TYPE_EMPTY = 99 // for filtered tweet
         val LIST_VIEW_TYPE_PHOTO: List<Int> = listOf(
             VIEW_TYPE_HAS_PHOTO_1,
             VIEW_TYPE_HAS_PHOTO_2,
@@ -76,17 +74,12 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
                 tweetView.tweet_media_container.addView(container)
                 TweetWithVideoViewHolder(tweetView, listener)
             }
-            VIEW_TYPE_EMPTY -> EmptyViewHolder(Space(parent.context))
             else -> throw RuntimeException("unknown view type: " + viewType)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val tw = timeline[position]
-
-        if (!tw.visible) {
-            return VIEW_TYPE_EMPTY // filtered
-        }
 
         val size = tw.allMedia.size
         if (size > 0) {
@@ -101,9 +94,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit {
-        if (getItemViewType(position) != VIEW_TYPE_EMPTY) {
-            (holder as TweetViewHolder).bindTweet(timeline[position])
-        }
+        (holder as TweetViewHolder).bindTweet(timeline[position])
     }
 
     override fun getItemCount(): Int = timeline.size

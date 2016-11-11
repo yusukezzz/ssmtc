@@ -17,8 +17,7 @@ data class Tweet(
     var retweet_count: Int,
     var favorite_count: Int,
     var retweeted: Boolean,
-    var favorited: Boolean,
-    var visible: Boolean = true
+    var favorited: Boolean
 ) : PaperParcelable {
     companion object {
         @JvmField val CREATOR = PaperParcelable.Creator(Tweet::class.java)
@@ -28,22 +27,10 @@ data class Tweet(
         get() = extended_entities?.media ?: listOf()
 
     val hasPhoto: Boolean
-        get() {
-            return if (allMedia.size == 0) {
-                false
-            } else {
-                allMedia[0].isPhoto
-            }
-        }
+        get() = allMedia.firstOrNull()?.isPhoto ?: false
 
     val hasVideo: Boolean
-        get() {
-            return if (allMedia.size == 0) {
-                false
-            } else {
-                allMedia[0].isVideo
-            }
-        }
+        get() = allMedia.firstOrNull()?.isVideo ?: false
 
     val isRetweet: Boolean
         get() = (null != retweeted_status)

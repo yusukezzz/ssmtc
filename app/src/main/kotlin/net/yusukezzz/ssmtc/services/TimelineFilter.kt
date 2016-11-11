@@ -19,18 +19,18 @@ data class TimelineFilter(
         ALL, ANY_MEDIA, PHOTO, VIDEO
     }
 
-    fun shorten(tweets: List<Tweet>): List<Tweet> = tweets.map {
-        it.apply { it.visible = filterMedia(it) && filterText(it) }
+    fun shorten(tweets: List<Tweet>): List<Tweet> = tweets.filter {
+        matchMedia(it) && matchText(it)
     }
 
-    private fun filterMedia(tweet: Tweet): Boolean = when (showing) {
+    private fun matchMedia(tweet: Tweet): Boolean = when (showing) {
         ALL -> true // include without media
         ANY_MEDIA -> tweet.hasPhoto || tweet.hasVideo
         PHOTO -> tweet.hasPhoto
         VIDEO -> tweet.hasVideo
     }
 
-    private fun filterText(tweet: Tweet): Boolean {
+    private fun matchText(tweet: Tweet): Boolean {
         if (excludeWords.isNotEmpty() && excludeWords.toRegex().containsMatchIn(tweet.text)) return false
 
         if (includeWords.isEmpty()) return true
