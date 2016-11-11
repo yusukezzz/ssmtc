@@ -241,6 +241,4 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             Picasso.with(itemView.context).load(video.small_url).fit().centerCrop().tag(LARGE_IMAGE_TAG).into(imgView)
         }
     }
-
-    class EmptyViewHolder(view: View): ViewHolder(view)
 }
