@@ -84,6 +84,7 @@ dependencies {
     compile "com.github.grandstaish.paperparcel:paperparcel-kotlin:$paperparcel_version"
     kapt "com.github.grandstaish.paperparcel:compiler:$paperparcel_version"
 
+    compile 'com.deploygate:sdk:3.1.1'
     compile 'com.facebook.stetho:stetho:1.4.1'
     testCompile 'junit:junit:4.12'
 }

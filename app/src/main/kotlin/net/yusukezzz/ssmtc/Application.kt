@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc
 
+import com.deploygate.sdk.DeployGate
 import net.danlew.android.joda.JodaTimeAndroid
 import net.yusukezzz.ssmtc.services.Twitter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
@@ -16,9 +17,7 @@ class Application: android.app.Application() {
         PreferencesHolder.init(applicationContext)
         startKovenant()
 
-        //Stetho.initializeWithDefaults(this)
-        //Picasso.with(this).isLoggingEnabled = true
-        //Picasso.with(this).setIndicatorsEnabled(true)
+        DeployGate.install(this)
     }
 
     override fun onTerminate() {
