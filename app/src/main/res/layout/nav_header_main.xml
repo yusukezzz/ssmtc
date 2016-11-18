@@ -30,6 +30,7 @@
             android:layout_height="32dp"
             android:layout_margin="16dp"
             android:src="@drawable/ic_arrow_drop_down"
-            android:tint="@android:color/white" />
+            android:tint="@android:color/white"
+            android:foreground="?android:attr/selectableItemBackground" />
 
 </LinearLayout>
