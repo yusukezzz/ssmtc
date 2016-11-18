@@ -37,7 +37,7 @@ data class Media(
 ) {
     companion object {
         val TYPE_PHOTO = "photo"
-        val TYPE_GIF = "gif"
+        val TYPE_ANIMATED_GIF = "animated_gif"
         val TYPE_VIDEO = "video"
     }
 
@@ -45,7 +45,7 @@ data class Media(
         get() = (type == TYPE_PHOTO)
 
     val isVideo: Boolean
-        get() = (type == TYPE_GIF || type == TYPE_VIDEO)
+        get() = (type == TYPE_ANIMATED_GIF || type == TYPE_VIDEO)
 
     val urlEntity: Url
         get() = Url(url, expanded_url, display_url, indices)
@@ -68,18 +68,16 @@ data class VideoInfo(
 ): PaperParcelable {
     companion object {
         @JvmField val CREATOR = PaperParcelable.Creator(VideoInfo::class.java)
-
-        val TYPE_MP4 = "video/mp4"
     }
 
-    val allMp4: List<VideoVariant>
-        get() = variants.filter { it.content_type == TYPE_MP4 }.sortedByDescending { it.bitrate }
+    val mp4All: List<VideoVariant>
+        get() = variants.filter { it.isMP4 }.sortedByDescending { it.bitrate }
     val mp4High: VideoVariant
-        get() = allMp4.first()
+        get() = mp4All.first()
     val mp4Mid: VideoVariant
-        get() = allMp4.getOrElse(1, { mp4High })
+        get() = mp4All.getOrElse(1, { mp4High })
     val mp4Small: VideoVariant
-        get() = allMp4.getOrElse(2, { mp4Mid })
+        get() = mp4All.getOrElse(2, { mp4Mid })
 }
 
 @PaperParcel
@@ -87,7 +85,14 @@ data class VideoVariant(
     val bitrate: Int,
     val content_type: String,
     val url: String
-)
+) {
+    companion object {
+        val TYPE_MP4 = "video/mp4"
+    }
+
+    val isMP4: Boolean
+        get() = content_type == TYPE_MP4
+}
 
 data class UploadResult(
     val media_id: Long,

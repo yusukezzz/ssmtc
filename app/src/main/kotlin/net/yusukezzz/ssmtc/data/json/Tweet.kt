@@ -26,11 +26,17 @@ data class Tweet(
     val allMedia: List<Media>
         get() = extended_entities?.media ?: listOf()
 
+    val photos: List<Media>
+        get() = allMedia.filter { it.isPhoto }
+
+    val videos: List<Media>
+        get() = allMedia.filter { it.isVideo }
+
     val hasPhoto: Boolean
-        get() = allMedia.firstOrNull()?.isPhoto ?: false
+        get() = photos.isNotEmpty()
 
     val hasVideo: Boolean
-        get() = allMedia.firstOrNull()?.isVideo ?: false
+        get() = videos.isNotEmpty()
 
     val isRetweet: Boolean
         get() = (null != retweeted_status)
