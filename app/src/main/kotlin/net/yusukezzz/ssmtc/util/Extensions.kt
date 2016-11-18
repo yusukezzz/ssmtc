@@ -2,12 +2,14 @@ package net.yusukezzz.ssmtc.util
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +24,7 @@ fun ViewGroup.setView(resId: Int): Unit = this.addView(inflate(resId), 0)
 
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 fun Context.toast(error: Throwable) {
-    println(error)
+    Log.e("net.yusukezzz.ssmtc", "ERROR", error)
     toast(error.toString())
 }
 
@@ -32,6 +34,24 @@ fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
 
     return drawable
 }
+
+fun Intent.getLongExtraOrNull(key: String): Long? {
+    return if (this.hasExtra(key)) {
+        this.getLongExtra(key, 0)
+    } else {
+        null
+    }
+}
+
+fun Intent.getStringExtraOrNull(key: String): String? {
+    return if (this.hasExtra(key)) {
+        this.getStringExtra(key)
+    } else {
+        null
+    }
+}
+
+fun Intent.getExtraStreamOrNull(): Any? = this.extras?.get(Intent.EXTRA_STREAM)
 
 fun VectorDrawable.toBitmap(): Bitmap {
     val bitmap = Bitmap.createBitmap(this.intrinsicWidth, this.intrinsicHeight, Bitmap.Config.ARGB_8888)

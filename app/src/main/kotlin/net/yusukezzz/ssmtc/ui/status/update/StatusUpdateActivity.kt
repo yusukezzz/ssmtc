@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.widget.ImageView
@@ -12,8 +13,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
-import net.yusukezzz.ssmtc.util.PreferencesHolder
-import net.yusukezzz.ssmtc.util.getImagePath
+import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -53,23 +53,14 @@ class StatusUpdateActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.status_update)
-        window.statusBarColor = resources.getColor(R.color.colorPrimaryDark, null)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
         setSupportActionBar(status_update_toolbar)
 
-        val replyStatusId = if (intent.hasExtra(ARG_REPLY_STATUS_ID)) {
-            intent.getLongExtra(ARG_REPLY_STATUS_ID, 0)
-        } else {
-            null
-        }
-        val replyScreenName = if (intent.hasExtra(ARG_REPLY_SCREEN_NAME)) {
-            intent.getStringExtra(ARG_REPLY_SCREEN_NAME)
-        } else {
-            null
-        }
-
+        val replyStatusId = intent.getLongExtraOrNull(ARG_REPLY_STATUS_ID)
+        val replyScreenName = intent.getStringExtraOrNull(ARG_REPLY_SCREEN_NAME)
         replyScreenName?.run { status_input.setText("@${this} ") }
-        status_input.requestFocus()
 
+        status_input.requestFocus()
         select_photos.setOnClickListener {
             StatusUpdateActivityPermissionsDispatcher.startPhotoSelectorWithCheck(this)
         }
@@ -83,7 +74,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         // initial photo from intent
         // TODO: check login and permission
-        intent.extras?.get(Intent.EXTRA_STREAM)?.let {
+        intent.getExtraStreamOrNull()?.let {
             val path = contentResolver.getImagePath(it as Uri)
             showSelectedPhotos(arrayOf(path))
         }
