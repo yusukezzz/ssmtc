@@ -13,7 +13,7 @@ apply plugin: 'com.cookpad.android.licensetools'
 apply plugin: 'com.github.ben-manes.versions'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "25.0.0"
 
     defaultConfig {
@@ -42,7 +42,7 @@ kapt {
 
 dependencies {
     ext {
-        support_version = '24.2.1'
+        support_version = '25.0.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.1'
