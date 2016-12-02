@@ -21,3 +21,12 @@
 -dontwarn okio.**
 
 -dontwarn sun.misc.Unsafe
+
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keepattributes Signature
+-keepattributes Exceptions
+
+-keepclasseswithmembers class * {
+    @retrofit2.http.* <methods>;
+}
