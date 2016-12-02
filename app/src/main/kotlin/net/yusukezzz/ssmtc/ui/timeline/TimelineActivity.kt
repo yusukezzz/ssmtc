@@ -356,7 +356,11 @@ class TimelineActivity: AppCompatActivity(),
         // TODO: more loading progress off
     }
 
-    override fun onLoadMore(currentPage: Int) {
+    override fun stopLoading() {
+        endlessScrollListener.stopLoading()
+    }
+
+    override fun onLoadMore() {
         println("onLoadMore")
         presenter.loadTweets(lastTweetId)
         // TODO: more loading progress on

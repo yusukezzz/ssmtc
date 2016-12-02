@@ -26,6 +26,7 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, p
             } else {
                 view.addTweets(applyFilter(tweets))
             }
+            view.stopLoading()
         }
     }
 

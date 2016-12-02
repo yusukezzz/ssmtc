@@ -16,6 +16,7 @@ interface TimelineContract {
         fun setLastTweetId(id: Long?)
         fun setTweets(tweets: List<Tweet>)
         fun addTweets(tweets: List<Tweet>)
+        fun stopLoading()
         fun updateReactedTweet()
         fun initialize()
         fun handleError(error: Throwable)
