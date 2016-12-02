@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.customtabs.CustomTabsClient
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
@@ -73,6 +74,16 @@ class TimelineActivity: AppCompatActivity(),
         main_contents.setView(R.layout.timeline_list)
         setSupportActionBar(toolbar)
 
+        setupDrawerView()
+        setupTimelineView()
+
+        // warmup chrome custom tabs
+        CustomTabsClient.connectAndInitialize(this, CustomTabsClient.getPackageName(this, null))
+
+        loadAccount()
+    }
+
+    private fun setupDrawerView() {
         val drawerToggle = object : ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
             override fun onDrawerClosed(drawerView: View) {
@@ -84,7 +95,9 @@ class TimelineActivity: AppCompatActivity(),
         drawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
+    }
 
+    private fun setupTimelineView() {
         val layoutManager = LinearLayoutManager(this)
         endlessScrollListener = EndlessRecyclerOnScrollListener(this, layoutManager)
         endlessScrollListener.setLoadMoreListener(this)
@@ -104,8 +117,6 @@ class TimelineActivity: AppCompatActivity(),
             val i = Intent(this, StatusUpdateActivity::class.java)
             startActivity(i)
         }
-
-        loadAccount()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
