@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.ui.timeline
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
+import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_body.view.*
 import kotlinx.android.synthetic.main.tweet_with_media.view.*
-import net.danlew.android.joda.DateUtils
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
@@ -143,7 +143,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
                     .into(profImg)
                 itemView.tweet_user_name.text = user.name
                 itemView.tweet_user_screen_name.text = "@" + user.screenName
-                itemView.tweet_date.text = DateUtils.getRelativeTimeSpanString(view.context, created_at)
+                itemView.tweet_date.text = DateUtils.getRelativeTimeSpanString(created_at.toEpochSecond() * 1000L)
                 itemView.tweet_text.text = formatted
                 itemView.tweet_text.movementMethod = LinkMovementMethod.getInstance()
                 itemView.tweet_text.visibility = if (formatted.isEmpty()) View.GONE else View.VISIBLE

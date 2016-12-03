@@ -15,12 +15,12 @@ apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.1"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
@@ -72,7 +72,7 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'net.danlew:android.joda:2.9.5'
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.4'
     compile 'se.akerfeldt:okhttp-signpost:1.1.0'
     compile 'id.zelory:compressor:1.0.4'
 

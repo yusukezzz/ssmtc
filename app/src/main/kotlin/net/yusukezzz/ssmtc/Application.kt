@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc
 
 import com.deploygate.sdk.DeployGate
-import net.danlew.android.joda.JodaTimeAndroid
+import com.jakewharton.threetenabp.AndroidThreeTen
 import net.yusukezzz.ssmtc.services.Twitter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 import nl.komponents.kovenant.android.startKovenant
@@ -13,8 +13,8 @@ class Application: android.app.Application() {
     override fun onCreate() {
         super.onCreate()
 
-        JodaTimeAndroid.init(applicationContext)
-        PreferencesHolder.init(applicationContext)
+        AndroidThreeTen.init(this)
+        PreferencesHolder.init(this)
         startKovenant()
 
         DeployGate.install(this)

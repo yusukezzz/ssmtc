@@ -1,22 +1,21 @@
 package net.yusukezzz.ssmtc.util.gson
 
 import com.google.gson.*
-import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.lang.reflect.Type
 import java.util.*
 
-class DateTimeTypeConverter: JsonSerializer<DateTime>, JsonDeserializer<DateTime> {
+class DateTimeTypeConverter : JsonSerializer<OffsetDateTime>, JsonDeserializer<OffsetDateTime> {
     companion object {
         val DATETIME_PATTERN = "EEE MMM dd HH:mm:ss Z yyyy"
     }
 
-    private val fmt = DateTimeFormat.forPattern(DATETIME_PATTERN).withLocale(Locale.ENGLISH)
-    // No need for an InstanceCreator since DateTime provides a no-args constructor
-    override fun serialize(src: DateTime, srcType: Type, context: JsonSerializationContext): JsonElement =
-        JsonPrimitive(fmt.print(src))
+    private val fmt = DateTimeFormatter.ofPattern(DATETIME_PATTERN).withLocale(Locale.US)
+    override fun serialize(src: OffsetDateTime, srcType: Type, context: JsonSerializationContext): JsonElement =
+        JsonPrimitive(fmt.format(src))
 
-    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): DateTime =
-        fmt.parseDateTime(json.asString);
+    override fun deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): OffsetDateTime =
+        fmt.parse(json.asString, OffsetDateTime::from)
 }
 

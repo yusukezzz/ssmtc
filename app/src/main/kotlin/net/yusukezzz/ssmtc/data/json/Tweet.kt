@@ -2,7 +2,7 @@ package net.yusukezzz.ssmtc.data.json
 
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
-import org.joda.time.DateTime
+import org.threeten.bp.OffsetDateTime
 
 @PaperParcel
 data class Tweet(
@@ -11,7 +11,7 @@ data class Tweet(
     val user: User,
     val entities: Entity,
     val extended_entities: Entity?,
-    val created_at: DateTime,
+    val created_at: OffsetDateTime,
     val retweeted_status: Tweet?,
     val quoted_status: Tweet?,
     var retweet_count: Int,
