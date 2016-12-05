@@ -13,9 +13,9 @@ object SearchQueryBuilder {
         }
 
         when (params.filter.showing) {
-            TimelineFilter.Showing.ANY_MEDIA -> queries.add("filter:media")
-            TimelineFilter.Showing.PHOTO -> queries.add("filter:images")
-            TimelineFilter.Showing.VIDEO -> queries.add("filter:videos")
+            FilterRule.Showing.ANY_MEDIA -> queries.add("filter:media")
+            FilterRule.Showing.PHOTO -> queries.add("filter:images")
+            FilterRule.Showing.VIDEO -> queries.add("filter:videos")
         }
 
         return params.copy(query = urlencoder.encode(queries.joinToString(" ")))

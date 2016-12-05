@@ -1,27 +1,25 @@
 package net.yusukezzz.ssmtc.services
 
 import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.services.TimelineFilter.Showing.*
+import net.yusukezzz.ssmtc.services.FilterRule.Showing.*
 import nz.bradcampbell.paperparcel.PaperParcel
 import java.util.regex.Pattern
 
 @PaperParcel
-data class TimelineFilter(
+data class FilterRule(
     val showing: Showing,
     val includeWords: List<String>,
     val excludeWords: List<String>
 ) {
     companion object {
-        fun default(): TimelineFilter = TimelineFilter(ALL, listOf(), listOf())
+        fun default(): FilterRule = FilterRule(ALL, listOf(), listOf())
     }
 
     enum class Showing {
         ALL, ANY_MEDIA, PHOTO, VIDEO
     }
 
-    fun shorten(tweets: List<Tweet>): List<Tweet> = tweets.filter {
-        matchMedia(it) && matchText(it)
-    }
+    fun match(tweet: Tweet): Boolean = matchMedia(tweet) && matchText(tweet)
 
     private fun matchMedia(tweet: Tweet): Boolean = when (showing) {
         ALL -> true // include without media

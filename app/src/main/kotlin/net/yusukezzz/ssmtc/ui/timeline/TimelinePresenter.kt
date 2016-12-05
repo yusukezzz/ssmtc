@@ -21,17 +21,14 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, p
         } doneUi { tweets ->
             // save last tweet id before filtering
             tweets.lastOrNull()?.let { view.setLastTweetId(it.id) }
+            val filtered = tweets.filter { param.filter.match(it) }
             if (maxId == null) {
-                view.setTweets(applyFilter(tweets))
+                view.setTweets(filtered)
             } else {
-                view.addTweets(applyFilter(tweets))
+                view.addTweets(filtered)
             }
             view.stopLoading()
         }
-    }
-
-    private fun applyFilter(tweets: List<Tweet>): List<Tweet> {
-        return param.filter.shorten(tweets)
     }
 
     override fun like(tweet: Tweet) {

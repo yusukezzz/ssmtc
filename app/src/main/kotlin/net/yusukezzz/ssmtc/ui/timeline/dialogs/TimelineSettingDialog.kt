@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.timeline_setting.view.*
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.services.TimelineFilter
+import net.yusukezzz.ssmtc.services.FilterRule
 import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 
@@ -49,7 +49,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         val adapter = ArrayAdapter.createFromResource(context, R.array.filter_media, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.timeline_media_spinner.adapter = adapter
-        view.timeline_media_spinner.setSelection(TimelineFilter.Showing.values().indexOf(timeline.filter.showing))
+        view.timeline_media_spinner.setSelection(FilterRule.Showing.values().indexOf(timeline.filter.showing))
         view.timeline_include.setText(timeline.filter.includeWords.joinToString("\n"))
         view.timeline_exclude.setText(timeline.filter.excludeWords.joinToString("\n"))
 
@@ -67,10 +67,10 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         val includeRts = view.include_rts.isChecked
 
         val pos = view.timeline_media_spinner.selectedItemPosition
-        val showing = TimelineFilter.Showing.values()[pos]
+        val showing = FilterRule.Showing.values()[pos]
         val includeWords = view.timeline_include.text.toString().lines().filter { it.isNotEmpty() }
         val excludeWords = view.timeline_exclude.text.toString().lines().filter { it.isNotEmpty() }
-        val newFilter = TimelineFilter(showing, includeWords, excludeWords)
+        val newFilter = FilterRule(showing, includeWords, excludeWords)
 
         val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter, includeRetweets = includeRts)
         println(newTimeline)
