@@ -7,7 +7,7 @@ import android.view.View
 import net.yusukezzz.ssmtc.data.FormattedMedia
 import net.yusukezzz.ssmtc.data.FormattedUrl
 import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.ui.timeline.TimelineAdapter.TimelineEventListener
+import net.yusukezzz.ssmtc.ui.timeline.TimelineAdapter.TweetEventListener
 import org.apache.commons.lang3.StringEscapeUtils
 
 object TextUtil {
@@ -22,7 +22,7 @@ object TextUtil {
         return "%01d:%02d".format(m, s)
     }
 
-    fun formattedText(tweet: Tweet, listener: TimelineEventListener, removeQuote: Boolean = false): CharSequence {
+    fun formattedText(tweet: Tweet, listener: TweetEventListener, removeQuote: Boolean = false): CharSequence {
         val entities = tweet.entities
         val decodedText = StringEscapeUtils.unescapeHtml4(tweet.text)
         if (null == entities.urls) return decodedText
@@ -47,7 +47,7 @@ object TextUtil {
 
     private fun replaceUrlEntities(spannable: SpannableStringBuilder,
                                    entities: List<FormattedUrl>,
-                                   listener: TimelineEventListener) {
+                                   listener: TweetEventListener) {
         entities.forEachIndexed { i, entity ->
             val start = spannable.indexOf(entity.shortUrl)
             val end = start + entity.shortUrl.length
@@ -67,7 +67,7 @@ object TextUtil {
     }
 
     private fun replaceScreenName(spannable: SpannableStringBuilder,
-                                  listener: TimelineEventListener) {
+                                  listener: TweetEventListener) {
         SCREEN_NAME_PATTERN.findAll(spannable).forEach {
             val span = object : ClickableSpan() {
                 override fun onClick(widget: View?) {
@@ -79,7 +79,7 @@ object TextUtil {
     }
 
     private fun replaceHashTag(spannable: SpannableStringBuilder,
-                               listener: TimelineEventListener) {
+                               listener: TweetEventListener) {
         HASH_TAG_PATTERN.findAll(spannable).forEach {
             val span = object : ClickableSpan() {
                 override fun onClick(widget: View?) {

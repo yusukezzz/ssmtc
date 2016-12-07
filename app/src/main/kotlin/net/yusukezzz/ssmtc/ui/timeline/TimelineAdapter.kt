@@ -23,7 +23,7 @@ import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
 
-class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter<ViewHolder>() {
+class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
         const val VIEW_TYPE_NO_MEDIA = 0
@@ -40,7 +40,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         )
 
         private open class TweetViewHolder(view: View,
-                                           val listener: TimelineEventListener) : ViewHolder(view) {
+                                           val listener: TweetEventListener) : ViewHolder(view) {
             private val numberFormatter = DecimalFormat("#,###,###")
 
             open fun bindTweet(tweet: Tweet) {
@@ -126,7 +126,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         }
 
         private class TweetWithPhotoViewHolder(view: View,
-                                               listener: TimelineEventListener) : TweetViewHolder(view, listener) {
+                                               listener: TweetEventListener) : TweetViewHolder(view, listener) {
             private val mediaViewIdLists: List<List<Int>> = listOf(
                 listOf(R.id.media_photo_single),
                 listOf(R.id.media_photo_two_1, R.id.media_photo_two_2),
@@ -141,10 +141,10 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
 
             fun handlePhoto(photos: List<Media>) {
                 val num = photos.size
+                val viewIds = mediaViewIdLists[num - 1]
                 val gallery_photos = photos.map { it.large_url }
                 photos.forEachIndexed { i, m ->
-                    val ids = mediaViewIdLists[num - 1]
-                    val imgView = itemView.findViewById(ids[i]) as ImageView
+                    val imgView = itemView.findViewById(viewIds[i]) as ImageView
                     imgView.setOnClickListener { listener.onImageClick(gallery_photos, i) }
                     Picasso.with(itemView.context).load(m.small_url).fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG).into(imgView)
                 }
@@ -152,8 +152,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         }
 
         private class TweetWithVideoViewHolder(view: View,
-                                               listener: TimelineEventListener) : TweetViewHolder(view, listener) {
-
+                                               listener: TweetEventListener) : TweetViewHolder(view, listener) {
             override fun bindTweet(tweet: Tweet) {
                 super.bindTweet(tweet)
                 handleVideo(tweet.allMedia.first())
@@ -171,7 +170,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         }
     }
 
-    interface TimelineEventListener {
+    interface TweetEventListener {
         fun onImageClick(images: List<String>, pos: Int)
         fun onVideoClick(video: VideoInfo)
         fun onUrlClick(url: String)

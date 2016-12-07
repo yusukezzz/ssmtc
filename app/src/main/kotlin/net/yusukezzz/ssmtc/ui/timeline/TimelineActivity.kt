@@ -47,7 +47,7 @@ class TimelineActivity: AppCompatActivity(),
     TimelineContract.View,
     SwipeRefreshLayout.OnRefreshListener,
     EndlessRecyclerOnScrollListener.ScrollListener,
-    TimelineAdapter.TimelineEventListener,
+    TimelineAdapter.TweetEventListener,
     NavigationView.OnNavigationItemSelectedListener,
     TimelineSettingDialog.TimelineSettingListener,
     BaseDialogFragment.TimelineSelectListener {
