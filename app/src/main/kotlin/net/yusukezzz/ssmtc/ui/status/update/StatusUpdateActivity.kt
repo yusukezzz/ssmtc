@@ -58,7 +58,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         val replyStatusId = intent.getLongExtraOrNull(ARG_REPLY_STATUS_ID)
         val replyScreenName = intent.getStringExtraOrNull(ARG_REPLY_SCREEN_NAME)
-        replyScreenName?.run { status_input.setText("@${this} ") }
+        replyScreenName?.let { status_input.setText("@${it} ") }
 
         status_input.requestFocus()
         select_photos.setOnClickListener {
@@ -84,7 +84,7 @@ class StatusUpdateActivity: AppCompatActivity() {
             .transform(RoundedTransformation(8))
             .centerCrop().fit()
             .into(toolbar_avatar)
-        toolbar_screen_name.text = "@" + account.user.screenName
+        toolbar_screen_name.text = account.user.screenName
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -108,7 +108,7 @@ class StatusUpdateActivity: AppCompatActivity() {
     fun showSelectedPhotos(paths: Array<String>) {
         photos = null
         tweet_media_container.removeAllViews()
-        if (paths.size == 0) return
+        if (paths.isEmpty()) return
 
         photos = paths
         val imgNum = paths.size

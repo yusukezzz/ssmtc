@@ -37,9 +37,9 @@ class EndlessRecyclerOnScrollListener(private val context: Context,
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         val picasso = Picasso.with(context)
         if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_TOUCH_SCROLL) {
-            picasso.resumeTag(TimelineAdapter.LARGE_IMAGE_TAG)
+            picasso.resumeTag(TimelineAdapter.THUMBNAIL_IMAGE_TAG)
         } else {
-            picasso.pauseTag(TimelineAdapter.LARGE_IMAGE_TAG)
+            picasso.pauseTag(TimelineAdapter.THUMBNAIL_IMAGE_TAG)
         }
     }
 

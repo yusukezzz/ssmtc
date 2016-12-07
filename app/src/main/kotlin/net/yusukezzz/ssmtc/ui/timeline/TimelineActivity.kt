@@ -119,6 +119,12 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // update relative tweet time
+        timelineAdapter.notifyDataSetChanged()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_timeline, menu)
         return true

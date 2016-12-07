@@ -24,7 +24,7 @@ import java.text.DecimalFormat
 
 class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter<ViewHolder>() {
     companion object {
-        const val LARGE_IMAGE_TAG = "large_image_tag"
+        const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
         const val VIEW_TYPE_NO_MEDIA = 0
         const val VIEW_TYPE_HAS_PHOTO_1 = 1
         const val VIEW_TYPE_HAS_PHOTO_2 = 2
@@ -53,6 +53,9 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             }
 
             fun cleanup() {
+                val profImg = itemView.tweet_user_image
+                Picasso.with(profImg.context).cancelRequest(profImg)
+                profImg.setImageDrawable(null)
                 itemView.tweet_media_container.children { view ->
                     if (view is ImageView) {
                         Picasso.with(view.context).cancelRequest(view)
@@ -149,7 +152,7 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
                     val ids = mediaViewIdLists[num - 1]
                     val imgView = itemView.findViewById(ids[i]) as ImageView
                     imgView.setOnClickListener { listener.onImageClick(gallery_photos, i) }
-                    Picasso.with(itemView.context).load(m.small_url).fit().centerCrop().tag(LARGE_IMAGE_TAG).into(imgView)
+                    Picasso.with(itemView.context).load(m.small_url).fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG).into(imgView)
                 }
             }
         }
@@ -165,11 +168,11 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             fun handleVideo(video: Media) {
                 if (null == video.video_info) return
 
-                println(video.video_info)
+                itemView.ic_play_circle.setImageResource(R.drawable.ic_play_video)
                 itemView.media_video_time.text = TextUtil.milliSecToTime(video.video_info.duration_millis)
                 val imgView = itemView.media_video_thumbnail
                 imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
-                Picasso.with(itemView.context).load(video.small_url).fit().centerCrop().tag(LARGE_IMAGE_TAG).into(imgView)
+                Picasso.with(itemView.context).load(video.small_url).fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG).into(imgView)
             }
         }
     }
