@@ -66,6 +66,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                     val profImg = itemView.tweet_user_image
                     Picasso.with(itemView.context)
                         .load(user.profileImageUrl)
+                        .priority(Picasso.Priority.HIGH)
                         .fit().centerCrop()
                         .transform(RoundedTransformation(8))
                         .into(profImg)
