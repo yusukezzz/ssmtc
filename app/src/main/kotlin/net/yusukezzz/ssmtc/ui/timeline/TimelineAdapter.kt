@@ -17,6 +17,7 @@ import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.util.TextUtil
+import net.yusukezzz.ssmtc.util.children
 import net.yusukezzz.ssmtc.util.inflate
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
@@ -48,6 +49,15 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
                     handleQuoted(tweet)
                 } else {
                     handleTweet(tweet)
+                }
+            }
+
+            fun cleanup() {
+                itemView.tweet_media_container.children { view ->
+                    if (view is ImageView) {
+                        Picasso.with(view.context).cancelRequest(view)
+                        view.setImageDrawable(null)
+                    }
                 }
             }
 
@@ -218,6 +228,10 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
         }
 
         return VIEW_TYPE_NO_MEDIA
+    }
+
+    override fun onViewRecycled(holder: ViewHolder): Unit {
+        (holder as TweetViewHolder).cleanup()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit {

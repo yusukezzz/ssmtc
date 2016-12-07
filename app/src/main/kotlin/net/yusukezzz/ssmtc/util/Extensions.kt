@@ -21,6 +21,17 @@ import java.io.File
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
 fun ViewGroup.setView(resId: Int): Unit = this.addView(inflate(resId), 0)
+fun ViewGroup.children(func: (View) -> Unit): Unit {
+    val max = this.childCount - 1
+    (0..max).forEach {
+        val child = this.getChildAt(it)
+        if (child is ViewGroup) {
+            child.children(func)
+        } else {
+            func(child)
+        }
+    }
+}
 
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 fun Context.toast(error: Throwable) {
