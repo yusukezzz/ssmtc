@@ -19,6 +19,7 @@ import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.util.TextUtil
 import net.yusukezzz.ssmtc.util.children
 import net.yusukezzz.ssmtc.util.inflate
+import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
 
@@ -53,15 +54,8 @@ class TimelineAdapter(val listener: TimelineEventListener): RecyclerView.Adapter
             }
 
             fun cleanup() {
-                val profImg = itemView.tweet_user_image
-                Picasso.with(profImg.context).cancelRequest(profImg)
-                profImg.setImageDrawable(null)
-                itemView.tweet_media_container.children { view ->
-                    if (view is ImageView) {
-                        Picasso.with(view.context).cancelRequest(view)
-                        view.setImageDrawable(null)
-                    }
-                }
+                PicassoUtil.clean(itemView.tweet_user_image)
+                itemView.tweet_media_container.children { PicassoUtil.clean(it) }
             }
 
             private fun handleTweet(tweet: Tweet, removeQuote: Boolean = false) {
