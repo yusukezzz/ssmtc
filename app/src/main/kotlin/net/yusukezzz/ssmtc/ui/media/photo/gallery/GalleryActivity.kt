@@ -3,9 +3,6 @@ package net.yusukezzz.ssmtc.ui.media.photo.gallery
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import com.daimajia.slider.library.Indicators.PagerIndicator
-import com.daimajia.slider.library.Transformers.BaseTransformer
 import kotlinx.android.synthetic.main.photo_gallery.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
@@ -28,22 +25,9 @@ class GalleryActivity: MediaBaseActivity() {
 
         val images = intent.getStringArrayExtra(ARG_IMAGES)
         val pos = intent.getIntExtra(ARG_START_POSITION, 0)
+        val adapter = GalleryPageAdapter(applicationContext, images.toList())
 
-        slider.stopAutoCycle()
-        images.toList().forEach {
-            val view = GallerySliderView(applicationContext).image(it)
-            slider.addSlider(view)
-        }
-        slider.currentPosition = pos
-
-        if (1 == images.size) {
-            // disable indicator and swipe pager
-            slider.indicatorVisibility = PagerIndicator.IndicatorVisibility.Invisible
-            slider.setPagerTransformer(false, object: BaseTransformer() {
-                override fun onTransform(view: View?, position: Float) {
-                    // do nothing
-                }
-            })
-        }
+        pager.adapter = adapter
+        pager.currentItem = pos
     }
 }

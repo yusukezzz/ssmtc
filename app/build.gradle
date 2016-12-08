@@ -78,10 +78,6 @@ dependencies {
 
     compile 'com.github.gfx.util.encrypt:android-encrypt-utils:2.0.0'
 
-    // photo gallery
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.daimajia.slider:library:1.1.5@aar'
-
     // html entity decoding
     compile 'org.apache.commons:commons-lang3:3.5'
 
