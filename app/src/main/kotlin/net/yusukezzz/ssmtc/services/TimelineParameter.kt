@@ -15,7 +15,7 @@ data class TimelineParameter(
     val listId: Long? = null,
     val includeRetweets: Boolean = true
 ) : PaperParcelable, Comparable<TimelineParameter> {
-    override fun compareTo(other: TimelineParameter): Int = compareValuesBy(this, other, { it.type }, { it.title })
+    override fun compareTo(other: TimelineParameter): Int = compareValuesBy(this, other, { it.type }, { it.title.toLowerCase() })
 
     companion object {
         @JvmField val CREATOR = PaperParcelable.Creator(TimelineParameter::class.java)
