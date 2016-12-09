@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import com.squareup.picasso.RequestCreator
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -93,3 +94,5 @@ fun File.mimeType(): String {
 }
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
+
+fun RequestCreator.rgb565(): RequestCreator = this.config(android.graphics.Bitmap.Config.RGB_565)

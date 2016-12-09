@@ -21,6 +21,7 @@ import net.yusukezzz.ssmtc.util.children
 import net.yusukezzz.ssmtc.util.inflate
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
+import net.yusukezzz.ssmtc.util.rgb565
 import java.text.DecimalFormat
 
 class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<ViewHolder>() {
@@ -66,6 +67,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                     val profImg = itemView.tweet_user_image
                     Picasso.with(itemView.context)
                         .load(user.profileImageUrl)
+                        .rgb565()
                         .priority(Picasso.Priority.HIGH)
                         .fit().centerCrop()
                         .transform(RoundedTransformation(8))
@@ -147,7 +149,10 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 photos.forEachIndexed { i, m ->
                     val imgView = itemView.findViewById(viewIds[i]) as ImageView
                     imgView.setOnClickListener { listener.onImageClick(gallery_photos, i) }
-                    Picasso.with(itemView.context).load(m.small_url).fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG).into(imgView)
+                    Picasso.with(itemView.context).load(m.small_url)
+                        .rgb565()
+                        .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
+                        .into(imgView)
                 }
             }
         }
@@ -166,7 +171,10 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 itemView.media_video_time.text = TextUtil.milliSecToTime(video.video_info.duration_millis)
                 val imgView = itemView.media_video_thumbnail
                 imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
-                Picasso.with(itemView.context).load(video.small_url).fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG).into(imgView)
+                Picasso.with(itemView.context).load(video.small_url)
+                    .rgb565()
+                    .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
+                    .into(imgView)
             }
         }
     }
