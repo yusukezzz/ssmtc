@@ -1,6 +1,5 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -394,19 +393,12 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     override fun onUrlClick(url: String) {
-        val urlIntent = Intent(Intent.ACTION_SEND)
-            .setType("text/plain")
-            .putExtra(Intent.EXTRA_TEXT, url)
-        val pending = PendingIntent.getActivity(this, 0, urlIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
         val backIcon = getVectorDrawable(R.drawable.ic_arrow_back, android.R.color.white).toBitmap()
-        val shareIcon = getVectorDrawable(R.drawable.ic_share, android.R.color.white).toBitmap()
-
         val chromeIntent = CustomTabsIntent.Builder()
             .setShowTitle(true)
             .setToolbarColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setCloseButtonIcon(backIcon)
-            .setActionButton(shareIcon, "Share", pending)
+            .addDefaultShareMenuItem()
             .build()
 
         chromeIntent.launchUrl(this, Uri.parse(url))
