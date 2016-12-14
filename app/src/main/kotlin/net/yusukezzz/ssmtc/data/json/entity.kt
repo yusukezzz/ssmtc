@@ -39,6 +39,7 @@ data class Media(
         val TYPE_PHOTO = "photo"
         val TYPE_ANIMATED_GIF = "animated_gif"
         val TYPE_VIDEO = "video"
+        @JvmField val CREATOR = PaperParcelable.Creator(Media::class.java)
     }
 
     val isPhoto: Boolean
@@ -58,6 +59,8 @@ data class Media(
         get() = media_url + ":medium"
     val large_url: String
         get() = media_url + ":large"
+    val orig_url: String
+        get() = media_url + ":orig"
 }
 
 @PaperParcel

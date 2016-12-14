@@ -9,8 +9,9 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.photo_gallery_page.view.*
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.data.json.Media
 
-class GalleryPageAdapter(private val context: Context, private val images: List<String>) : PagerAdapter() {
+class GalleryPageAdapter(private val context: Context, private val images: List<Media>) : PagerAdapter() {
     private val inflater: LayoutInflater
 
     init {
@@ -23,9 +24,9 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = inflater.inflate(R.layout.photo_gallery_page, container, false)
-        val url = images[position]
+        val media = images[position]
 
-        Picasso.with(context).load(url)
+        Picasso.with(context).load(media.large_url)
             .fit().centerInside()
             .into(view.page_image, object : Callback {
                 override fun onSuccess() {

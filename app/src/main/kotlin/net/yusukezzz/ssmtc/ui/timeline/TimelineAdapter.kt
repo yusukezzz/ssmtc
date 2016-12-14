@@ -148,7 +148,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 val gallery_photos = photos.map { it.large_url }
                 photos.forEachIndexed { i, m ->
                     val imgView = itemView.findViewById(viewIds[i]) as ImageView
-                    imgView.setOnClickListener { listener.onImageClick(gallery_photos, i) }
+                    imgView.setOnClickListener { listener.onImageClick(photos, i) }
                     Picasso.with(itemView.context).load(m.small_url)
                         .rgb565()
                         .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
@@ -180,7 +180,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
     }
 
     interface TweetEventListener {
-        fun onImageClick(images: List<String>, pos: Int)
+        fun onImageClick(images: List<Media>, pos: Int)
         fun onVideoClick(video: VideoInfo)
         fun onUrlClick(url: String)
         fun onReplyClick(tweet: Tweet)

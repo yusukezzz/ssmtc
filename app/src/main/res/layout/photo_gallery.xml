@@ -1,14 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+        android:id="@+id/gallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
 
-</RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:background="#99333333"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/photo_gallery_download"
+            android:src="@drawable/ic_file_download"
+            android:tint="@android:color/white"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:id="@+id/currentPage"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/photo_gallery_share"
+            android:src="@drawable/ic_share"
+            android:tint="@android:color/white"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</FrameLayout>
 

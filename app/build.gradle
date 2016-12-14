@@ -50,7 +50,7 @@ dependencies {
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.1'
-        permission_dispatcher_version = '2.2.0'
+        permission_dispatcher_version = '2.2.1'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.services.TimelineParameter
@@ -404,7 +405,7 @@ class TimelineActivity: AppCompatActivity(),
         chromeIntent.launchUrl(this, Uri.parse(url))
     }
 
-    override fun onImageClick(images: List<String>, pos: Int) {
+    override fun onImageClick(images: List<Media>, pos: Int) {
         startActivity(GalleryActivity.newIntent(this, images, pos))
     }
 
