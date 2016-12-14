@@ -13,6 +13,8 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.MediaParcel
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 
@@ -77,7 +79,9 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
         val media = images[gallery.currentItem]
         val dlManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(media.orig_url)
-        val filename = media.media_url.split("/").last()
+        val ext = media.media_url.split(".").last()
+        val formatter = DateTimeFormatter.ofPattern("YMd_Hms")
+        val filename = LocalDateTime.now().format(formatter) + "." + ext
         val req = DownloadManager.Request(uri)
         req.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, resources.getString(R.string.app_name) + "/" + filename)
 
