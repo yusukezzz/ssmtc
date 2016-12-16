@@ -15,7 +15,7 @@ apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
@@ -46,11 +46,11 @@ kapt {
 
 dependencies {
     ext {
-        support_version = '25.0.1'
+        support_version = '25.1.0'
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.1'
-        permission_dispatcher_version = '2.2.1'
+        permission_dispatcher_version = '2.3.0'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
