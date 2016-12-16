@@ -1,6 +1,5 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.format.DateUtils
@@ -17,7 +16,10 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.util.*
+import net.yusukezzz.ssmtc.util.TextUtil
+import net.yusukezzz.ssmtc.util.children
+import net.yusukezzz.ssmtc.util.getCompatColor
+import net.yusukezzz.ssmtc.util.inflate
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
@@ -65,7 +67,6 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                     val profImg = itemView.tweet_user_image
                     Picasso.with(itemView.context)
                         .load(user.profileImageUrl)
-                        .rgb565()
                         .priority(Picasso.Priority.HIGH)
                         .fit().centerCrop()
                         .transform(RoundedTransformation(8))
@@ -118,7 +119,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 } else {
                     R.color.action_icon_default
                 }
-                itemView.ic_twitter_like.setColorFilter(ContextCompat.getColor(itemView.context, likeColor))
+                itemView.ic_twitter_like.setColorFilter(itemView.context.getCompatColor(likeColor))
                 itemView.ic_twitter_like.setOnClickListener { listener.onLikeClick(tweet) }
             }
 
@@ -156,12 +157,10 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
             fun handlePhoto(photos: List<Media>) {
                 val num = photos.size
                 val viewIds = mediaViewIdLists[num - 1]
-                val gallery_photos = photos.map { it.large_url }
                 photos.forEachIndexed { i, m ->
                     val imgView = itemView.findViewById(viewIds[i]) as ImageView
                     imgView.setOnClickListener { listener.onImageClick(photos, i) }
                     Picasso.with(itemView.context).load(m.small_url)
-                        .rgb565()
                         .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
                         .into(imgView)
                 }
@@ -183,7 +182,6 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 val imgView = itemView.media_video_thumbnail
                 imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
                 Picasso.with(itemView.context).load(video.small_url)
-                    .rgb565()
                     .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
                     .into(imgView)
             }

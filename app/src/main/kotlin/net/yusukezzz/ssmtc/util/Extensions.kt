@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
-import com.squareup.picasso.RequestCreator
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -43,7 +42,7 @@ fun Context.toast(error: Throwable) {
 fun Context.getCompatColor(id: Int) = ContextCompat.getColor(this, id)
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable
-    tint?.let { drawable.setTint(ContextCompat.getColor(this, it)) }
+    tint?.let { drawable.setTint(this.getCompatColor(it)) }
 
     return drawable
 }
@@ -95,5 +94,3 @@ fun File.mimeType(): String {
 }
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
-
-fun RequestCreator.rgb565(): RequestCreator = this.config(android.graphics.Bitmap.Config.RGB_565)

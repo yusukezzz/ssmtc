@@ -27,6 +27,7 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
         val media = images[position]
 
         Picasso.with(context).load(media.large_url)
+            .config(android.graphics.Bitmap.Config.ARGB_8888)
             .fit().centerInside()
             .into(view.page_image, object : Callback {
                 override fun onSuccess() {
