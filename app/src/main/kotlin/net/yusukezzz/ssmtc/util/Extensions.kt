@@ -40,6 +40,7 @@ fun Context.toast(error: Throwable) {
     toast(error.toString())
 }
 
+fun Context.getCompatColor(id: Int) = ContextCompat.getColor(this, id)
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable
     tint?.let { drawable.setTint(ContextCompat.getColor(this, it)) }

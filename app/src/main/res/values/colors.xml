@@ -32,4 +32,5 @@
     <color name="action_icon_default">#FFAAB8C2</color>
     <color name="action_like_on">#FFE81C4F</color>
     <color name="action_retweet_on">#FF19CF86</color>
+    <color name="action_retweet_protected">#616161</color>
 </resources>

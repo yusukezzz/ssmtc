@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ViewHolder
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,12 +17,9 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.util.TextUtil
-import net.yusukezzz.ssmtc.util.children
-import net.yusukezzz.ssmtc.util.inflate
+import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
-import net.yusukezzz.ssmtc.util.rgb565
 import java.text.DecimalFormat
 
 class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<ViewHolder>() {
@@ -74,6 +72,8 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                         .into(profImg)
                     itemView.tweet_user_name.text = user.name
                     itemView.tweet_user_screen_name.text = "@" + user.screenName
+                    itemView.tweet_user_protected_icon.visibility = if (user.isProtected) View.VISIBLE else View.GONE
+                    itemView.tweet_user_verified_icon.visibility = if (user.isVerified) View.VISIBLE else View.GONE
                     itemView.tweet_date.text = DateUtils.getRelativeTimeSpanString(created_at.toEpochSecond() * 1000L)
                     itemView.tweet_text.text = formatted
                     itemView.tweet_text.movementMethod = LinkMovementMethod.getInstance()
@@ -91,13 +91,24 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 if (0 < tweet.retweet_count) {
                     itemView.tweet_retweet_count.text = numberFormatter.format(tweet.retweet_count)
                 }
-                val retweetColor = if (tweet.retweeted) {
-                    R.color.action_retweet_on
+                if (tweet.user.isProtected) {
+                    // cant retweet
+                    itemView.ic_twitter_retweet.setColorFilter(itemView.context.getCompatColor(R.color.action_retweet_protected))
+                    // remove selectable effect
+                    itemView.ic_twitter_retweet.setBackgroundResource(0)
+                    itemView.ic_twitter_retweet.setOnClickListener { /* do nothing */ }
                 } else {
-                    R.color.action_icon_default
+                    val retweetColor = if (tweet.retweeted) {
+                        R.color.action_retweet_on
+                    } else {
+                        R.color.action_icon_default
+                    }
+                    itemView.ic_twitter_retweet.setColorFilter(itemView.context.getCompatColor(retweetColor))
+                    val attr = TypedValue()
+                    itemView.context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, attr, true)
+                    itemView.ic_twitter_retweet.setBackgroundResource(attr.resourceId)
+                    itemView.ic_twitter_retweet.setOnClickListener { listener.onRetweetClick(tweet) }
                 }
-                itemView.ic_twitter_retweet.setColorFilter(ContextCompat.getColor(itemView.context, retweetColor))
-                itemView.ic_twitter_retweet.setOnClickListener { listener.onRetweetClick(tweet) }
 
                 if (0 < tweet.favorite_count) {
                     itemView.tweet_like_count.text = numberFormatter.format(tweet.favorite_count)
