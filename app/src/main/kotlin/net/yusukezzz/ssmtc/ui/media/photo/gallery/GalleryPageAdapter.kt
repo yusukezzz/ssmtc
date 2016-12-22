@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.photo_gallery_page.view.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
+import net.yusukezzz.ssmtc.util.toast
 
 class GalleryPageAdapter(private val context: Context, private val images: List<Media>) : PagerAdapter() {
     private val inflater: LayoutInflater
@@ -18,7 +19,7 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
         inflater = LayoutInflater.from(context)
     }
 
-    override fun isViewFromObject(view: View, obj: Any): Boolean = view == obj
+    override fun isViewFromObject(view: View, obj: Any): Boolean = (view == obj)
 
     override fun getCount(): Int = images.size
 
@@ -35,6 +36,8 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
                 }
 
                 override fun onError() {
+                    view.loading_bar.visibility = View.GONE
+                    context.toast(R.string.gallery_load_fail)
                 }
             })
 

@@ -13,6 +13,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.MediaParcel
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
+import net.yusukezzz.ssmtc.util.toast
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import permissions.dispatcher.NeedsPermission
@@ -77,15 +78,18 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadImage() {
         val media = images[gallery.currentItem]
-        val dlManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
         val uri = Uri.parse(media.orig_url)
         val ext = media.media_url.split(".").last()
         val formatter = DateTimeFormatter.ofPattern("YMd_Hms")
         val filename = LocalDateTime.now().format(formatter) + "." + ext
+
         val req = DownloadManager.Request(uri)
         req.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, resources.getString(R.string.app_name) + "/" + filename)
 
-        dlManager.enqueue(req)
+        manager.enqueue(req)
+        toast(R.string.photo_download_start)
     }
 
     private fun shareImage() {
