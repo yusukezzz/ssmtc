@@ -16,10 +16,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.util.TextUtil
-import net.yusukezzz.ssmtc.util.children
-import net.yusukezzz.ssmtc.util.getCompatColor
-import net.yusukezzz.ssmtc.util.inflate
+import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
@@ -64,21 +61,19 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 itemView.quote_container.visibility = View.GONE
                 val formatted = TextUtil.formattedText(tweet, listener, removeQuote).trim()
                 with(tweet) {
-                    val profImg = itemView.tweet_user_image
-                    Picasso.with(itemView.context)
-                        .load(user.profileImageUrl)
+                    Picasso.with(itemView.context).load(user.profileImageUrl)
                         .priority(Picasso.Priority.HIGH)
                         .fit().centerCrop()
                         .transform(RoundedTransformation(8))
-                        .into(profImg)
+                        .into(itemView.tweet_user_image)
                     itemView.tweet_user_name.text = user.name
                     itemView.tweet_user_screen_name.text = "@" + user.screenName
-                    itemView.tweet_user_protected_icon.visibility = if (user.isProtected) View.VISIBLE else View.GONE
-                    itemView.tweet_user_verified_icon.visibility = if (user.isVerified) View.VISIBLE else View.GONE
+                    itemView.tweet_user_protected_icon.beVisibleIf(user.isProtected)
+                    itemView.tweet_user_verified_icon.beVisibleIf(user.isVerified)
                     itemView.tweet_date.text = DateUtils.getRelativeTimeSpanString(created_at.toEpochSecond() * 1000L)
                     itemView.tweet_text.text = formatted
                     itemView.tweet_text.movementMethod = LinkMovementMethod.getInstance()
-                    itemView.tweet_text.visibility = if (formatted.isEmpty()) View.GONE else View.VISIBLE
+                    itemView.tweet_text.beVisibleIf(formatted.isNotEmpty())
                 }
                 handleReaction(tweet)
             }

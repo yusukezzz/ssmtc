@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.util.beVisibleIf
 import java.io.File
 import java.util.*
 
@@ -57,11 +58,7 @@ class PhotoSelectorAdapter(
             Picasso.with(view.context)
                 .load(File(path)).fit().centerCrop().into(thumbnail)
             thumbnail.setOnClickListener { adapter.toggleSelected(path) }
-            if (selected) {
-                selectedIcon.visibility = View.VISIBLE
-            } else {
-                selectedIcon.visibility = View.GONE
-            }
+            selectedIcon.beVisibleIf(selected)
         }
     }
 }

@@ -33,7 +33,10 @@ fun ViewGroup.children(func: (View) -> Unit): Unit {
     }
 }
 
+fun View.beVisibleIf(visible: Boolean) = if (visible) this.visibility = View.VISIBLE else this.visibility = View.GONE
+
 fun Context.toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+fun Context.toast(resId: Int) = this.toast(this.resources.getString(resId))
 fun Context.toast(error: Throwable) {
     Log.e("net.yusukezzz.ssmtc", "ERROR", error)
     toast(error.toString())
@@ -54,7 +57,6 @@ fun Intent.getLongExtraOrNull(key: String): Long? {
         null
     }
 }
-
 fun Intent.getStringExtraOrNull(key: String): String? {
     return if (this.hasExtra(key)) {
         this.getStringExtra(key)
