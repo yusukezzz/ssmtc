@@ -24,7 +24,7 @@ object TextUtil {
 
     fun formattedText(tweet: Tweet, listener: TweetEventListener, removeQuote: Boolean = false): CharSequence {
         val entities = tweet.entities
-        val decodedText = StringEscapeUtils.unescapeHtml4(tweet.text)
+        val decodedText = StringEscapeUtils.unescapeHtml4(tweet.full_text)
         if (null == entities.urls) return decodedText
 
         val urls = entities.urls.map(::FormattedUrl)

@@ -29,11 +29,11 @@ data class FilterRule(
     }
 
     private fun matchText(tweet: Tweet): Boolean {
-        if (excludeWords.isNotEmpty() && excludeWords.toRegex().containsMatchIn(tweet.text)) return false
+        if (excludeWords.isNotEmpty() && excludeWords.toRegex().containsMatchIn(tweet.full_text)) return false
 
         if (includeWords.isEmpty()) return true
 
-        if (includeWords.toRegex().containsMatchIn(tweet.text)) return true
+        if (includeWords.toRegex().containsMatchIn(tweet.full_text)) return true
 
         return false
     }

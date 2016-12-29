@@ -138,13 +138,13 @@ interface TwitterApi {
     @GET("/1.1/account/verify_credentials.json")
     fun verifyCredentials(): Call<User>
 
-    @GET("/1.1/statuses/home_timeline.json")
+    @GET("/1.1/statuses/home_timeline.json?tweet_mode=extended")
     fun homeTimeline(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
-    @GET("/1.1/statuses/mentions_timeline.json")
+    @GET("/1.1/statuses/mentions_timeline.json?tweet_mode=extended")
     fun mentionsTimeline(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
@@ -156,14 +156,14 @@ interface TwitterApi {
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
-    @GET("/1.1/statuses/user_timeline.json")
+    @GET("/1.1/statuses/user_timeline.json?tweet_mode=extended")
     fun userTimeline(
         @Query("count") count: Int?,
         @Query("screen_name") screenName: String?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
 
-    @GET("/1.1/search/tweets.json")
+    @GET("/1.1/search/tweets.json?tweet_mode=extended")
     fun search(
         @Query("count") count: Int?,
         @Query("lang") lang: String,
@@ -185,7 +185,7 @@ interface TwitterApi {
         @Query("user_id") userId: Long
     ): Call<TwLists>
 
-    @GET("/1.1/lists/statuses.json")
+    @GET("/1.1/lists/statuses.json?tweet_mode=extended")
     fun listStatuses(
         @Query("list_id") listId: Long?,
         @Query("count") count: Int?,

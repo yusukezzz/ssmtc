@@ -7,7 +7,7 @@ import org.threeten.bp.OffsetDateTime
 @PaperParcel
 data class Tweet(
     val id: Long,
-    val text: String,
+    val full_text: String,
     val user: User,
     val entities: Entity,
     val extended_entities: Entity?,

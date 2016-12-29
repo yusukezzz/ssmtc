@@ -13,11 +13,7 @@ import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.util.toast
 
 class GalleryPageAdapter(private val context: Context, private val images: List<Media>) : PagerAdapter() {
-    private val inflater: LayoutInflater
-
-    init {
-        inflater = LayoutInflater.from(context)
-    }
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun isViewFromObject(view: View, obj: Any): Boolean = (view == obj)
 
