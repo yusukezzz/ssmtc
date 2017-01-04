@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.ui.timeline
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.customtabs.CustomTabsClient
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.NavigationView
@@ -28,6 +29,7 @@ import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
+import net.yusukezzz.ssmtc.data.json.TweetParcel
 import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
@@ -52,6 +54,11 @@ class TimelineActivity: AppCompatActivity(),
     TimelineSettingDialog.TimelineSettingListener,
     BaseDialogFragment.TimelineSelectListener {
 
+    companion object {
+        const val STATE_TWEETS = "state_tweets"
+        const val STATE_RECYCLER_VIEW = "state_recycler_view"
+    }
+
     private lateinit var presenter: TimelineContract.Presenter
     private lateinit var endlessScrollListener: EndlessRecyclerOnScrollListener
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
@@ -64,11 +71,14 @@ class TimelineActivity: AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (null == prefs.currentAccount) {
+        if (prefs.currentAccount == null) {
             launchAuthorizeActivity()
             finish()
             return
         }
+
+        // warmup chrome custom tabs
+        CustomTabsClient.connectAndInitialize(this, CustomTabsClient.getPackageName(this, null))
 
         setContentView(R.layout.timeline_layout)
         main_contents.setView(R.layout.timeline_list)
@@ -77,10 +87,34 @@ class TimelineActivity: AppCompatActivity(),
         setupDrawerView()
         setupTimelineView()
 
-        // warmup chrome custom tabs
-        CustomTabsClient.connectAndInitialize(this, CustomTabsClient.getPackageName(this, null))
-
         loadAccount()
+
+        if (savedInstanceState != null) {
+            restoreTimeline(savedInstanceState)
+        } else {
+            // initial load
+            switchTimeline(prefs.currentTimeline)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        // save last tweets
+        outState.putParcelableArray(STATE_TWEETS, timelineAdapter.getAll().map(::TweetParcel).toTypedArray())
+        // save last scroll position
+        outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager.onSaveInstanceState())
+    }
+
+    private fun restoreTimeline(state: Bundle) {
+        toolbar_title.text = prefs.currentTimeline.title
+        presenter = TimelinePresenter(this, app.twitter, prefs.currentTimeline)
+        updateTimelineMenu()
+
+        val tweets = state.getParcelableArray(STATE_TWEETS).map { (it as TweetParcel).data }
+        val timelineState = state.getParcelable<Parcelable>(STATE_RECYCLER_VIEW)
+        timelineAdapter.set(tweets)
+        timeline_list.layoutManager.onRestoreInstanceState(timelineState)
     }
 
     private fun setupDrawerView() {
@@ -114,8 +148,7 @@ class TimelineActivity: AppCompatActivity(),
         }
 
         tweet_btn.setOnClickListener {
-            val i = Intent(this, StatusUpdateActivity::class.java)
-            startActivity(i)
+            startActivity(StatusUpdateActivity.newIntent(this))
         }
     }
 
@@ -207,8 +240,6 @@ class TimelineActivity: AppCompatActivity(),
         accountSelectBtn.setOnClickListener {
             toggleNavigationContents()
         }
-
-        switchTimeline(prefs.currentTimeline)
     }
 
     /**
@@ -279,6 +310,7 @@ class TimelineActivity: AppCompatActivity(),
         toolbar_title.text = timeline.title
         presenter = TimelinePresenter(this, app.twitter, timeline)
         updateTimelineMenu()
+        initializeTimeline()
     }
 
     fun showTimelineSelector() {
@@ -383,7 +415,7 @@ class TimelineActivity: AppCompatActivity(),
         // TODO: more loading progress on
     }
 
-    override fun initialize() {
+    fun initializeTimeline() {
         endlessScrollListener.reset()
         timelineAdapter.clear()
         timeline_list.scrollToPosition(0)

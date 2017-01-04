@@ -250,6 +250,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
     override fun getItemCount(): Int = timeline.size
 
     fun get(pos: Int): Tweet = timeline[pos]
+    fun getAll(): List<Tweet> = timeline.toList()
     fun clear() = timeline.clear()
 
     fun set(tweets: List<Tweet>) {

@@ -6,10 +6,6 @@ import net.yusukezzz.ssmtc.services.Twitter
 import nl.komponents.kovenant.task
 
 class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, private val param: TimelineParameter) : TimelineContract.Presenter {
-    init {
-        view.initialize()
-    }
-
     /**
      * Load tweet from timeline API
      *

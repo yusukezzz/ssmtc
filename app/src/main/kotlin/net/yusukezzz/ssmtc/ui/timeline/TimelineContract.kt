@@ -18,7 +18,6 @@ interface TimelineContract {
         fun addTweets(tweets: List<Tweet>)
         fun stopLoading()
         fun updateReactedTweet()
-        fun initialize()
         fun handleError(error: Throwable)
     }
 }
