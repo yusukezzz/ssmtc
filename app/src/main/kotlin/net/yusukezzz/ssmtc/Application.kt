@@ -5,6 +5,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.services.Twitter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
+import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 
@@ -20,6 +21,7 @@ class Application: android.app.Application() {
 
         val picasso = Picasso.Builder(this)
             .defaultBitmapConfig(android.graphics.Bitmap.Config.RGB_565)
+            .downloader(PicassoUtil.downloader(this))
             .build()
         Picasso.setSingletonInstance(picasso)
 
