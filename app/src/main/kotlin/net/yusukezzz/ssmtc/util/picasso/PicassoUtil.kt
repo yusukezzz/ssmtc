@@ -21,13 +21,17 @@ object PicassoUtil {
         }
     }
 
-    fun downloader(context: Context): Downloader {
-        val dir = File(context.applicationContext.cacheDir, CACHE_DIR)
-        val cache = Cache(dir, MAX_CACHE_SIZE)
+    private fun cacheDir(context: Context): File = File(context.applicationContext.cacheDir, CACHE_DIR)
+    private fun buildDownloader(cache: Cache): Downloader {
         val okhttp = OkHttpClient.Builder()
             .cache(cache)
             .build()
 
         return OkHttp3Downloader(okhttp)
+    }
+
+    fun downloader(context: Context): Downloader {
+        val cache = Cache(cacheDir(context), MAX_CACHE_SIZE)
+        return buildDownloader(cache)
     }
 }

@@ -56,6 +56,7 @@ class TimelineActivity: AppCompatActivity(),
 
     companion object {
         const val STATE_TWEETS = "state_tweets"
+        const val STATE_OLDEST_TWEET_ID = "state_oldest_tweet_id"
         const val STATE_RECYCLER_VIEW = "state_recycler_view"
     }
 
@@ -104,6 +105,8 @@ class TimelineActivity: AppCompatActivity(),
         outState.putParcelableArray(STATE_TWEETS, timelineAdapter.getAll().map(::TweetParcel).toTypedArray())
         // save last scroll position
         outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager.onSaveInstanceState())
+        // save oldest tweet id
+        lastTweetId?.let { outState.putLong(STATE_OLDEST_TWEET_ID, it) }
     }
 
     private fun restoreTimeline(state: Bundle) {
@@ -111,10 +114,17 @@ class TimelineActivity: AppCompatActivity(),
         presenter = TimelinePresenter(this, app.twitter, prefs.currentTimeline)
         updateTimelineMenu()
 
+        // load tweets from bundle
         val tweets = state.getParcelableArray(STATE_TWEETS).map { (it as TweetParcel).data }
         val timelineState = state.getParcelable<Parcelable>(STATE_RECYCLER_VIEW)
         timelineAdapter.set(tweets)
         timeline_list.layoutManager.onRestoreInstanceState(timelineState)
+        val oldestTweetId = state.getLong(STATE_OLDEST_TWEET_ID)
+        if (oldestTweetId != 0L) {
+            lastTweetId = oldestTweetId
+        }
+
+        stopLoading()
     }
 
     private fun setupDrawerView() {
@@ -196,6 +206,7 @@ class TimelineActivity: AppCompatActivity(),
         prefs.currentUserId = accounts[item.order].user.id
         loadAccount()
         showTimelineNavigation()
+        switchTimeline(prefs.currentTimeline)
 
         return false
     }
