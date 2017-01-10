@@ -80,16 +80,12 @@ class TimelineActivity: AppCompatActivity(),
             return
         }
 
-        // warmup chrome custom tabs
-        CustomTabsClient.connectAndInitialize(this, CustomTabsClient.getPackageName(this, null))
-
         setContentView(R.layout.timeline_layout)
         main_contents.setView(R.layout.timeline_list)
         setSupportActionBar(toolbar)
 
         setupDrawerView()
         setupTimelineView()
-
         loadAccount()
 
         if (savedInstanceState != null && lastTimelineFile.exists()) {
@@ -98,6 +94,13 @@ class TimelineActivity: AppCompatActivity(),
             // initial load
             switchTimeline(prefs.currentTimeline)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // warmup chrome custom tabs
+        CustomTabsClient.connectAndInitialize(this, CustomTabsClient.getPackageName(this, null))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
