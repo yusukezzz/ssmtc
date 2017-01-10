@@ -19,6 +19,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.base_layout.*
 import kotlinx.android.synthetic.main.nav_header_main.*
@@ -29,7 +30,6 @@ import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.data.json.TweetParcel
 import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.services.TimelineParameter
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
@@ -38,12 +38,14 @@ import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
 import net.yusukezzz.ssmtc.util.*
+import net.yusukezzz.ssmtc.util.gson.GsonHolder
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
+import java.io.File
 
 class TimelineActivity: AppCompatActivity(),
     TimelineContract.View,
@@ -55,7 +57,6 @@ class TimelineActivity: AppCompatActivity(),
     BaseDialogFragment.TimelineSelectListener {
 
     companion object {
-        const val STATE_TWEETS = "state_tweets"
         const val STATE_OLDEST_TWEET_ID = "state_oldest_tweet_id"
         const val STATE_RECYCLER_VIEW = "state_recycler_view"
     }
@@ -65,6 +66,7 @@ class TimelineActivity: AppCompatActivity(),
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
     private val app: Application by lazy { application as Application }
     private val prefs: Preferences by lazy { PreferencesHolder.prefs }
+    private val lastTimelineFile by lazy { File(applicationContext.cacheDir, "last_timeline.json") }
 
     // Oldest tweet id on current timeline
     private var lastTweetId: Long? = null
@@ -90,7 +92,7 @@ class TimelineActivity: AppCompatActivity(),
 
         loadAccount()
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && lastTimelineFile.exists()) {
             restoreTimeline(savedInstanceState)
         } else {
             // initial load
@@ -102,7 +104,8 @@ class TimelineActivity: AppCompatActivity(),
         super.onSaveInstanceState(outState)
 
         // save last tweets
-        outState.putParcelableArray(STATE_TWEETS, timelineAdapter.getAll().map(::TweetParcel).toTypedArray())
+        val json = GsonHolder.gson.toJson(timelineAdapter.getAll())
+        lastTimelineFile.writeText(json)
         // save last scroll position
         outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager.onSaveInstanceState())
         // save oldest tweet id
@@ -114,8 +117,9 @@ class TimelineActivity: AppCompatActivity(),
         presenter = TimelinePresenter(this, app.twitter, prefs.currentTimeline)
         updateTimelineMenu()
 
-        // load tweets from bundle
-        val tweets = state.getParcelableArray(STATE_TWEETS).map { (it as TweetParcel).data }
+        // load tweets from file
+        val json = lastTimelineFile.readText()
+        val tweets: List<Tweet> = GsonHolder.gson.fromJson(json, object : TypeToken<List<Tweet>>() {}.type)
         val timelineState = state.getParcelable<Parcelable>(STATE_RECYCLER_VIEW)
         timelineAdapter.set(tweets)
         timeline_list.layoutManager.onRestoreInstanceState(timelineState)
