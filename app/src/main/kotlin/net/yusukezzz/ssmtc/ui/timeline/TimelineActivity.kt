@@ -298,7 +298,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun removeAccount() {
         prefs.removeCurrentAccount()
-        if (null == prefs.currentAccount) {
+        if (prefs.currentAccount == null) {
             launchAuthorizeActivity()
         } else {
             loadAccount()

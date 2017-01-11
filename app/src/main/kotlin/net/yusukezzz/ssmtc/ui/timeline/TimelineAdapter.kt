@@ -170,7 +170,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
             }
 
             fun handleVideo(video: Media) {
-                if (null == video.video_info) return
+                if (video.video_info == null) return
 
                 itemView.ic_play_circle.setImageResource(R.drawable.ic_play_video)
                 itemView.media_video_time.text = TextUtil.milliSecToTime(video.video_info.duration_millis)
