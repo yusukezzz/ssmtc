@@ -8,8 +8,8 @@ import net.yusukezzz.ssmtc.R
 
 class AspectRatioImageView: ImageView {
     companion object {
-        val DEFAULT_WIDTH_RATIO: Int = 16
-        val DEFAULT_HEIGHT_RATIO: Int = 9
+        const val DEFAULT_WIDTH_RATIO: Int = 16
+        const val DEFAULT_HEIGHT_RATIO: Int = 9
     }
 
     private var widthRatio: Int = 1

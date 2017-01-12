@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_body.view.*
@@ -16,6 +15,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Media
 import net.yusukezzz.ssmtc.data.json.Tweet
 import net.yusukezzz.ssmtc.data.json.VideoInfo
+import net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
@@ -25,19 +25,11 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
     companion object {
         const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
         const val VIEW_TYPE_NO_MEDIA = 0
-        const val VIEW_TYPE_HAS_PHOTO_1 = 1
-        const val VIEW_TYPE_HAS_PHOTO_2 = 2
-        const val VIEW_TYPE_HAS_PHOTO_3 = 3
-        const val VIEW_TYPE_HAS_PHOTO_4 = 4
-        const val VIEW_TYPE_HAS_VIDEO = 5
-        val LIST_VIEW_TYPE_PHOTO: List<Int> = listOf(
-            VIEW_TYPE_HAS_PHOTO_1,
-            VIEW_TYPE_HAS_PHOTO_2,
-            VIEW_TYPE_HAS_PHOTO_3,
-            VIEW_TYPE_HAS_PHOTO_4
-        )
+        const val VIEW_TYPE_HAS_PHOTO = 1
+        const val VIEW_TYPE_HAS_VIDEO = 2
 
         private open class TweetViewHolder(view: View,
+                                           val viewType: Int,
                                            val listener: TweetEventListener) : ViewHolder(view) {
             private val numberFormatter = DecimalFormat("#,###,###")
 
@@ -49,11 +41,16 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 } else {
                     handleTweet(tweet)
                 }
+                when (viewType) {
+                    VIEW_TYPE_HAS_PHOTO -> handlePhoto(tweet.photos)
+                    VIEW_TYPE_HAS_VIDEO -> handleVideo(tweet.videos.first())
+                }
             }
 
             fun cleanup() {
                 PicassoUtil.clean(itemView.tweet_user_image)
-                itemView.tweet_media_container.children { PicassoUtil.clean(it) }
+                itemView.thumbnail_tile.children { PicassoUtil.clean(it) }
+                itemView.thumbnail_tile.removeAllViews()
             }
 
             private fun handleTweet(tweet: Tweet, removeQuote: Boolean = false) {
@@ -133,47 +130,29 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 itemView.quote_user_screen_name.text = "@" + quoted.user.screenName
                 itemView.quote_container.visibility = View.VISIBLE
             }
-        }
 
-        private class TweetWithPhotoViewHolder(view: View,
-                                               listener: TweetEventListener) : TweetViewHolder(view, listener) {
-            private val mediaViewIdLists: List<List<Int>> = listOf(
-                listOf(R.id.media_photo_single),
-                listOf(R.id.media_photo_two_1, R.id.media_photo_two_2),
-                listOf(R.id.media_photo_three_1, R.id.media_photo_three_2, R.id.media_photo_three_3),
-                listOf(R.id.media_photo_four_1, R.id.media_photo_four_2, R.id.media_photo_four_3, R.id.media_photo_four_4)
-            )
-
-            override fun bindTweet(tweet: Tweet) {
-                super.bindTweet(tweet)
-                handlePhoto(tweet.allMedia)
-            }
-
-            fun handlePhoto(photos: List<Media>) {
-                val num = photos.size
-                val viewIds = mediaViewIdLists[num - 1]
+            private fun handlePhoto(photos: List<Media>) {
                 photos.forEachIndexed { i, m ->
-                    val imgView = itemView.findViewById(viewIds[i]) as ImageView
-                    imgView.setOnClickListener { listener.onImageClick(photos, i) }
+                    val thumbnail = AspectRatioImageView(itemView.context)
+                    itemView.thumbnail_tile.addView(thumbnail)
+                    thumbnail.setOnClickListener { listener.onImageClick(photos, i) }
                     Picasso.with(itemView.context).load(m.small_url)
                         .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
-                        .into(imgView)
+                        .into(thumbnail)
                 }
             }
-        }
 
-        private class TweetWithVideoViewHolder(view: View,
-                                               listener: TweetEventListener) : TweetViewHolder(view, listener) {
-            override fun bindTweet(tweet: Tweet) {
-                super.bindTweet(tweet)
-                handleVideo(tweet.allMedia.first())
-            }
-
-            fun handleVideo(video: Media) {
+            private fun handleVideo(video: Media) {
                 if (null == video.video_info) return
 
-                itemView.ic_play_circle.setImageResource(R.drawable.ic_play_video)
-                itemView.media_video_time.text = TextUtil.milliSecToTime(video.video_info.duration_millis)
+                val container = itemView.thumbnail_tile.inflate(R.layout.media_video)
+                container.ic_play_circle.setImageResource(R.drawable.ic_play_video)
+                container.media_video_time.text = if (video.isGif) {
+                    "GIF"
+                } else {
+                    TextUtil.milliSecToTime(video.video_info.duration_millis)
+                }
+                itemView.thumbnail_tile.addView(container)
                 val imgView = itemView.media_video_thumbnail
                 imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
                 Picasso.with(itemView.context).load(video.small_url)
@@ -195,33 +174,11 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
     }
 
     private val timeline: MutableList<Tweet> = mutableListOf()
-    private val photoLayoutIds: List<Int> = listOf(
-        R.layout.media_photo_single,
-        R.layout.media_photo_two,
-        R.layout.media_photo_three,
-        R.layout.media_photo_four
-    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val tweetView = parent.inflate(R.layout.tweet_with_media)
 
-        return when (viewType) {
-            VIEW_TYPE_NO_MEDIA -> {
-                TweetViewHolder(tweetView, listener)
-            }
-            in VIEW_TYPE_HAS_PHOTO_1..VIEW_TYPE_HAS_PHOTO_4 -> {
-                val type = viewType - 1
-                val container = parent.inflate(photoLayoutIds[type])
-                tweetView.tweet_media_container.addView(container)
-                TweetWithPhotoViewHolder(tweetView, listener)
-            }
-            VIEW_TYPE_HAS_VIDEO -> {
-                val container = parent.inflate(R.layout.media_video)
-                tweetView.tweet_media_container.addView(container)
-                TweetWithVideoViewHolder(tweetView, listener)
-            }
-            else -> throw RuntimeException("unknown view type: " + viewType)
-        }
+        return TweetViewHolder(tweetView, viewType, listener)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -233,7 +190,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                 return VIEW_TYPE_HAS_VIDEO
             }
 
-            return LIST_VIEW_TYPE_PHOTO[size - 1]
+            return VIEW_TYPE_HAS_PHOTO
         }
 
         return VIEW_TYPE_NO_MEDIA

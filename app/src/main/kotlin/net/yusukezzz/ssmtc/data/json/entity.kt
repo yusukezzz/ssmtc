@@ -48,6 +48,9 @@ data class Media(
     val isVideo: Boolean
         get() = (type == TYPE_ANIMATED_GIF || type == TYPE_VIDEO)
 
+    val isGif: Boolean
+        get() = (type == TYPE_ANIMATED_GIF)
+
     val urlEntity: Url
         get() = Url(url, expanded_url, display_url, indices)
 

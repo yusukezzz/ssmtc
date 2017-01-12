@@ -244,9 +244,10 @@ class TimelineActivity: AppCompatActivity(),
         val account = prefs.currentAccount!!
         app.twitter.setTokens(account.accessToken, account.secretToken)
 
-        val profileImage = nav_view.getHeaderView(0).findViewById(R.id.profile_image) as ImageView
-        val screenName = nav_view.getHeaderView(0).findViewById(R.id.screen_name) as TextView
-        val accountSelectBtn = nav_view.getHeaderView(0).findViewById(R.id.btn_account_selector) as ImageView
+        val headerView = nav_view.getHeaderView(0)
+        val profileImage = headerView.findViewById(R.id.profile_image) as ImageView
+        val screenName = headerView.findViewById(R.id.screen_name) as TextView
+        val accountSelectBtn = headerView.findViewById(R.id.btn_account_selector) as ImageView
         Picasso.with(this)
             .load(account.user.profileImageUrl)
             .fit()

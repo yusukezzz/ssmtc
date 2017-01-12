@@ -17,12 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:id="@+id/tweet_media_container"
+        <net.yusukezzz.ssmtc.ui.views.ThumbnailTileLayout
+            android:id="@+id/thumbnail_tile"
             android:background="@color/dark_grey"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
         <include layout="@layout/tweet_body" />
 
