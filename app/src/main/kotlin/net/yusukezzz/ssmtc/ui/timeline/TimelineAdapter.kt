@@ -143,7 +143,7 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
             }
 
             private fun handleVideo(video: Media) {
-                if (null == video.video_info) return
+                if (video.video_info == null) return
 
                 val container = itemView.thumbnail_tile.inflate(R.layout.media_video)
                 container.ic_play_circle.setImageResource(R.drawable.ic_play_video)
