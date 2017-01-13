@@ -42,9 +42,7 @@ class ThumbnailTileLayout : ViewGroup {
             val child = getChildAt(i)
             val childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY)
             val childHeightSpec = if (childCount == 3 && i == 0) {
-                /**
-                 * use full height for {@link net.}
-                 */
+                // use full height for layoutThree
                 MeasureSpec.makeMeasureSpec(layoutHeight, MeasureSpec.EXACTLY)
             } else {
                 MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY)
