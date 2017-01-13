@@ -8,7 +8,6 @@ class ThumbnailTileLayout : ViewGroup {
     companion object {
         const val WIDTH_RATIO: Int = 16
         const val HEIGHT_RATIO: Int = 9
-        const val MARGIN_DIP: Int = 1
     }
 
     constructor(context: Context) : super(context)
@@ -79,9 +78,6 @@ class ThumbnailTileLayout : ViewGroup {
         }
     }
 
-    private val margin: Int
-        get() = (context.resources.displayMetrics.density * MARGIN_DIP).toInt()
-
     private fun layoutOne(left: Int, top: Int, right: Int, bottom: Int) {
         // ---------
         // |       |
@@ -103,7 +99,7 @@ class ThumbnailTileLayout : ViewGroup {
         child1.layout(left, top, halfWidth, bottom) // left half
 
         val child2 = getChildAt(1)
-        child2.layout(left + halfWidth + margin, top, right, bottom) // right half
+        child2.layout(left + halfWidth, top, right, bottom) // right half
     }
 
     private fun layoutThree(left: Int, top: Int, right: Int, bottom: Int) {
@@ -115,17 +111,14 @@ class ThumbnailTileLayout : ViewGroup {
         val halfWidth = Math.round(right * 1f / 2)
         val halfHeight = Math.round(bottom * 1f / 2)
 
-        // left half & full height
         val child1 = getChildAt(0)
-        child1.layout(left, top, halfWidth, bottom)
+        child1.layout(left, top, halfWidth, bottom) // left half & full height
 
-        // right half & top half height
         val child2 = getChildAt(1)
-        child2.layout(left + halfWidth + margin, top, right, halfHeight)
+        child2.layout(left + halfWidth, top, right, halfHeight) // right half & top half height
 
-        // right half & bottom half height
         val child3 = getChildAt(2)
-        child3.layout(left + halfWidth + margin, top + halfHeight + margin, right, bottom)
+        child3.layout(left + halfWidth, top + halfHeight, right, bottom) // right half & bottom half height
     }
 
     private fun layoutFour(left: Int, top: Int, right: Int, bottom: Int) {
@@ -137,20 +130,16 @@ class ThumbnailTileLayout : ViewGroup {
         val halfWidth = Math.round(right * 1f / 2)
         val halfHeight = Math.round(bottom * 1f / 2)
 
-        // left half & top half height
         val child1 = getChildAt(0)
-        child1.layout(left, top, halfWidth, halfHeight)
+        child1.layout(left, top, halfWidth, halfHeight) // left half & top half height
 
-        // right half & top half height
         val child2 = getChildAt(1)
-        child2.layout(left + halfWidth + margin, top, right, bottom)
+        child2.layout(left + halfWidth, top, right, bottom) // right half & top half height
 
-        // left half & bottom half height
         val child3 = getChildAt(2)
-        child3.layout(left, top + halfHeight + margin, halfWidth, bottom)
+        child3.layout(left, top + halfHeight, halfWidth, bottom) // left half & bottom half height
 
-        // right half & bottom half height
         val child4 = getChildAt(3)
-        child4.layout(left + halfWidth + margin, top + halfHeight + margin, right, bottom)
+        child4.layout(left + halfWidth, top + halfHeight, right, bottom) // right half & bottom half height
     }
 }
