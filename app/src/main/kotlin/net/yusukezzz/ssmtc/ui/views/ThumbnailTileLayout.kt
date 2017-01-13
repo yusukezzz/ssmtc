@@ -42,6 +42,9 @@ class ThumbnailTileLayout : ViewGroup {
             val child = getChildAt(i)
             val childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY)
             val childHeightSpec = if (childCount == 3 && i == 0) {
+                /**
+                 * use full height for {@link net.}
+                 */
                 MeasureSpec.makeMeasureSpec(layoutHeight, MeasureSpec.EXACTLY)
             } else {
                 MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY)
@@ -66,7 +69,8 @@ class ThumbnailTileLayout : ViewGroup {
         val bottom = top + height
 
         when (childCount) {
-            0 -> { /* do nothing*/
+            0 -> {
+                // no thumbnails, do nothing
             }
             1 -> layoutOne(left, top, right, bottom)
             2 -> layoutTwo(left, top, right, bottom)
@@ -77,11 +81,21 @@ class ThumbnailTileLayout : ViewGroup {
     }
 
     private fun layoutOne(left: Int, top: Int, right: Int, bottom: Int) {
+        // ---------
+        // |       |
+        // |   1   |
+        // |       |
+        // ---------
         val child1 = getChildAt(0)
         child1.layout(left, top, right, bottom)
     }
 
     private fun layoutTwo(left: Int, top: Int, right: Int, bottom: Int) {
+        // ---------
+        // |   |   |
+        // | 1 | 2 |
+        // |   |   |
+        // ---------
         val halfWidth = Math.round(right * 1f / 2)
         val child1 = getChildAt(0)
         child1.layout(left, top, halfWidth, bottom) // left half
@@ -91,6 +105,11 @@ class ThumbnailTileLayout : ViewGroup {
     }
 
     private fun layoutThree(left: Int, top: Int, right: Int, bottom: Int) {
+        // ---------
+        // |   | 2 |
+        // | 1 |---|
+        // |   | 3 |
+        // ---------
         val halfWidth = Math.round(right * 1f / 2)
         val halfHeight = Math.round(bottom * 1f / 2)
 
@@ -105,14 +124,23 @@ class ThumbnailTileLayout : ViewGroup {
     }
 
     private fun layoutFour(left: Int, top: Int, right: Int, bottom: Int) {
+        // ---------
+        // | 1 | 2 |
+        // |---|---|
+        // | 3 | 4 |
+        // ---------
         val halfWidth = Math.round(right * 1f / 2)
         val halfHeight = Math.round(bottom * 1f / 2)
+
         val child1 = getChildAt(0)
         child1.layout(left, top, halfWidth, halfHeight) // left half & top half height
+
         val child2 = getChildAt(1)
         child2.layout(left + halfWidth, top, right, bottom) // right half & top half height
+
         val child3 = getChildAt(2)
         child3.layout(left, top + halfHeight, halfWidth, bottom) // left half & bottom half height
+
         val child4 = getChildAt(3)
         child4.layout(left + halfWidth, top + halfHeight, right, bottom) // right half & bottom half height
     }
