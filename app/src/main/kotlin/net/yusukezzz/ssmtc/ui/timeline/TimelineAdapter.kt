@@ -132,13 +132,13 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
             }
 
             private fun handlePhoto(photos: List<Media>) {
-                photos.forEachIndexed { i, m ->
-                    val thumbnail = AspectRatioImageView(itemView.context)
-                    itemView.thumbnail_tile.addView(thumbnail)
-                    thumbnail.setOnClickListener { listener.onImageClick(photos, i) }
-                    Picasso.with(itemView.context).load(m.small_url)
+                photos.forEachIndexed { index, media ->
+                    val photoView = AspectRatioImageView(itemView.context)
+                    itemView.thumbnail_tile.addView(photoView)
+                    photoView.setOnClickListener { listener.onImageClick(photos, index) }
+                    Picasso.with(itemView.context).load(media.small_url)
                         .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
-                        .into(thumbnail)
+                        .into(photoView)
                 }
             }
 

@@ -16,6 +16,7 @@
             <ImageView
                 android:id="@+id/tweet_retweeted_icon"
                 android:src="@drawable/ic_twitter_retweet"
+                android:tint="@color/action_retweet_on"
                 android:layout_marginStart="8dp"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
