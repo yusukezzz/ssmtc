@@ -35,26 +35,38 @@ class ThumbnailTileLayout : ViewGroup {
         val layoutWidth = widthSize - paddingLeft - paddingRight
         val layoutHeight = heightSize - paddingTop - paddingBottom
 
-        val childWidth = calcChildSize(childCount, layoutWidth)
-        val childHeight = calcChildSize(childCount, layoutHeight)
+        val halfWidth = Math.round(layoutWidth * 1f / 2)
+        val halfHeight = Math.round(layoutHeight * 1f / 2)
+
+        fun makeSpec(size: Int): Int = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY)
+        val fullWidthSpec = makeSpec(layoutWidth)
+        val fullHeightSpec = makeSpec(layoutHeight)
+        val halfWidthSpec = makeSpec(halfWidth)
+        val halfHeightSpec = makeSpec(halfHeight)
 
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            val childWidthSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY)
-            val childHeightSpec = if (childCount == 3 && i == 0) {
-                // use full height for layoutThree
-                MeasureSpec.makeMeasureSpec(layoutHeight, MeasureSpec.EXACTLY)
-            } else {
-                MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY)
+            var childWidthSpec: Int = halfWidthSpec
+            var childHeightSpec: Int = halfHeightSpec
+            when (childCount) {
+                1 -> {
+                    childWidthSpec = fullWidthSpec
+                    childHeightSpec = fullHeightSpec
+                }
+                2 -> {
+                    childHeightSpec = fullHeightSpec
+                }
+                3 -> {
+                    if (i == 0) {
+                        childHeightSpec = fullHeightSpec
+                    }
+                }
+                else -> {
+                    // use default
+                }
             }
             child.measure(childWidthSpec, childHeightSpec)
         }
-    }
-
-    private fun calcChildSize(num: Int, fullSize: Int): Int = when (num) {
-        0 -> 0
-        1 -> fullSize
-        else -> Math.round(fullSize * 1f / 2)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
