@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringEscapeUtils
 
 object TextUtil {
     val SCREEN_NAME_PATTERN = Regex("@[a-zA-Z0-9_]+")
-    val HASH_TAG_PATTERN = Regex("#\\w+")
+    val HASH_TAG_PATTERN = Regex("(?<!c)#\\w+", RegexOption.IGNORE_CASE)
 
     fun milliSecToTime(millis: Int): String {
         val sec = millis / 1000
