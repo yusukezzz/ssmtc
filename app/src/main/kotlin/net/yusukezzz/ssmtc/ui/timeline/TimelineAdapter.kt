@@ -24,26 +24,21 @@ import java.text.DecimalFormat
 class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
-        const val VIEW_TYPE_NO_MEDIA = 0
-        const val VIEW_TYPE_HAS_PHOTO = 1
-        const val VIEW_TYPE_HAS_VIDEO = 2
+
+        const val VIEW_TYPE_TWEET = 0
+        const val VIEW_TYPE_RETWEETED = 1
+        const val VIEW_TYPE_QUOTED = 2
 
         private open class TweetViewHolder(view: View,
                                            val viewType: Int,
                                            val listener: TweetEventListener) : ViewHolder(view) {
             private val numberFormatter = DecimalFormat("#,###,###")
 
-            open fun bindTweet(tweet: Tweet) {
-                if (tweet.isRetweet) {
-                    handleRetweeted(tweet)
-                } else if (tweet.isRetweetWithQuoted) {
-                    handleQuoted(tweet)
-                } else {
-                    handleTweet(tweet)
-                }
+            fun bindTweet(tweet: Tweet) {
                 when (viewType) {
-                    VIEW_TYPE_HAS_PHOTO -> handlePhoto(tweet.photos)
-                    VIEW_TYPE_HAS_VIDEO -> handleVideo(tweet.videos.first())
+                    VIEW_TYPE_TWEET -> handleTweet(tweet)
+                    VIEW_TYPE_RETWEETED -> handleRetweeted(tweet)
+                    VIEW_TYPE_QUOTED -> handleQuoted(tweet)
                 }
             }
 
@@ -73,6 +68,12 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
                     itemView.tweet_text.beVisibleIf(formatted.isNotEmpty())
                 }
                 handleReaction(tweet)
+
+                if (tweet.hasVideo) {
+                    handleVideo(tweet.videos.first())
+                } else if (tweet.hasPhoto) {
+                    handlePhoto(tweet.photos)
+                }
             }
 
             private fun handleReaction(tweet: Tweet) {
@@ -184,16 +185,13 @@ class TimelineAdapter(val listener: TweetEventListener) : RecyclerView.Adapter<V
     override fun getItemViewType(position: Int): Int {
         val tw = timeline[position]
 
-        val size = tw.allMedia.size
-        if (size > 0) {
-            if (tw.hasVideo) {
-                return VIEW_TYPE_HAS_VIDEO
-            }
-
-            return VIEW_TYPE_HAS_PHOTO
+        return if (tw.isRetweet) {
+            VIEW_TYPE_RETWEETED
+        } else if (tw.isRetweetWithQuoted) {
+            VIEW_TYPE_QUOTED
+        } else {
+            VIEW_TYPE_TWEET
         }
-
-        return VIEW_TYPE_NO_MEDIA
     }
 
     override fun onViewRecycled(holder: ViewHolder): Unit {
