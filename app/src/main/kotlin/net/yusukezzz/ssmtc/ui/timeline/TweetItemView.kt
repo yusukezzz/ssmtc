@@ -32,10 +32,12 @@ class TweetItemView(context: Context, attrs: AttributeSet) : RelativeLayout(cont
     interface TweetItemListener {
         fun onImageClick(images: List<Media>, pos: Int)
         fun onVideoClick(video: VideoInfo)
-        fun onUrlClick(url: String)
         fun onReplyClick(tweet: Tweet)
         fun onLikeClick(tweet: Tweet)
         fun onRetweetClick(tweet: Tweet)
+
+        // for TextUtil
+        fun onUrlClick(url: String)
         fun onScreenNameClick(screenName: String)
         fun onHashTagClick(hashTag: String)
     }
