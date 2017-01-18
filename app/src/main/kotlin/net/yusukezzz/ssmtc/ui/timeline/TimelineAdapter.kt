@@ -10,16 +10,15 @@ import net.yusukezzz.ssmtc.util.inflate
 
 class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
-        const val VIEW_TYPE_TWEET = 0
-        const val VIEW_TYPE_RETWEETED = 1
-        const val VIEW_TYPE_QUOTED = 2
-
-        private class TweetViewHolder(private val view: TweetItemView, private val viewType: Int) : ViewHolder(view) {
-            fun bindTo(tweet: Tweet) = when (viewType) {
-                VIEW_TYPE_TWEET -> view.bindTweet(tweet)
-                VIEW_TYPE_RETWEETED -> view.bindRetweeted(tweet)
-                VIEW_TYPE_QUOTED -> view.bindQuoted(tweet)
-                else -> RuntimeException("unknown tweet view type: $viewType")
+        private class TweetViewHolder(private val view: TweetItemView) : ViewHolder(view) {
+            fun bindTo(tweet: Tweet) = {
+                if (tweet.isRetweet) {
+                    view.bindRetweeted(tweet)
+                } else if (tweet.isRetweetWithQuoted) {
+                    view.bindQuoted(tweet)
+                } else {
+                    view.bindTweet(tweet)
+                }
             }
 
             fun cleanup() = view.cleanup()
@@ -32,19 +31,7 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
         val tweetView = parent.inflate(R.layout.tweet_item) as TweetItemView
         tweetView.setTweetListener(listener)
 
-        return TweetViewHolder(tweetView, viewType)
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        val tw = timeline[position]
-
-        return if (tw.isRetweet) {
-            VIEW_TYPE_RETWEETED
-        } else if (tw.isRetweetWithQuoted) {
-            VIEW_TYPE_QUOTED
-        } else {
-            VIEW_TYPE_TWEET
-        }
+        return TweetViewHolder(tweetView)
     }
 
     override fun onViewRecycled(holder: ViewHolder): Unit {
