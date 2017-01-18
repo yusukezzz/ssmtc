@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<net.yusukezzz.ssmtc.ui.timeline.TweetItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardUseCompatPadding="true"
     android:id="@+id/card_view"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <net.yusukezzz.ssmtc.ui.timeline.TweetItemView
+        <RelativeLayout
             android:background="@color/colorPrimaryDark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -248,8 +248,8 @@
 
             </LinearLayout>
 
-        </net.yusukezzz.ssmtc.ui.timeline.TweetItemView>
+        </RelativeLayout>
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</net.yusukezzz.ssmtc.ui.timeline.TweetItemView>

@@ -1,12 +1,12 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import android.widget.RelativeLayout
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
@@ -20,7 +20,7 @@ import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
 
-class TweetItemView(context: Context, attrs: AttributeSet) : RelativeLayout(context, attrs) {
+class TweetItemView : CardView {
     companion object {
         const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
     }
@@ -41,6 +41,10 @@ class TweetItemView(context: Context, attrs: AttributeSet) : RelativeLayout(cont
         fun onScreenNameClick(screenName: String)
         fun onHashTagClick(hashTag: String)
     }
+
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
     fun setTweetListener(listener: TweetItemListener) {
         this.listener = listener

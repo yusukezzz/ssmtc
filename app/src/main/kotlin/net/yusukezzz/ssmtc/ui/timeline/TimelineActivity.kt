@@ -149,13 +149,16 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun setupTimelineView() {
+        timeline_list.adapter = TimelineAdapter(this)
+        timeline_list.setHasFixedSize(true)
+
         val layoutManager = LinearLayoutManager(this)
+        timeline_list.layoutManager = layoutManager
+
         endlessScrollListener = EndlessRecyclerOnScrollListener(this, layoutManager)
         endlessScrollListener.setLoadMoreListener(this)
-        timeline_list.setHasFixedSize(true)
-        timeline_list.layoutManager = layoutManager
         timeline_list.addOnScrollListener(endlessScrollListener)
-        timeline_list.adapter = TimelineAdapter(this)
+
 
         swipe_refresh.setOnRefreshListener(this)
         swipe_refresh.setColorSchemeResources(R.color.green, R.color.red, R.color.blue, R.color.yellow)

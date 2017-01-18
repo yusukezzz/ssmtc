@@ -10,8 +10,8 @@ import net.yusukezzz.ssmtc.util.inflate
 
 class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
-        private class TweetViewHolder(private val view: TweetItemView) : ViewHolder(view) {
-            fun bindTo(tweet: Tweet) = {
+        private class TweetViewHolder(val view: TweetItemView) : ViewHolder(view) {
+            fun bindTo(tweet: Tweet) {
                 if (tweet.isRetweet) {
                     view.bindRetweeted(tweet)
                 } else if (tweet.isRetweetWithQuoted) {
@@ -34,13 +34,9 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
         return TweetViewHolder(tweetView)
     }
 
-    override fun onViewRecycled(holder: ViewHolder): Unit {
-        (holder as TweetViewHolder).cleanup()
-    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit = (holder as TweetViewHolder).bindTo(timeline[position])
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit {
-        (holder as TweetViewHolder).bindTo(timeline[position])
-    }
+    override fun onViewRecycled(holder: ViewHolder): Unit = (holder as TweetViewHolder).cleanup()
 
     override fun getItemCount(): Int = timeline.size
 
