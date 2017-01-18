@@ -5,15 +5,16 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.ViewGroup
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.json.Tweet
+import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import net.yusukezzz.ssmtc.util.inflate
 
-class TimelineAdapter(val listener: TweetItemView.TweetItemListener) : RecyclerView.Adapter<ViewHolder>() {
+class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         const val VIEW_TYPE_TWEET = 0
         const val VIEW_TYPE_RETWEETED = 1
         const val VIEW_TYPE_QUOTED = 2
 
-        private open class TweetViewHolder(private val view: TweetItemView, private val viewType: Int) : ViewHolder(view) {
+        private class TweetViewHolder(private val view: TweetItemView, private val viewType: Int) : ViewHolder(view) {
             fun bindTo(tweet: Tweet) = when (viewType) {
                 VIEW_TYPE_TWEET -> view.bindTweet(tweet)
                 VIEW_TYPE_RETWEETED -> view.bindRetweeted(tweet)
