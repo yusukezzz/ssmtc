@@ -6,11 +6,7 @@ import com.squareup.picasso.Transformation
 
 // https://gist.github.com/aprock/6213395
 class RoundedTransformation(private val radiusDp: Int, private val marginDp: Int = 0): Transformation {
-    private lateinit var KEY: String
-
-    init {
-        KEY = "rounded(radius=$radiusDp, margin=$marginDp)";
-    }
+    private val KEY: String = "rounded(radius=$radiusDp, margin=$marginDp)"
 
     override fun transform(source: Bitmap): Bitmap {
         val paint = Paint()

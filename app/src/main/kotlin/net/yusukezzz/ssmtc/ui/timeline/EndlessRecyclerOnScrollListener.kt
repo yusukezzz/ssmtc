@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import com.squareup.picasso.Picasso
+import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.Companion.THUMBNAIL_IMAGE_TAG
 
 // https://gist.github.com/ssinss/e06f12ef66c51252563e
 class EndlessRecyclerOnScrollListener(private val context: Context,
@@ -37,9 +38,9 @@ class EndlessRecyclerOnScrollListener(private val context: Context,
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         val picasso = Picasso.with(context)
         if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_TOUCH_SCROLL) {
-            picasso.resumeTag(TimelineAdapter.THUMBNAIL_IMAGE_TAG)
+            picasso.resumeTag(THUMBNAIL_IMAGE_TAG)
         } else {
-            picasso.pauseTag(TimelineAdapter.THUMBNAIL_IMAGE_TAG)
+            picasso.pauseTag(THUMBNAIL_IMAGE_TAG)
         }
     }
 
