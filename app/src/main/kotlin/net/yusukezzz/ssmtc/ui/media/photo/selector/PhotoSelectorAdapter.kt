@@ -31,7 +31,7 @@ class PhotoSelectorAdapter(
         return ViewHolder(view, this)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bindPhoto(photoPaths[position], isSelected(photoPaths[position]))
+    override fun onBindViewHolder(holder: ViewHolder, pos: Int) = holder.bindPhoto(photoPaths[pos], isSelected(photoPaths[pos]))
 
     override fun getItemCount(): Int = photoPaths.size
 

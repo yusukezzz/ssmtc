@@ -25,7 +25,7 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
         }
     }
 
-    private val timeline: MutableList<Tweet> = mutableListOf()
+    private var timeline: List<Tweet> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val tweetView = parent.inflate(R.layout.tweet_item) as TweetItemView
@@ -34,23 +34,24 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
         return TweetViewHolder(tweetView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int): Unit = (holder as TweetViewHolder).bindTo(timeline[position])
+    override fun onBindViewHolder(holder: ViewHolder, pos: Int): Unit = (holder as TweetViewHolder).bindTo(timeline[pos])
 
     override fun onViewRecycled(holder: ViewHolder): Unit = (holder as TweetViewHolder).cleanup()
 
     override fun getItemCount(): Int = timeline.size
 
-    fun get(pos: Int): Tweet = timeline[pos]
     fun getAll(): List<Tweet> = timeline.toList()
-    fun clear() = timeline.clear()
+    fun clear() {
+        timeline = listOf()
+    }
 
     fun set(tweets: List<Tweet>) {
-        timeline.clear()
+        clear()
         add(tweets)
     }
 
     fun add(tweets: List<Tweet>) {
-        timeline.addAll(tweets)
+        timeline += tweets
         notifyDataSetChanged()
     }
 }
