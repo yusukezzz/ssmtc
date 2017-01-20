@@ -14,7 +14,7 @@ object PicassoUtil {
 
     private val rounded: Transformation = RoundedTransformation(8)
 
-    fun clean(view: View): Unit {
+    fun cancel(view: View): Unit {
         if (view is ImageView) {
             Picasso.with(view.context).cancelRequest(view)
             view.setImageDrawable(null)

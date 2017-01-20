@@ -126,8 +126,8 @@ class TweetItemView : CardView {
     }
 
     fun cleanup() {
-        PicassoUtil.clean(tweet_user_image)
-        thumbnail_tile.children { PicassoUtil.clean(it) }
+        PicassoUtil.cancel(tweet_user_image)
+        thumbnail_tile.children { PicassoUtil.cancel(it) }
         thumbnail_tile.removeAllViews()
     }
 
