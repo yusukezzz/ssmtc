@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.beVisibleIf
+import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.io.File
 import java.util.*
 
@@ -55,8 +55,7 @@ class PhotoSelectorAdapter(
         val selectedIcon: ImageView = view.findViewById(R.id.iv_selected) as ImageView
 
         fun bindPhoto(path: String, selected: Boolean) {
-            Picasso.with(view.context)
-                .load(File(path)).fit().centerCrop().into(thumbnail)
+            PicassoUtil.thumbnail(File(path), thumbnail)
             thumbnail.setOnClickListener { adapter.toggleSelected(path) }
             selectedIcon.beVisibleIf(selected)
         }

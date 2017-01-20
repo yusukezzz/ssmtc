@@ -8,13 +8,12 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
-import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
+import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
 import java.io.File
@@ -66,10 +65,7 @@ class StatusUpdateActivity: AppCompatActivity() {
         }
 
         val account = PreferencesHolder.prefs.currentAccount!!
-        Picasso.with(this).load(account.user.profileImageUrl)
-            .transform(RoundedTransformation(8))
-            .centerCrop().fit()
-            .into(toolbar_avatar)
+        PicassoUtil.userIcon(account.user, toolbar_avatar)
         toolbar_screen_name.text = account.user.screenName
     }
 
@@ -100,8 +96,7 @@ class StatusUpdateActivity: AppCompatActivity() {
         paths.forEachIndexed { i, path ->
             val imgView = AspectRatioImageView(this)
             thumbnail_tile.addView(imgView)
-            Picasso.with(this).load(File(path))
-                .fit().centerCrop().into(imgView)
+            PicassoUtil.thumbnail(File(path), imgView)
         }
     }
 }

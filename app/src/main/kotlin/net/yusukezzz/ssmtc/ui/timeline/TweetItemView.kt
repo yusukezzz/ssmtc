@@ -17,14 +17,9 @@ import net.yusukezzz.ssmtc.data.json.VideoInfo
 import net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
-import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
 import java.text.DecimalFormat
 
 class TweetItemView : CardView {
-    companion object {
-        const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
-    }
-
     private val numberFormatter = DecimalFormat("#,###,###")
     private val picasso: Picasso by lazy { Picasso.with(context) }
     private lateinit var listener: TweetItemListener
@@ -55,11 +50,7 @@ class TweetItemView : CardView {
         quote_container.visibility = View.GONE
         val formatted = TextUtil.formattedText(tweet, listener, removeQuote).trim()
         with(tweet) {
-            picasso.load(user.profileImageUrl)
-                .priority(Picasso.Priority.HIGH)
-                .fit().centerCrop()
-                .transform(RoundedTransformation(8))
-                .into(tweet_user_image)
+            PicassoUtil.userIcon(user, tweet_user_image)
             tweet_user_name.text = user.name
             tweet_user_screen_name.text = "@" + user.screenName
             tweet_user_protected_icon.beVisibleIf(user.isProtected)
@@ -145,9 +136,7 @@ class TweetItemView : CardView {
             val photoView = AspectRatioImageView(context)
             thumbnail_tile.addView(photoView)
             photoView.setOnClickListener { listener.onImageClick(photos, index) }
-            picasso.load(media.small_url)
-                .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
-                .into(photoView)
+            PicassoUtil.thumbnail(media.small_url, photoView)
         }
     }
 
@@ -164,8 +153,6 @@ class TweetItemView : CardView {
         thumbnail_tile.addView(container)
         val imgView = media_video_thumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
-        picasso.load(video.small_url)
-            .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
-            .into(imgView)
+        PicassoUtil.thumbnail(video.small_url, imgView)
     }
 }

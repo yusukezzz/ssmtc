@@ -20,7 +20,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.gson.reflect.TypeToken
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.base_layout.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.timeline_layout.*
@@ -39,7 +38,7 @@ import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
-import net.yusukezzz.ssmtc.util.picasso.RoundedTransformation
+import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
@@ -251,12 +250,7 @@ class TimelineActivity: AppCompatActivity(),
         val profileImage = headerView.findViewById(R.id.profile_image) as ImageView
         val screenName = headerView.findViewById(R.id.screen_name) as TextView
         val accountSelectBtn = headerView.findViewById(R.id.btn_account_selector) as ImageView
-        Picasso.with(this)
-            .load(account.user.profileImageUrl)
-            .fit()
-            .centerCrop()
-            .transform(RoundedTransformation(8))
-            .into(profileImage)
+        PicassoUtil.userIcon(account.user, profileImage)
         screenName.text = account.user.screenName
 
         accountSelectBtn.setOnClickListener {
