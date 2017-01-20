@@ -16,7 +16,6 @@ import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
-import java.io.File
 
 @RuntimePermissions
 class StatusUpdateActivity: AppCompatActivity() {
@@ -96,7 +95,7 @@ class StatusUpdateActivity: AppCompatActivity() {
         paths.forEachIndexed { i, path ->
             val imgView = AspectRatioImageView(this)
             thumbnail_tile.addView(imgView)
-            PicassoUtil.thumbnail(File(path), imgView)
+            PicassoUtil.thumbnail(path, imgView)
         }
     }
 }
