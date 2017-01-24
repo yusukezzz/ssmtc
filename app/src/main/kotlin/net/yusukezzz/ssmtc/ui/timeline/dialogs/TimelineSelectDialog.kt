@@ -7,7 +7,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.services.TimelineParameter
 
 
-class TimelineSelectDialog: BaseDialogFragment() {
+class TimelineSelectDialog : TimelineSelectDialogFragment() {
     companion object {
         val TIMELINE_TYPES = arrayOf("Home", "Mentions", "Lists", "Search", "User")
 

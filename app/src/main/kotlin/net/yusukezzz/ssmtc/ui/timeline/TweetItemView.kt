@@ -7,7 +7,6 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
 import net.yusukezzz.ssmtc.R
@@ -21,7 +20,6 @@ import java.text.DecimalFormat
 
 class TweetItemView : CardView {
     private val numberFormatter = DecimalFormat("#,###,###")
-    private val picasso: Picasso by lazy { Picasso.with(context) }
     private lateinit var listener: TweetItemListener
 
     interface TweetItemListener {
@@ -30,6 +28,7 @@ class TweetItemView : CardView {
         fun onReplyClick(tweet: Tweet)
         fun onLikeClick(tweet: Tweet)
         fun onRetweetClick(tweet: Tweet)
+        fun onShareClick(tweet: Tweet)
 
         // for TextUtil
         fun onUrlClick(url: String)
@@ -107,6 +106,9 @@ class TweetItemView : CardView {
         }
         ic_twitter_like.setColorFilter(context.getCompatColor(likeColor))
         ic_twitter_like.setOnClickListener { listener.onLikeClick(tweet) }
+
+        // handle more actions
+        ic_tweet_share.setOnClickListener { listener.onShareClick(tweet) }
     }
 
     fun bindRetweeted(tweet: Tweet) {

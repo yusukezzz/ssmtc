@@ -130,6 +130,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="tweet body text"
+                android:textSize="14sp"
                 android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:layout_toEndOf="@id/tweet_user_image"
                 android:layout_below="@id/tweet_user_name" />
@@ -173,7 +174,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="quote body text"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:layout_below="@id/quote_user_name" />
 
             </RelativeLayout>
@@ -244,6 +245,18 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
+
+                <net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
+                    android:id="@+id/ic_tweet_share"
+                    android:src="@drawable/ic_share"
+                    android:tint="@color/action_icon_default"
+                    android:layout_marginEnd="8dp"
+                    android:padding="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:widthRatio="1"
+                    app:heightRatio="1" />
 
             </LinearLayout>
 

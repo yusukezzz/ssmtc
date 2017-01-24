@@ -8,7 +8,7 @@ import android.widget.EditText
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.services.TimelineParameter
 
-class TextInputDialog: BaseDialogFragment() {
+class TextInputDialog : TimelineSelectDialogFragment() {
     companion object {
         val ARG_TITLE = "title"
         val ARG_TIMELINE_TYPE = "type"

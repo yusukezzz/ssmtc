@@ -53,7 +53,7 @@ class TimelineActivity: AppCompatActivity(),
     TweetItemView.TweetItemListener,
     NavigationView.OnNavigationItemSelectedListener,
     TimelineSettingDialog.TimelineSettingListener,
-    BaseDialogFragment.TimelineSelectListener {
+    TimelineSelectDialogFragment.TimelineSelectListener {
 
     companion object {
         const val STATE_OLDEST_TWEET_ID = "state_oldest_tweet_id"
@@ -487,6 +487,13 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onHashTagClick(hashTag: String) {
         onTimelineSelected(TimelineParameter.search(hashTag))
+    }
+
+    override fun onShareClick(tweet: Tweet) {
+        val i = Intent(Intent.ACTION_SEND)
+        i.type = "text/plain"
+        i.putExtra(Intent.EXTRA_TEXT, tweet.permalinkUrl)
+        startActivity(Intent.createChooser(i, resources.getString(R.string.share_tweet)))
     }
 
     override fun updateReactedTweet() {

@@ -11,6 +11,7 @@
     <string name="photo_selector_title">画像選択（残り 4 枚）</string>
     <string name="photo_selector_complete">完了</string>
     <string name="input_tweet">ツイートを入力</string>
+    <string name="share_tweet">ツイートを共有</string>
     <string name="select_photos">画像選択</string>
     <string name="status_send">送信</string>
 

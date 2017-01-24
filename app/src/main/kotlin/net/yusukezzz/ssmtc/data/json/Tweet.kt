@@ -23,6 +23,9 @@ data class Tweet(
         @JvmField val CREATOR = PaperParcelable.Creator(Tweet::class.java)
     }
 
+    val permalinkUrl: String
+        get() = "https://twitter.com/${user.screenName}/status/$id"
+
     val allMedia: List<Media>
         get() = extended_entities?.media ?: listOf()
 
