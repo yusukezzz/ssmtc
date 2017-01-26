@@ -36,7 +36,7 @@ class TextInputDialog : TimelineSelectDialogFragment() {
                     TimelineParameter.TYPE_USER -> TimelineParameter.user(input)
                     else -> throw RuntimeException("unknown timeline type: $type")
                 }
-                listener.onTimelineSelected(timeline)
+                listener.onTimelineSelect(timeline)
             })
             setNegativeButton(R.string.input_dialog_cancel, { d, w -> /* do nothing */ })
         }.create()

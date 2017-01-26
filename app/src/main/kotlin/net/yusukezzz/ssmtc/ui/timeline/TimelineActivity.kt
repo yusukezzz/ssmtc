@@ -29,6 +29,7 @@ import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
@@ -39,11 +40,6 @@ import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
-import nl.komponents.kovenant.combine.and
-import nl.komponents.kovenant.task
-import nl.komponents.kovenant.ui.alwaysUi
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
 import java.io.File
 
 class TimelineActivity: AppCompatActivity(),
@@ -62,6 +58,7 @@ class TimelineActivity: AppCompatActivity(),
 
     private lateinit var presenter: TimelineContract.Presenter
     private lateinit var endlessScrollListener: EndlessRecyclerOnScrollListener
+    private var listsLoading: AlertDialog? = null
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
     private val app: Application by lazy { application as Application }
     private val prefs: Preferences by lazy { PreferencesHolder.prefs }
@@ -238,9 +235,7 @@ class TimelineActivity: AppCompatActivity(),
         return false
     }
 
-    fun launchAuthorizeActivity() {
-        startActivity(Intent(this, AuthorizeActivity::class.java))
-    }
+    fun launchAuthorizeActivity() = startActivity(Intent(this, AuthorizeActivity::class.java))
 
     fun loadAccount() {
         val account = prefs.currentAccount!!
@@ -335,40 +330,40 @@ class TimelineActivity: AppCompatActivity(),
             .show(supportFragmentManager, "TimelineSelectDialog")
     }
 
-    override fun onTimelineSelected(timeline: TimelineParameter) {
+    override fun showListsSelector(lists: List<TwList>) {
+        ListsSelectDialog.newInstance(lists)
+            .setTimelineSelectListener(this)
+            .show(supportFragmentManager, "ListsSelectDialog")
+    }
+
+    override fun onTimelineSelect(timeline: TimelineParameter) {
         prefs.addTimeline(timeline)
         switchTimeline(timeline)
     }
 
-    override fun openListsDialog() {
-        val progress = AlertDialog.Builder(this)
-            .setView(R.layout.lists_loading_dialog)
-            .create()
-        progress.show()
-
-        val userId = prefs.currentUserId
-        task {
-            app.twitter.ownedLists(userId)
-        } and task {
-            app.twitter.subscribedLists(userId)
-        } successUi {
-            ListsSelectDialog.newInstance(it.first + it.second)
-                .setTimelineSelectListener(this)
-                .show(supportFragmentManager, "ListsSelectDialog")
-        } failUi {
-            toast(it)
-        } alwaysUi {
-            progress.dismiss()
-        }
+    override fun onListsSelectorOpen() {
+        presenter.loadLists(prefs.currentUserId)
     }
 
-    override fun openSearchInputDialog() {
+    override fun showListsLoading() {
+        listsLoading = AlertDialog.Builder(this)
+            .setView(R.layout.lists_loading_dialog)
+            .create()
+        listsLoading?.show()
+    }
+
+    override fun dismissListsLoading() {
+        listsLoading?.dismiss()
+        listsLoading = null
+    }
+
+    override fun onSearchInputOpen() {
         TextInputDialog.newInstance(TimelineParameter.TYPE_SEARCH, R.string.input_dialog_search)
             .setTimelineSelectListener(this)
             .show(supportFragmentManager, "TextInputDialog")
     }
 
-    override fun openUserInputDialog() {
+    override fun onScreenNameInputOpen() {
         TextInputDialog.newInstance(TimelineParameter.TYPE_USER, R.string.input_dialog_user)
             .setTimelineSelectListener(this)
             .show(supportFragmentManager, "TextInputDialog")
@@ -380,13 +375,9 @@ class TimelineActivity: AppCompatActivity(),
             .show(supportFragmentManager, "TimelineSettingDialog")
     }
 
-    override fun onSaveTimeline(timeline: TimelineParameter) {
-        switchTimeline(timeline)
-    }
+    override fun onSaveTimeline(timeline: TimelineParameter) = switchTimeline(timeline)
 
-    override fun onBackPressed() {
-        toggleDrawer()
-    }
+    override fun onBackPressed() = toggleDrawer()
 
     private fun toggleDrawer() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -396,9 +387,7 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
-    override fun onRefresh() {
-        presenter.loadTweets()
-    }
+    override fun onRefresh() = presenter.loadTweets()
 
     override fun setLastTweetId(id: Long?) {
         this.lastTweetId = id
@@ -421,9 +410,7 @@ class TimelineActivity: AppCompatActivity(),
         // TODO: more loading progress off
     }
 
-    override fun stopLoading() {
-        endlessScrollListener.stopLoading()
-    }
+    override fun stopLoading() = endlessScrollListener.stopLoading()
 
     override fun onLoadMore() {
         println("onLoadMore")
@@ -453,41 +440,19 @@ class TimelineActivity: AppCompatActivity(),
         chromeIntent.launchUrl(this, Uri.parse(url))
     }
 
-    override fun onImageClick(images: List<Media>, pos: Int) {
-        startActivity(GalleryActivity.newIntent(this, images, pos))
-    }
+    override fun onImageClick(images: List<Media>, pos: Int) = startActivity(GalleryActivity.newIntent(this, images, pos))
 
-    override fun onVideoClick(video: VideoInfo) {
-        startActivity(VideoPlayerActivity.newIntent(this, video))
-    }
+    override fun onVideoClick(video: VideoInfo) = startActivity(VideoPlayerActivity.newIntent(this, video))
 
-    override fun onReplyClick(tweet: Tweet) {
-        startActivity(StatusUpdateActivity.newIntent(this, tweet.id, tweet.user.screenName))
-    }
+    override fun onReplyClick(tweet: Tweet) = startActivity(StatusUpdateActivity.newIntent(this, tweet.id, tweet.user.screenName))
 
-    override fun onLikeClick(tweet: Tweet) {
-        if (tweet.favorited) {
-            presenter.unlike(tweet)
-        } else {
-            presenter.like(tweet)
-        }
-    }
+    override fun onLikeClick(tweet: Tweet) = presenter.like(tweet)
 
-    override fun onRetweetClick(tweet: Tweet) {
-        if (tweet.retweeted) {
-            presenter.unretweet(tweet)
-        } else {
-            presenter.retweet(tweet)
-        }
-    }
+    override fun onRetweetClick(tweet: Tweet) = presenter.retweet(tweet)
 
-    override fun onScreenNameClick(screenName: String) {
-        onTimelineSelected(TimelineParameter.user(screenName))
-    }
+    override fun onScreenNameClick(screenName: String) = onTimelineSelect(TimelineParameter.user(screenName))
 
-    override fun onHashTagClick(hashTag: String) {
-        onTimelineSelected(TimelineParameter.search(hashTag))
-    }
+    override fun onHashTagClick(hashTag: String) = onTimelineSelect(TimelineParameter.search(hashTag))
 
     override fun onShareClick(tweet: Tweet) {
         val i = Intent(Intent.ACTION_SEND)
@@ -496,9 +461,7 @@ class TimelineActivity: AppCompatActivity(),
         startActivity(Intent.createChooser(i, resources.getString(R.string.share_tweet)))
     }
 
-    override fun updateReactedTweet() {
-        timelineAdapter.notifyDataSetChanged()
-    }
+    override fun updateReactedTweet() = timelineAdapter.notifyDataSetChanged()
 
     override fun handleError(error: Throwable) {
         toast(error)

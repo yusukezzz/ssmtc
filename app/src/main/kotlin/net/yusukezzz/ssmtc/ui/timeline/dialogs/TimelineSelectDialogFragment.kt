@@ -5,10 +5,10 @@ import net.yusukezzz.ssmtc.data.api.TimelineParameter
 
 open class TimelineSelectDialogFragment : AppCompatDialogFragment() {
     interface TimelineSelectListener {
-        fun onTimelineSelected(timeline: TimelineParameter)
-        fun openListsDialog()
-        fun openSearchInputDialog()
-        fun openUserInputDialog()
+        fun onTimelineSelect(timeline: TimelineParameter)
+        fun onListsSelectorOpen()
+        fun onSearchInputOpen()
+        fun onScreenNameInputOpen()
     }
 
     protected lateinit var listener: TimelineSelectListener

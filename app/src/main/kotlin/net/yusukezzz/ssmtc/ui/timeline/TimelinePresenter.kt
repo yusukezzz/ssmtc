@@ -3,7 +3,9 @@ package net.yusukezzz.ssmtc.ui.timeline
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Tweet
+import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
+import nl.komponents.kovenant.ui.alwaysUi
 
 class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, private val param: TimelineParameter) : TimelineContract.Presenter {
     /**
@@ -27,17 +29,35 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, p
         }
     }
 
-    override fun like(tweet: Tweet) {
+    override fun loadLists(userId: Long) {
+        view.showListsLoading()
+
         task {
-            twitter.like(tweet.id)
+            twitter.ownedLists(userId)
+        } and task {
+            twitter.subscribedLists(userId)
         } doneUi {
-            tweet.favorite_count++
-            tweet.favorited = true
-            view.updateReactedTweet()
+            view.showListsSelector(it.first + it.second)
+        } alwaysUi {
+            view.dismissListsLoading()
         }
     }
 
-    override fun unlike(tweet: Tweet) {
+    override fun like(tweet: Tweet) {
+        if (tweet.favorited) {
+            unlike(tweet)
+        } else {
+            task {
+                twitter.like(tweet.id)
+            } doneUi {
+                tweet.favorite_count++
+                tweet.favorited = true
+                view.updateReactedTweet()
+            }
+        }
+    }
+
+    private fun unlike(tweet: Tweet) {
         task {
             twitter.unlike(tweet.id)
         } doneUi {
@@ -48,16 +68,20 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, p
     }
 
     override fun retweet(tweet: Tweet) {
-        task {
-            twitter.retweet(tweet.id)
-        } doneUi {
-            tweet.retweet_count++
-            tweet.retweeted = true
-            view.updateReactedTweet()
+        if (tweet.retweeted) {
+            unretweet(tweet)
+        } else {
+            task {
+                twitter.retweet(tweet.id)
+            } doneUi {
+                tweet.retweet_count++
+                tweet.retweeted = true
+                view.updateReactedTweet()
+            }
         }
     }
 
-    override fun unretweet(tweet: Tweet) {
+    private fun unretweet(tweet: Tweet) {
         task {
             twitter.unretweet(tweet.id)
         } doneUi {

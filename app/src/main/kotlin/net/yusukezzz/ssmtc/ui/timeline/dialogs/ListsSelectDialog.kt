@@ -25,7 +25,7 @@ class ListsSelectDialog : TimelineSelectDialogFragment() {
         return AlertDialog.Builder(activity).apply {
             setTitle(R.string.lists_selector_title)
             setItems(items) { dialog, which ->
-                twLists[which].let { listener.onTimelineSelected(TimelineParameter.list(it.id, it.fullName)) }
+                twLists[which].let { listener.onTimelineSelect(TimelineParameter.list(it.id, it.fullName)) }
             }
             setNegativeButton(R.string.lists_selector_cancel) { d, w -> /* do nothing */ }
         }.create()
