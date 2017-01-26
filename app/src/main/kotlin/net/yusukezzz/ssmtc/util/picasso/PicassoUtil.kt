@@ -11,8 +11,9 @@ import java.io.File
 
 object PicassoUtil {
     const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
+    const val ROUNDED_CORNER_RADIUS = 8
 
-    private val rounded: Transformation = RoundedTransformation(8)
+    private val rounded: Transformation = RoundedTransformation(ROUNDED_CORNER_RADIUS)
 
     fun cancel(view: View): Unit {
         if (view is ImageView) {
