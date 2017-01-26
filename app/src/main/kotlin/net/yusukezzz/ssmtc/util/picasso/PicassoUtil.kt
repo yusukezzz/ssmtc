@@ -6,7 +6,7 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.Transformation
-import net.yusukezzz.ssmtc.data.json.User
+import net.yusukezzz.ssmtc.data.api.model.User
 import java.io.File
 
 object PicassoUtil {

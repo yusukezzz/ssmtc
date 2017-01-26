@@ -1,4 +1,4 @@
-package net.yusukezzz.ssmtc.data.json
+package net.yusukezzz.ssmtc.data.api.model
 
 import com.google.gson.annotations.SerializedName
 import nz.bradcampbell.paperparcel.PaperParcel

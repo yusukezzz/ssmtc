@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.data
 
-import net.yusukezzz.ssmtc.data.json.Media
-import net.yusukezzz.ssmtc.data.json.Url
+import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.data.api.model.Url
 
 open class FormattedUrl(urlEntity: Url) {
     val start: Int = urlEntity.start

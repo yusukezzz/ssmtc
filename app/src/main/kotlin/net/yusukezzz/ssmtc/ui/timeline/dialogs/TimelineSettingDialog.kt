@@ -8,8 +8,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.timeline_setting.view.*
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.services.FilterRule
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.FilterRule
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 
 class TimelineSettingDialog: AppCompatDialogFragment() {

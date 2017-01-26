@@ -9,7 +9,7 @@ import android.os.Handler
 import android.view.View
 import kotlinx.android.synthetic.main.video_player.*
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.json.VideoInfo
+import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.TextUtil
 

@@ -6,7 +6,7 @@ import com.github.gfx.util.encrypt.EncryptedSharedPreferences
 import com.github.gfx.util.encrypt.Encryption
 import com.google.gson.reflect.TypeToken
 import net.yusukezzz.ssmtc.data.Account
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
 
 open class Preferences(private val context: Context) {
@@ -46,7 +46,7 @@ open class Preferences(private val context: Context) {
 
     fun removeCurrentAccount() {
         accounts = accounts.minus(currentAccount!!)
-        if (accounts.size == 0) {
+        if (accounts.isEmpty()) {
             currentUserId = 0
         } else {
             currentUserId = accounts[0].user.id

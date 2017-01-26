@@ -6,7 +6,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import net.yusukezzz.ssmtc.data.FormattedMedia
 import net.yusukezzz.ssmtc.data.FormattedUrl
-import net.yusukezzz.ssmtc.data.json.Tweet
+import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import org.apache.commons.lang3.StringEscapeUtils
 

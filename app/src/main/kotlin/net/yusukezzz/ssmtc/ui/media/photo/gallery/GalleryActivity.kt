@@ -10,8 +10,8 @@ import android.os.Environment
 import android.support.v4.view.ViewPager
 import kotlinx.android.synthetic.main.photo_gallery.*
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.json.Media
-import net.yusukezzz.ssmtc.data.json.MediaParcel
+import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.data.api.model.MediaParcel
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.toast
 import org.threeten.bp.LocalDateTime

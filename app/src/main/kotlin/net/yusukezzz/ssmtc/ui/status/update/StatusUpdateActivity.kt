@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
-import net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
+import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import permissions.dispatcher.NeedsPermission

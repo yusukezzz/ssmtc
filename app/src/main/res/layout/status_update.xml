@@ -69,7 +69,7 @@
                 android:inputType="textMultiLine"
                 android:gravity="top" />
 
-            <net.yusukezzz.ssmtc.ui.views.ThumbnailTileLayout
+            <net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
                 android:id="@+id/thumbnail_tile"
                 android:background="@color/dark_grey"
                 android:layout_marginStart="16dp"

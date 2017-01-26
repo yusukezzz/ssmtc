@@ -9,7 +9,7 @@ import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.photo_gallery_page.view.*
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.json.Media
+import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.util.toast
 
 class GalleryPageAdapter(private val context: Context, private val images: List<Media>) : PagerAdapter() {

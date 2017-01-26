@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import net.yusukezzz.ssmtc.BasePresenter
-import net.yusukezzz.ssmtc.data.json.Tweet
+import net.yusukezzz.ssmtc.data.api.model.Tweet
 
 interface TimelineContract {
     interface Presenter: BasePresenter {

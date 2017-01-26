@@ -1,4 +1,4 @@
-package net.yusukezzz.ssmtc.services
+package net.yusukezzz.ssmtc.data.api
 
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable

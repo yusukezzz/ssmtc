@@ -4,8 +4,8 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.json.TwList
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.model.TwList
 
 class ListsSelectDialog : TimelineSelectDialogFragment() {
     companion object {

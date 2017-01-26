@@ -3,8 +3,8 @@ package net.yusukezzz.ssmtc.ui.authorize
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.data.Account
-import net.yusukezzz.ssmtc.services.TimelineParameter
-import net.yusukezzz.ssmtc.services.Twitter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Twitter
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.then
 import oauth.signpost.OAuth

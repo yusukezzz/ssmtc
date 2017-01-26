@@ -1,7 +1,7 @@
-package net.yusukezzz.ssmtc.services
+package net.yusukezzz.ssmtc.data.api
 
 import net.yusukezzz.ssmtc.BuildConfig
-import net.yusukezzz.ssmtc.data.json.*
+import net.yusukezzz.ssmtc.data.api.model.*
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
 import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import net.yusukezzz.ssmtc.util.toRequestBody

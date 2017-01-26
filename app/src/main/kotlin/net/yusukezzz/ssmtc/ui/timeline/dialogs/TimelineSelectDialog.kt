@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
 
 
 class TimelineSelectDialog : TimelineSelectDialogFragment() {

@@ -1,4 +1,4 @@
-package net.yusukezzz.ssmtc.services
+package net.yusukezzz.ssmtc.data.api
 
 import org.apache.commons.codec.net.URLCodec
 

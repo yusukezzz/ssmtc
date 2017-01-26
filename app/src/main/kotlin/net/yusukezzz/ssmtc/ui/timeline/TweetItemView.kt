@@ -10,10 +10,10 @@ import android.view.View
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.json.Media
-import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.ui.views.AspectRatioImageView
+import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.data.api.model.Tweet
+import net.yusukezzz.ssmtc.data.api.model.VideoInfo
+import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.text.DecimalFormat

@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.data
 
-import net.yusukezzz.ssmtc.data.json.User
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.model.User
 import nz.bradcampbell.paperparcel.PaperParcel
 import nz.bradcampbell.paperparcel.PaperParcelable
 

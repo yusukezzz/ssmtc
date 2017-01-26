@@ -27,10 +27,10 @@ import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.json.Media
-import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.data.json.VideoInfo
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.data.api.model.Tweet
+import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity

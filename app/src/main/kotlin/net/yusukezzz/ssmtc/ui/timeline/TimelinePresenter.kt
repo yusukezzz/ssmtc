@@ -1,8 +1,8 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import net.yusukezzz.ssmtc.data.json.Tweet
-import net.yusukezzz.ssmtc.services.TimelineParameter
-import net.yusukezzz.ssmtc.services.Twitter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.api.model.Tweet
 import nl.komponents.kovenant.task
 
 class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, private val param: TimelineParameter) : TimelineContract.Presenter {

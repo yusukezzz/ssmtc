@@ -9,7 +9,7 @@ import android.support.v7.app.NotificationCompat
 import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.services.Twitter
+import net.yusukezzz.ssmtc.data.api.Twitter
 import java.io.File
 
 class StatusUpdateService: IntentService("StatusUpdateService") {

@@ -6,7 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import android.widget.EditText
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.services.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.TimelineParameter
 
 class TextInputDialog : TimelineSelectDialogFragment() {
     companion object {

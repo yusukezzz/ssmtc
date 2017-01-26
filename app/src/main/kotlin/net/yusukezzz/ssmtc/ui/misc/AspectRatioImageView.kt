@@ -1,4 +1,4 @@
-package net.yusukezzz.ssmtc.ui.views
+package net.yusukezzz.ssmtc.ui.misc
 
 import android.content.Context
 import android.util.AttributeSet
