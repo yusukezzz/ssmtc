@@ -64,7 +64,7 @@ class TimelineActivity: AppCompatActivity(),
     private val prefs: Preferences by lazy { PreferencesHolder.prefs }
     private val lastTimelineFile by lazy { File(applicationContext.cacheDir, "last_timeline.json") }
 
-    // Oldest tweet id on current timeline
+    // Oldest tweet id on current timeline (use for next paging request)
     private var lastTweetId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -341,9 +341,7 @@ class TimelineActivity: AppCompatActivity(),
         switchTimeline(timeline)
     }
 
-    override fun onListsSelectorOpen() {
-        presenter.loadLists(prefs.currentUserId)
-    }
+    override fun onListsSelectorOpen() = presenter.loadLists(prefs.currentUserId)
 
     override fun showListsLoading() {
         listsLoading = AlertDialog.Builder(this)
@@ -387,7 +385,15 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
+    /**
+     * Load initial tweets from api
+     */
     override fun onRefresh() = presenter.loadTweets()
+
+    /**
+     * Load paginated tweets from api
+     */
+    override fun onLoadMore() = presenter.loadTweets(lastTweetId)
 
     override fun setLastTweetId(id: Long?) {
         this.lastTweetId = id
@@ -402,21 +408,11 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     /**
-     * Add more loaded tweets
+     * Add paginated tweets
      */
-    override fun addTweets(tweets: List<Tweet>) {
-        timelineAdapter.add(tweets)
-        println("tweets pushed")
-        // TODO: more loading progress off
-    }
+    override fun addTweets(tweets: List<Tweet>) = timelineAdapter.add(tweets)
 
     override fun stopLoading() = endlessScrollListener.stopLoading()
-
-    override fun onLoadMore() {
-        println("onLoadMore")
-        presenter.loadTweets(lastTweetId)
-        // TODO: more loading progress on
-    }
 
     fun initializeTimeline() {
         endlessScrollListener.reset()
