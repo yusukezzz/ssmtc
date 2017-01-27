@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.view.WindowManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 
@@ -24,11 +25,19 @@ class TextInputDialog : TimelineSelectDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val title = arguments.getInt(ARG_TITLE)
         val type = arguments.getInt(ARG_TIMELINE_TYPE)
+
         val edit = EditText(context)
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        val margin = resources.getDimensionPixelSize(R.attr.dialogPreferredPadding)
+        params.setMargins(margin, margin, margin, margin)
+        val linear = LinearLayout(context)
+        linear.orientation = LinearLayout.VERTICAL
+        linear.layoutParams = params
+        linear.addView(edit)
 
         val dialog = AlertDialog.Builder(context).apply {
             setTitle(title)
-            setView(edit) // TODO: use layout
+            setView(linear)
             setPositiveButton(R.string.input_dialog_ok, { dialog, which ->
                 val input = edit.text.toString().trim()
                 val timeline = when (type) {
