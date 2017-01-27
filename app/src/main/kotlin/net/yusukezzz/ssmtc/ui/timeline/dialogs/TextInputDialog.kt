@@ -8,8 +8,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.util.resolveAttributeId
 
-class TextInputDialog : TimelineSelectDialogFragment() {
+class TextInputDialog : BaseDialogFragment() {
     companion object {
         val ARG_TITLE = "title"
         val ARG_TIMELINE_TYPE = "type"
@@ -27,12 +28,10 @@ class TextInputDialog : TimelineSelectDialogFragment() {
         val type = arguments.getInt(ARG_TIMELINE_TYPE)
 
         val edit = EditText(context)
-        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val margin = resources.getDimensionPixelSize(R.attr.dialogPreferredPadding)
-        params.setMargins(margin, margin, margin, margin)
+        val padding = resources.getDimensionPixelSize(context.resolveAttributeId(android.R.attr.dialogPreferredPadding))
         val linear = LinearLayout(context)
+        linear.setPadding(padding, padding, padding, padding)
         linear.orientation = LinearLayout.VERTICAL
-        linear.layoutParams = params
         linear.addView(edit)
 
         val dialog = AlertDialog.Builder(context).apply {

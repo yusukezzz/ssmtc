@@ -49,7 +49,7 @@ class TimelineActivity: AppCompatActivity(),
     TweetItemView.TweetItemListener,
     NavigationView.OnNavigationItemSelectedListener,
     TimelineSettingDialog.TimelineSettingListener,
-    TimelineSelectDialogFragment.TimelineSelectListener {
+    BaseDialogFragment.TimelineSelectListener {
 
     companion object {
         const val STATE_OLDEST_TWEET_ID = "state_oldest_tweet_id"
@@ -154,7 +154,6 @@ class TimelineActivity: AppCompatActivity(),
         endlessScrollListener = EndlessRecyclerOnScrollListener(this, layoutManager)
         endlessScrollListener.setLoadMoreListener(this)
         timeline_list.addOnScrollListener(endlessScrollListener)
-
 
         swipe_refresh.setOnRefreshListener(this)
         swipe_refresh.setColorSchemeResources(R.color.green, R.color.red, R.color.blue, R.color.yellow)

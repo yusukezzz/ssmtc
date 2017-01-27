@@ -7,7 +7,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.TwList
 
-class ListsSelectDialog : TimelineSelectDialogFragment() {
+class ListsSelectDialog : BaseDialogFragment() {
     companion object {
         val ARG_TW_LISTS = "tw_lists"
 

@@ -10,6 +10,7 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,13 @@ fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
 
     return drawable
 }
+
+fun Context.resolveAttributeId(resId: Int): Int {
+    val attr = TypedValue()
+    this.theme.resolveAttribute(resId, attr, true)
+    return attr.resourceId
+}
+
 
 fun Intent.getLongExtraOrNull(key: String): Long? {
     return if (this.hasExtra(key)) {

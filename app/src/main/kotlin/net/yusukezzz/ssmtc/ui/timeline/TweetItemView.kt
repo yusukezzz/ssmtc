@@ -5,7 +5,6 @@ import android.support.v7.widget.CardView
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
@@ -90,9 +89,7 @@ class TweetItemView : CardView {
                 R.color.action_icon_default
             }
             ic_twitter_retweet.setColorFilter(context.getCompatColor(retweetColor))
-            val attr = TypedValue()
-            context.theme.resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, attr, true)
-            ic_twitter_retweet.setBackgroundResource(attr.resourceId)
+            ic_twitter_retweet.setBackgroundResource(context.resolveAttributeId(android.R.attr.selectableItemBackgroundBorderless))
             ic_twitter_retweet.setOnClickListener { listener.onRetweetClick(tweet) }
         }
 

@@ -68,8 +68,8 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
 
         val pos = view.timeline_media_spinner.selectedItemPosition
         val showing = FilterRule.Showing.values()[pos]
-        val includeWords = view.timeline_include.text.toString().lines().filter { it.isNotEmpty() }
-        val excludeWords = view.timeline_exclude.text.toString().lines().filter { it.isNotEmpty() }
+        val includeWords = view.timeline_include.text.toString().lines().filter(String::isNotEmpty)
+        val excludeWords = view.timeline_exclude.text.toString().lines().filter(String::isNotEmpty)
         val newFilter = FilterRule(showing, includeWords, excludeWords)
 
         val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter, includeRetweets = includeRts)
