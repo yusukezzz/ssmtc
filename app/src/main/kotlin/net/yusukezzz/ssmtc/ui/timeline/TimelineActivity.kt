@@ -294,6 +294,7 @@ class TimelineActivity: AppCompatActivity(),
             launchAuthorizeActivity()
         } else {
             loadAccount()
+            switchTimeline(prefs.currentTimeline)
         }
     }
 
