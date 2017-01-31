@@ -45,7 +45,7 @@ kapt {
 
 dependencies {
     ext {
-        support_version = '25.1.0'
+        support_version = '25.1.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.1.0'
         paperparcel_version = '1.0.1'
