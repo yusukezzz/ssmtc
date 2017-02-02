@@ -1,17 +1,20 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import android.content.Context
+import android.net.Uri
 import android.support.v7.widget.CardView
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import kotlinx.android.synthetic.main.media_video.view.*
+import kotlinx.android.synthetic.main.open_graph.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
+import net.yusukezzz.ssmtc.data.og.OpenGraphClient
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
@@ -20,6 +23,7 @@ import java.text.DecimalFormat
 class TweetItemView : CardView {
     private val numberFormatter = DecimalFormat("#,###,###")
     private lateinit var listener: TweetItemListener
+    private lateinit var ogClient: OpenGraphClient
 
     interface TweetItemListener {
         fun onImageClick(images: List<Media>, pos: Int)
@@ -43,8 +47,13 @@ class TweetItemView : CardView {
         this.listener = listener
     }
 
+    fun setOpenGraphClient(client: OpenGraphClient) {
+        this.ogClient = client
+    }
+
     fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {
         tweet_retweeted_container.visibility = View.GONE
+        open_graph.visibility = View.GONE
         quote_container.visibility = View.GONE
         val formatted = TextUtil.formattedText(tweet, listener, removeQuote).trim()
         with(tweet) {
@@ -64,6 +73,8 @@ class TweetItemView : CardView {
             handleVideo(tweet.videos.first())
         } else if (tweet.hasPhoto) {
             handlePhoto(tweet.photos)
+        } else if (tweet.entities.urls.isNotEmpty()) {
+            //handleOpenGraph(tweet.entities.urls.first().url)
         }
     }
 
@@ -153,5 +164,19 @@ class TweetItemView : CardView {
         val imgView = media_video_thumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
         PicassoUtil.thumbnail(video.small_url, imgView)
+    }
+
+    private fun handleOpenGraph(url: String) {
+        val og = ogClient.load(url)
+        open_graph.og_title.text = og.title
+        open_graph.og_description.text = og.description
+        open_graph.og_host.text = Uri.parse(og.url).host
+        if (og.image.isNotEmpty()) {
+            PicassoUtil.thumbnail(og.image, open_graph.og_image)
+        }
+        open_graph.setOnClickListener {
+            listener.onUrlClick(og.url)
+        }
+        open_graph.visibility = View.VISIBLE
     }
 }

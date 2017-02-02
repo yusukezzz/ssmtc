@@ -5,10 +5,11 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.ViewGroup
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Tweet
+import net.yusukezzz.ssmtc.data.og.OpenGraphClient
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import net.yusukezzz.ssmtc.util.inflate
 
-class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<ViewHolder>() {
+class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<ViewHolder>(), OpenGraphClient.OpenGraphObserver {
     companion object {
         private class TweetViewHolder(val view: TweetItemView) : ViewHolder(view) {
             fun bindTo(tweet: Tweet) {
@@ -26,10 +27,12 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
     }
 
     private var timeline: List<Tweet> = listOf()
+    private val ogClient: OpenGraphClient by lazy { OpenGraphClient().apply { setObserver(this@TimelineAdapter) } }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val tweetView = parent.inflate(R.layout.tweet_item) as TweetItemView
         tweetView.setTweetListener(listener)
+        tweetView.setOpenGraphClient(ogClient)
 
         return TweetViewHolder(tweetView)
     }
@@ -39,6 +42,11 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
     override fun onViewRecycled(holder: ViewHolder): Unit = (holder as TweetViewHolder).cleanup()
 
     override fun getItemCount(): Int = timeline.size
+
+    override fun onLoaded() {
+        // reread open graph cache
+        notifyDataSetChanged()
+    }
 
     fun getAll(): List<Tweet> = timeline.toList()
     fun clear() {

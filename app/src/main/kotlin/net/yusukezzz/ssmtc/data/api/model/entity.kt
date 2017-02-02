@@ -5,8 +5,8 @@ import nz.bradcampbell.paperparcel.PaperParcelable
 
 @PaperParcel
 data class Entity(
-    val urls: List<Url>?,
-    val media: List<Media>?
+    val urls: List<Url>,
+    val media: List<Media>
 )
 
 @PaperParcel

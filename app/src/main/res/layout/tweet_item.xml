@@ -135,6 +135,13 @@
                 android:layout_toEndOf="@id/tweet_user_image"
                 android:layout_below="@id/tweet_user_name" />
 
+            <include
+                layout="@layout/open_graph"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/tweet_user_image"
+                android:layout_below="@id/tweet_text" />
+
             <RelativeLayout
                 android:id="@+id/quote_container"
                 android:background="@drawable/quote_frame"
