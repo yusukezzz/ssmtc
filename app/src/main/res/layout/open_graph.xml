@@ -13,8 +13,7 @@
         <ImageView
             android:id="@+id/og_image"
             android:layout_width="@dimen/open_graph_size"
-            android:layout_height="@dimen/open_graph_size"
-            android:src="@drawable/ic_image_placeholder" />
+            android:layout_height="@dimen/open_graph_size" />
 
         <TextView
             android:id="@+id/og_title"
