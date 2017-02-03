@@ -37,6 +37,13 @@ object PicassoUtil {
             .into(imgView)
     }
 
+    fun opengraph(path: String, imgView: ImageView) {
+        Picasso.with(imgView.context).loadFrom(path)
+            .priority(Picasso.Priority.LOW)
+            .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
+            .into(imgView)
+    }
+
     private fun Picasso.loadFrom(from: String): RequestCreator = if (from.startsWith("http")) {
         this.load(Uri.parse(from))
     } else {

@@ -169,16 +169,13 @@ class TweetItemView : CardView {
     private fun handleOpenGraph(url: String) {
         val og = ogClient.load(url)
         open_graph.og_image.setImageBitmap(null)
-        if (og != null) {
-            if (og.isValid.not()) {
-                return
-            }
+        if (og != null && og.isValid) {
 
             open_graph.og_title.text = og.title
             open_graph.og_description.text = og.description
             open_graph.og_host.text = Uri.parse(og.url).host
             if (og.image.isNotEmpty()) {
-                PicassoUtil.thumbnail(og.image, open_graph.og_image)
+                PicassoUtil.opengraph(og.image, open_graph.og_image)
             }
             open_graph.setOnClickListener {
                 listener.onUrlClick(og.url)

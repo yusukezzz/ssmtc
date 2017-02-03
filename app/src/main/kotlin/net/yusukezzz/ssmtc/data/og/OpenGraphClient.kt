@@ -12,14 +12,16 @@ class OpenGraphClient {
     }
     private val cache: LruCache<String, OpenGraph> by lazy { LruCache<String, OpenGraph>(MAX_CACHE_SIZE) }
     private val okhttp = OkHttpClient.Builder().build()
-    private lateinit var observer: OpenGraphObserver
+    private lateinit var listener: OpenGraphListener
 
-    interface OpenGraphObserver {
+    interface OpenGraphListener {
         fun onLoaded()
     }
 
-    fun setObserver(observer: OpenGraphObserver) {
-        this.observer = observer
+    fun setListener(listener: OpenGraphListener): OpenGraphClient {
+        this.listener = listener
+
+        return this
     }
 
     fun load(url: String): OpenGraph? {
@@ -43,7 +45,7 @@ class OpenGraphClient {
             og
         } successUi {
             cache.put(url, it)
-            observer.onLoaded()
+            listener.onLoaded()
         }
     }
 }

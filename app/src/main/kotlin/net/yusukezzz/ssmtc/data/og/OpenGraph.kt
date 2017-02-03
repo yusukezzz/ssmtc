@@ -6,5 +6,5 @@ data class OpenGraph(val title: String,
                      val url: String) {
 
     val isValid: Boolean
-        get() = (title.isNotEmpty() && url.isNotEmpty())
+        get() = (title.isNotEmpty() && url.startsWith("http"))
 }
