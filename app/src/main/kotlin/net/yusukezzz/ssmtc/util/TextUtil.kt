@@ -25,10 +25,10 @@ object TextUtil {
     fun formattedText(tweet: Tweet, listener: TweetItemListener, removeQuote: Boolean = false): CharSequence {
         val entities = tweet.entities
         val decodedText = StringEscapeUtils.unescapeHtml4(tweet.full_text)
-        if (entities.urls == null) return decodedText
+        if (entities.urls.isEmpty()) return decodedText
 
         val urls = entities.urls.map(::FormattedUrl)
-        val medias = entities.media?.map(::FormattedMedia) ?: listOf()
+        val medias = entities.media.map(::FormattedMedia)
         val combined = (urls + medias).sortedBy { it.start }
 
         val lastUrl = if (removeQuote) {

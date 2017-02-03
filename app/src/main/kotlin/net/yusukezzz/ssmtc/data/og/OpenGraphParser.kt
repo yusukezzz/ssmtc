@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.data.og
 
+import org.apache.commons.lang3.StringEscapeUtils
 import java.io.BufferedReader
 
 object OpenGraphParser {
@@ -40,9 +41,9 @@ object OpenGraphParser {
         META_TAG.findAll(head).forEach {
             val meta = it.value
             if (meta.contains(OG_TITLE)) {
-                title = extractContent(meta)
+                title = StringEscapeUtils.escapeHtml4(extractContent(meta))
             } else if (meta.contains(OG_DESC)) {
-                desc = extractContent(meta)
+                desc = StringEscapeUtils.escapeHtml4(extractContent(meta))
             } else if (meta.contains(OG_IMAGE)) {
                 image = extractContent(meta)
             } else if (meta.contains(OG_URL)) {
