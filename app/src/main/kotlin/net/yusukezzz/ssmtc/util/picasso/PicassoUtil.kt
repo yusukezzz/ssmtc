@@ -6,7 +6,9 @@ import android.widget.ImageView
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.Transformation
+import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.User
+import net.yusukezzz.ssmtc.util.getVectorDrawable
 import java.io.File
 
 object PicassoUtil {
@@ -38,8 +40,10 @@ object PicassoUtil {
     }
 
     fun opengraph(path: String, imgView: ImageView) {
+        val ph = imgView.context.getVectorDrawable(R.drawable.og_placeholder, R.color.light_grey)
         Picasso.with(imgView.context).loadFrom(path)
             .priority(Picasso.Priority.LOW)
+            .placeholder(ph)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
             .into(imgView)
     }
