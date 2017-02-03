@@ -135,16 +135,9 @@
                 android:layout_toEndOf="@id/tweet_user_image"
                 android:layout_below="@id/tweet_user_name" />
 
-            <include
-                layout="@layout/open_graph"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_below="@id/tweet_text" />
-
             <RelativeLayout
                 android:id="@+id/quote_container"
-                android:background="@drawable/quote_frame"
+                android:background="@drawable/border_frame"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:padding="8dp"
@@ -186,9 +179,18 @@
 
             </RelativeLayout>
 
+            <include
+                layout="@layout/open_graph"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/tweet_user_image"
+                android:layout_below="@id/quote_container" />
+
             <LinearLayout
                 android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_below="@id/quote_container"
+                android:layout_below="@id/open_graph"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"

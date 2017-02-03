@@ -1,44 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/open_graph"
-    android:background="?selectableItemBackground"
+    android:background="@drawable/border_frame"
     android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/og_image"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/ic_image_placeholder" />
-
-    <TextView
-        android:id="@+id/og_title"
+    <RelativeLayout
+        android:background="?selectableItemBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/og_image"
-        android:layout_alignParentTop="true"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="14sp" />
+        android:layout_height="@dimen/open_graph_size">
 
-    <TextView
-        android:id="@+id/og_host"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/og_image"
-        android:layout_alignParentBottom="true"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textSize="12sp" />
+        <ImageView
+            android:id="@+id/og_image"
+            android:layout_width="@dimen/open_graph_size"
+            android:layout_height="@dimen/open_graph_size"
+            android:src="@drawable/ic_image_placeholder" />
 
-    <TextView
-        android:id="@+id/og_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/og_image"
-        android:layout_below="@id/og_title"
-        android:layout_above="@id/og_host"
-        android:maxLines="2"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/og_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/og_image"
+            android:layout_alignParentTop="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/textWhite"
+            android:textSize="12sp" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/og_host"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_toEndOf="@id/og_image"
+            android:layout_alignParentBottom="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/textWhite"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/og_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_toEndOf="@id/og_image"
+            android:layout_below="@id/og_title"
+            android:layout_above="@id/og_host"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/textWhite"
+            android:textSize="10sp" />
+
+    </RelativeLayout>
+
+</FrameLayout>

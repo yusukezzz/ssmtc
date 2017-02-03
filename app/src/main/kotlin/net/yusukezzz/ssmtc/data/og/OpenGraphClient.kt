@@ -22,7 +22,7 @@ class OpenGraphClient {
         this.observer = observer
     }
 
-    fun load(url: String): OpenGraph {
+    fun load(url: String): OpenGraph? {
         val og = cache.get(url)
         if (og != null) {
             return og
@@ -30,8 +30,7 @@ class OpenGraphClient {
 
         enqueue(url)
 
-        // pass temporary data
-        return OpenGraph(url, "", "", url)
+        return null
     }
 
     private fun enqueue(url: String) {

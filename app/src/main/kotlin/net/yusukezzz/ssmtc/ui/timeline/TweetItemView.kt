@@ -74,7 +74,7 @@ class TweetItemView : CardView {
         } else if (tweet.hasPhoto) {
             handlePhoto(tweet.photos)
         } else if (tweet.entities.urls.isNotEmpty()) {
-            //handleOpenGraph(tweet.entities.urls.first().url)
+            handleOpenGraph(tweet.entities.urls.first().url)
         }
     }
 
@@ -168,15 +168,22 @@ class TweetItemView : CardView {
 
     private fun handleOpenGraph(url: String) {
         val og = ogClient.load(url)
-        open_graph.og_title.text = og.title
-        open_graph.og_description.text = og.description
-        open_graph.og_host.text = Uri.parse(og.url).host
-        if (og.image.isNotEmpty()) {
-            PicassoUtil.thumbnail(og.image, open_graph.og_image)
+        open_graph.og_image.setImageBitmap(null)
+        if (og != null) {
+            if (og.isValid.not()) {
+                return
+            }
+
+            open_graph.og_title.text = og.title
+            open_graph.og_description.text = og.description
+            open_graph.og_host.text = Uri.parse(og.url).host
+            if (og.image.isNotEmpty()) {
+                PicassoUtil.thumbnail(og.image, open_graph.og_image)
+            }
+            open_graph.setOnClickListener {
+                listener.onUrlClick(og.url)
+            }
+            open_graph.visibility = View.VISIBLE
         }
-        open_graph.setOnClickListener {
-            listener.onUrlClick(og.url)
-        }
-        open_graph.visibility = View.VISIBLE
     }
 }
