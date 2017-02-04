@@ -25,24 +25,30 @@ object TextUtil {
     fun formattedText(tweet: Tweet, listener: TweetItemListener, removeQuote: Boolean = false): CharSequence {
         val entities = tweet.entities
         val decodedText = StringEscapeUtils.unescapeHtml4(tweet.full_text)
-        if (entities.urls.isEmpty()) return decodedText
 
         val urls = entities.urls.map(::FormattedUrl)
         val medias = entities.media.map(::FormattedMedia)
-        val combined = (urls + medias).sortedBy { it.start }
 
-        val lastUrl = if (removeQuote) {
-            urls
-        } else {
-            medias
-        }.lastOrNull()?.shortUrl ?: ""
-        val spannable = SpannableStringBuilder(decodedText.replace(lastUrl, ""))
+        val spannable = SpannableStringBuilder(removeUrls(decodedText, urls, medias, removeQuote).trim())
 
-        replaceUrlEntities(spannable, combined, listener)
+        replaceUrlEntities(spannable, urls, listener)
         replaceScreenName(spannable, listener)
         replaceHashTag(spannable, listener)
 
         return spannable
+    }
+
+    private fun removeUrls(str: String, urls: List<FormattedUrl>, medias: List<FormattedMedia>, removeQuote: Boolean): String {
+        fun String.remove(target: String): String = this.replace(target, "")
+
+        // use quoted tweet view
+        val quotedUrl = if (removeQuote) urls.last().shortUrl else ""
+        // use thumbnails
+        val lastMediaUrl = medias.lastOrNull()?.shortUrl ?: ""
+        // use open graph
+        val firstUrl = if (medias.isEmpty() && urls.isNotEmpty()) urls.first().shortUrl else ""
+
+        return str.remove(quotedUrl).remove(lastMediaUrl).remove(firstUrl)
     }
 
     private fun replaceUrlEntities(spannable: SpannableStringBuilder,

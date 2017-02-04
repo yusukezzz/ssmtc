@@ -11,6 +11,7 @@
     <dimen name="quote_profile_image_size">24dp</dimen>
 
     <dimen name="open_graph_size">64dp</dimen>
+    <dimen name="open_graph_margin">8dp</dimen>
 
     <dimen name="media_photo_margin">0.5dp</dimen>
 </resources>

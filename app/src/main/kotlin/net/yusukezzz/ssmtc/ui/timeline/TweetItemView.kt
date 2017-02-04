@@ -22,6 +22,7 @@ import java.text.DecimalFormat
 
 class TweetItemView : CardView {
     private val numberFormatter = DecimalFormat("#,###,###")
+    private var position: Int = 0
     private lateinit var listener: TweetItemListener
     private lateinit var ogClient: OpenGraphClient
 
@@ -43,6 +44,10 @@ class TweetItemView : CardView {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
+    fun setPosition(pos: Int) {
+        this.position = pos
+    }
+
     fun setTweetListener(listener: TweetItemListener) {
         this.listener = listener
     }
@@ -55,7 +60,7 @@ class TweetItemView : CardView {
         tweet_retweeted_container.visibility = View.GONE
         open_graph.visibility = View.GONE
         quote_container.visibility = View.GONE
-        val formatted = TextUtil.formattedText(tweet, listener, removeQuote).trim()
+        val formatted = TextUtil.formattedText(tweet, listener, removeQuote)
         with(tweet) {
             PicassoUtil.userIcon(user, tweet_user_image)
             tweet_user_name.text = user.name
@@ -73,8 +78,8 @@ class TweetItemView : CardView {
             handleVideo(tweet.videos.first())
         } else if (tweet.hasPhoto) {
             handlePhoto(tweet.photos)
-        } else if (tweet.entities.urls.isNotEmpty()) {
-            handleOpenGraph(tweet.entities.urls.first().url)
+        } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
+            handleOpenGraph(tweet.entities.urls.first().expanded_url)
         }
     }
 
@@ -167,20 +172,14 @@ class TweetItemView : CardView {
     }
 
     private fun handleOpenGraph(url: String) {
-        val og = ogClient.load(url)
-        open_graph.og_image.setImageBitmap(null)
-        if (og != null && og.isValid) {
-
-            open_graph.og_title.text = og.title
-            open_graph.og_description.text = og.description
-            open_graph.og_host.text = Uri.parse(og.url).host
-            if (og.image.isNotEmpty()) {
-                PicassoUtil.opengraph(og.image, open_graph.og_image)
-            }
-            open_graph.setOnClickListener {
-                listener.onUrlClick(og.url)
-            }
-            open_graph.visibility = View.VISIBLE
+        val og = ogClient.load(url, position)
+        open_graph.og_title.text = og.title
+        open_graph.og_description.text = og.description
+        open_graph.og_host.text = Uri.parse(og.url).host
+        PicassoUtil.opengraph(og.image, open_graph.og_image)
+        open_graph.setOnClickListener {
+            listener.onUrlClick(og.url)
         }
+        open_graph.visibility = View.VISIBLE
     }
 }

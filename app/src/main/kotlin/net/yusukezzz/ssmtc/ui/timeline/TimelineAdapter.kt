@@ -12,7 +12,8 @@ import net.yusukezzz.ssmtc.util.inflate
 class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<ViewHolder>(), OpenGraphClient.OpenGraphListener {
     companion object {
         private class TweetViewHolder(val view: TweetItemView) : ViewHolder(view) {
-            fun bindTo(tweet: Tweet) {
+            fun bindTo(tweet: Tweet, pos: Int) {
+                view.setPosition(pos)
                 if (tweet.isRetweet) {
                     view.bindRetweeted(tweet)
                 } else if (tweet.isRetweetWithQuoted) {
@@ -37,15 +38,15 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
         return TweetViewHolder(tweetView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, pos: Int): Unit = (holder as TweetViewHolder).bindTo(timeline[pos])
+    override fun onBindViewHolder(holder: ViewHolder, pos: Int): Unit = (holder as TweetViewHolder).bindTo(timeline[pos], pos)
 
     override fun onViewRecycled(holder: ViewHolder): Unit = (holder as TweetViewHolder).cleanup()
 
     override fun getItemCount(): Int = timeline.size
 
-    override fun onLoaded() {
+    override fun onLoaded(pos: Int) {
         // reread open graph cache
-        notifyDataSetChanged()
+        notifyItemChanged(pos)
     }
 
     fun getAll(): List<Tweet> = timeline.toList()
