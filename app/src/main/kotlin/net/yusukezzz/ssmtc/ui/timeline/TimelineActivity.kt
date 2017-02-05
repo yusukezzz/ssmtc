@@ -145,7 +145,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun setupTimelineView() {
-        timeline_list.adapter = TimelineAdapter(this)
+        timeline_list.adapter = TimelineAdapter(this).apply { setHasStableIds(true) }
         timeline_list.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(this)

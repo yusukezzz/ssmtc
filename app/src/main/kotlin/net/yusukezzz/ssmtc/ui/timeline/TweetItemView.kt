@@ -74,6 +74,7 @@ class TweetItemView : CardView {
         }
         handleReaction(tweet)
 
+        thumbnail_tile.removeAllViews()
         if (tweet.hasVideo) {
             handleVideo(tweet.videos.first())
         } else if (tweet.hasPhoto) {
@@ -142,8 +143,8 @@ class TweetItemView : CardView {
 
     fun cleanup() {
         PicassoUtil.cancel(tweet_user_image)
+        PicassoUtil.cancel(open_graph.og_image)
         thumbnail_tile.children { PicassoUtil.cancel(it) }
-        thumbnail_tile.removeAllViews()
     }
 
     private fun handlePhoto(photos: List<Media>) {

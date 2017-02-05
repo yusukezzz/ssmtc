@@ -88,13 +88,13 @@ class StatusUpdateActivity: AppCompatActivity() {
 
     fun showSelectedPhotos(paths: Array<String>) {
         photos = null
-        thumbnail_tile.removeAllViews()
+        status_thumbnail_tile.removeAllViews()
         if (paths.isEmpty()) return
 
         photos = paths
         paths.forEachIndexed { i, path ->
             val imgView = AspectRatioImageView(this)
-            thumbnail_tile.addView(imgView)
+            status_thumbnail_tile.addView(imgView)
             PicassoUtil.thumbnail(path, imgView)
         }
     }

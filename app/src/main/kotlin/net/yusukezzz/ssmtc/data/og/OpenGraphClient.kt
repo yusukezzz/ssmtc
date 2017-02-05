@@ -39,25 +39,18 @@ class OpenGraphClient {
         return createTmpData(url)
     }
 
-    private fun addCache(url: String, og: OpenGraph) {
-        if (og.isValid) {
-            cache.put(url, og)
-        } else {
-            cache.put(url, createTmpData(url))
-        }
-    }
-
     private fun enqueue(url: String, pos: Int) {
         task {
             val req = Request.Builder().url(url).build()
             val res = okhttp.newCall(req).execute()
+            val resolvedUrl = res.request().url().toString()
             val body = res.body()
             val headerCharset: Charset? = body.contentType().charset(null)
-            val og = OpenGraphParser.parse(body.bytes(), headerCharset)
+            val og = OpenGraphParser.parse(resolvedUrl, body.bytes(), headerCharset)
             body.close()
             og
         } successUi {
-            addCache(url, it)
+            cache.put(url, it)
             listener.onLoaded(pos)
         } failUi ::println
     }

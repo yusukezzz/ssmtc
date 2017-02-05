@@ -43,6 +43,7 @@ class TimelineAdapter(val listener: TweetItemListener) : RecyclerView.Adapter<Vi
     override fun onViewRecycled(holder: ViewHolder): Unit = (holder as TweetViewHolder).cleanup()
 
     override fun getItemCount(): Int = timeline.size
+    override fun getItemId(pos: Int): Long = timeline[pos].id
 
     override fun onLoaded(pos: Int) {
         // reread open graph cache

@@ -17,15 +17,15 @@ object OpenGraphParser {
     val HEAD_END_TAG = Regex("</head>", META_OPTS)
     const val CONTENT_KEY = "content=\""
 
-    fun parse(bufferedReader: BufferedReader): OpenGraph = parseMeta(parseHead(bufferedReader))
+    fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
-    fun parse(bytes: ByteArray, charset: Charset?): OpenGraph {
+    fun parse(url: String, bytes: ByteArray, charset: Charset?): OpenGraph {
         if (charset != null) {
-            return parse(bytes.inputStream().bufferedReader(charset))
+            return parse(url, bytes.inputStream().bufferedReader(charset))
         } else {
             val head = parseHead(bytes.inputStream().bufferedReader(StandardCharsets.US_ASCII))
             val headCharset = parseCharset(head)
-            return parse(bytes.inputStream().bufferedReader(headCharset))
+            return parse(url, bytes.inputStream().bufferedReader(headCharset))
         }
     }
 
@@ -55,11 +55,11 @@ object OpenGraphParser {
         }
     }
 
-    private fun parseMeta(head: CharSequence): OpenGraph {
-        var title = ""
+    private fun parseMeta(url: String, head: CharSequence): OpenGraph {
+        var title = url
         var desc = ""
         var image = ""
-        var url = ""
+        var ogUrl = url
 
         META_TAG.findAll(head).forEach {
             val meta = it.value
@@ -70,11 +70,11 @@ object OpenGraphParser {
             } else if (meta.contains(OG_IMAGE)) {
                 image = extractContent(meta)
             } else if (meta.contains(OG_URL)) {
-                url = extractContent(meta)
+                ogUrl = extractContent(meta)
             }
         }
 
-        return OpenGraph(title, desc, image, url)
+        return OpenGraph(title, desc, image, ogUrl)
     }
 
     private fun extractContent(meta: String): String {
