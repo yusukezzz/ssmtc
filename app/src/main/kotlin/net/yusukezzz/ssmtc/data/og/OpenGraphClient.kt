@@ -49,7 +49,7 @@ class OpenGraphClient {
             val og = if (headerCharset != null) {
                 OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
             } else {
-                OpenGraphParser.parse(resolvedUrl, body.bytes(), headerCharset)
+                OpenGraphParser.parse(resolvedUrl, body.bytes())
             }
             body.close()
             og

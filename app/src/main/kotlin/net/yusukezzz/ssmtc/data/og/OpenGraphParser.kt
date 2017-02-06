@@ -19,14 +19,10 @@ object OpenGraphParser {
 
     fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
-    fun parse(url: String, bytes: ByteArray, charset: Charset?): OpenGraph {
-        if (charset != null) {
-            return parse(url, bytes.inputStream().bufferedReader(charset))
-        } else {
-            val head = parseHead(bytes.inputStream().bufferedReader(StandardCharsets.US_ASCII))
-            val headCharset = parseCharset(head)
-            return parse(url, bytes.inputStream().bufferedReader(headCharset))
-        }
+    fun parse(url: String, bytes: ByteArray): OpenGraph {
+        val head = parseHead(bytes.inputStream().bufferedReader(StandardCharsets.US_ASCII))
+        val headCharset = parseCharset(head)
+        return parse(url, bytes.inputStream().bufferedReader(headCharset))
     }
 
     private fun parseHead(bufferedReader: BufferedReader): CharSequence {
