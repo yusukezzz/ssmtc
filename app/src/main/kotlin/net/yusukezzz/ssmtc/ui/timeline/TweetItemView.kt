@@ -6,7 +6,6 @@ import android.support.v7.widget.CardView
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
-import android.view.View
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.open_graph.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
@@ -57,10 +56,25 @@ class TweetItemView : CardView {
     }
 
     fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {
-        tweet_retweeted_container.visibility = View.GONE
-        open_graph.visibility = View.GONE
-        quote_container.visibility = View.GONE
-        val formatted = TextUtil.formattedText(tweet, listener, removeQuote)
+        tweet_retweeted_container.hide()
+        open_graph.hide()
+        quote_container.hide()
+
+        thumbnail_tile.removeAllViews()
+        var removeUrl = ""
+        if (tweet.hasVideo) {
+            handleVideo(tweet.videos.first())
+        } else if (tweet.hasPhoto) {
+            handlePhoto(tweet.photos)
+        } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
+            val urls = tweet.entities.urls
+            // ignore host only url
+            val urlEntity = urls.filter { Uri.parse(it.expanded_url).path.isNotEmpty() }.firstOrNull() ?: urls.first()
+            removeUrl = urlEntity.url
+            handleOpenGraph(urlEntity.expanded_url)
+        }
+
+        val formatted = TextUtil.formattedText(tweet, listener, removeUrl, removeQuote)
         with(tweet) {
             PicassoUtil.userIcon(user, tweet_user_image)
             tweet_user_name.text = user.name
@@ -73,15 +87,6 @@ class TweetItemView : CardView {
             tweet_text.beVisibleIf(formatted.isNotEmpty())
         }
         handleReaction(tweet)
-
-        thumbnail_tile.removeAllViews()
-        if (tweet.hasVideo) {
-            handleVideo(tweet.videos.first())
-        } else if (tweet.hasPhoto) {
-            handlePhoto(tweet.photos)
-        } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
-            handleOpenGraph(tweet.entities.urls.first().expanded_url)
-        }
     }
 
     private fun handleReaction(tweet: Tweet) {
@@ -128,7 +133,7 @@ class TweetItemView : CardView {
     fun bindRetweeted(tweet: Tweet) {
         bindTweet(tweet.retweeted_status!!)
         tweet_retweeted_message.text = tweet.user.name + resources.getString(R.string.retweeted_by)
-        tweet_retweeted_container.visibility = View.VISIBLE
+        tweet_retweeted_container.show()
     }
 
     fun bindQuoted(tweet: Tweet) {
@@ -138,7 +143,7 @@ class TweetItemView : CardView {
         quote_text.movementMethod = LinkMovementMethod.getInstance()
         quote_user_name.text = quoted.user.name
         quote_user_screen_name.text = "@" + quoted.user.screenName
-        quote_container.visibility = View.VISIBLE
+        quote_container.show()
     }
 
     fun cleanup() {
@@ -173,14 +178,21 @@ class TweetItemView : CardView {
     }
 
     private fun handleOpenGraph(url: String) {
+
         val og = ogClient.load(url, position)
-        open_graph.og_title.text = og.title
-        open_graph.og_description.text = og.description
-        open_graph.og_host.text = Uri.parse(og.url).host
-        PicassoUtil.opengraph(og.image, open_graph.og_image)
-        open_graph.setOnClickListener {
-            listener.onUrlClick(og.url)
+        if (og == null) {
+            og_contents.hide()
+            og_loading.show()
+        } else {
+            og_loading.hide()
+            open_graph.og_title.text = og.title
+            open_graph.og_host.text = Uri.parse(og.url).host
+            PicassoUtil.opengraph(og.image, open_graph.og_image)
+            open_graph.setOnClickListener {
+                listener.onUrlClick(og.url)
+            }
+            og_contents.show()
         }
-        open_graph.visibility = View.VISIBLE
+        open_graph.show()
     }
 }

@@ -11,11 +11,12 @@ object OpenGraphParser {
     val OG_IMAGE = Regex("\"(og|twitter):image\"")
     val OG_URL = Regex("(og|twitter):url")
 
-    val META_OPTS = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
-    val META_TAG = Regex("<meta.+?>", META_OPTS)
-    val META_CHARSET_TAG = Regex("<meta.+?charset=(.+?)(\\s|>)", META_OPTS)
-    val HEAD_END_TAG = Regex("</head>", META_OPTS)
-    const val CONTENT_KEY = "content=\""
+    val REGEX_OPTS = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
+    val META_TAG = Regex("<meta.+?>", REGEX_OPTS)
+    val META_CHARSET_TAG = Regex("<meta.+?charset=(.+?)(\\s|>)", REGEX_OPTS)
+    val TITLE_TAG = Regex("<title>(.+?)</title>", REGEX_OPTS)
+    val HEAD_END_TAG = Regex("</head>", REGEX_OPTS)
+    const val CONTENT_KEY = "content="
 
     fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
@@ -52,30 +53,41 @@ object OpenGraphParser {
     }
 
     private fun parseMeta(url: String, head: CharSequence): OpenGraph {
-        var title = url
+        var title = ""
         var desc = ""
         var image = ""
-        var ogUrl = url
+        var ogUrl = ""
 
         META_TAG.findAll(head).forEach {
             val meta = it.value
-            if (meta.contains(OG_TITLE)) {
+            if (title.isEmpty() && meta.contains(OG_TITLE)) {
                 title = StringEscapeUtils.unescapeHtml4(extractContent(meta))
-            } else if (meta.contains(OG_DESC)) {
+            } else if (desc.isEmpty() && meta.contains(OG_DESC)) {
                 desc = StringEscapeUtils.unescapeHtml4(extractContent(meta))
-            } else if (meta.contains(OG_IMAGE)) {
+            } else if (image.isEmpty() && meta.contains(OG_IMAGE)) {
                 image = extractContent(meta)
-            } else if (meta.contains(OG_URL)) {
+            } else if (ogUrl.isEmpty() && meta.contains(OG_URL)) {
                 ogUrl = extractContent(meta)
             }
         }
+
+        if (title.isEmpty()) {
+            // use html title if available
+            TITLE_TAG.find(head)?.let { title = StringEscapeUtils.unescapeHtml4(it.groupValues[1]) }
+        }
+
+        // fallback
+        if (title.isEmpty()) title = url
+        if (ogUrl.isEmpty()) ogUrl = url
 
         return OpenGraph(title, desc, image, ogUrl)
     }
 
     private fun extractContent(meta: String): String {
-        val start = meta.indexOf(CONTENT_KEY) + CONTENT_KEY.length
-        val end = meta.indexOf("\"", start)
+        val quoteAt = meta.indexOf(CONTENT_KEY) + CONTENT_KEY.length
+        val quote = meta[quoteAt] // single or double quote char
+        val start = quoteAt + 1
+        val end = meta.indexOf(quote, start)
 
         return meta.substring(start, end).replace(Regex("(\r\n|\r|\n)"), "").trim()
     }

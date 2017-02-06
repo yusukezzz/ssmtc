@@ -2,6 +2,7 @@ package net.yusukezzz.ssmtc.data.og
 
 import android.util.LruCache
 import nl.komponents.kovenant.task
+import nl.komponents.kovenant.ui.alwaysUi
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
 import okhttp3.OkHttpClient
@@ -28,7 +29,7 @@ class OpenGraphClient {
         return this
     }
 
-    fun load(url: String, pos: Int): OpenGraph {
+    fun load(url: String, pos: Int): OpenGraph? {
         val og = cache.get(url)
         if (og != null) {
             return og
@@ -36,7 +37,7 @@ class OpenGraphClient {
 
         enqueue(url, pos)
 
-        return createTmpData(url)
+        return null
     }
 
     private fun enqueue(url: String, pos: Int) {
@@ -55,7 +56,13 @@ class OpenGraphClient {
             og
         } successUi {
             cache.put(url, it)
+        } failUi {
+            println(it)
+            it.printStackTrace()
+            val og = createTmpData(url)
+            cache.put(url, og)
+        } alwaysUi {
             listener.onLoaded(pos)
-        } failUi ::println
+        }
     }
 }

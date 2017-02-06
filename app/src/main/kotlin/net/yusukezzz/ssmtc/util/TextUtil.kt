@@ -4,9 +4,8 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.view.View
-import net.yusukezzz.ssmtc.data.FormattedMedia
-import net.yusukezzz.ssmtc.data.FormattedUrl
 import net.yusukezzz.ssmtc.data.api.model.Tweet
+import net.yusukezzz.ssmtc.data.api.model.Url
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import org.apache.commons.lang3.StringEscapeUtils
 
@@ -22,14 +21,14 @@ object TextUtil {
         return "%01d:%02d".format(m, s)
     }
 
-    fun formattedText(tweet: Tweet, listener: TweetItemListener, removeQuote: Boolean = false): CharSequence {
+    fun formattedText(tweet: Tweet, listener: TweetItemListener, ogUrl: String = "", removeQuote: Boolean = false): CharSequence {
         val entities = tweet.entities
         val decodedText = StringEscapeUtils.unescapeHtml4(tweet.full_text)
 
-        val urls = entities.urls.map(::FormattedUrl)
-        val medias = entities.media.map(::FormattedMedia)
+        val urls = entities.urls
+        val mediaUrls = entities.media.map { it.urlEntity }
 
-        val spannable = SpannableStringBuilder(removeUrls(decodedText, urls, medias, removeQuote).trim())
+        val spannable = SpannableStringBuilder(removeUrls(decodedText, urls, mediaUrls, ogUrl, removeQuote).trim())
 
         replaceUrlEntities(spannable, urls, listener)
         replaceScreenName(spannable, listener)
@@ -38,29 +37,28 @@ object TextUtil {
         return spannable
     }
 
-    private fun removeUrls(str: String, urls: List<FormattedUrl>, medias: List<FormattedMedia>, removeQuote: Boolean): String {
+    private fun removeUrls(str: String, urls: List<Url>, medias: List<Url>, ogUrl: String, removeQuote: Boolean): String {
         fun String.remove(target: String): String = this.replace(target, "")
 
         // use quoted tweet view
-        val quotedUrl = if (removeQuote) urls.last().shortUrl else ""
+        val quotedUrl = if (removeQuote) urls.last().url else ""
         // use thumbnails
-        val lastMediaUrl = medias.lastOrNull()?.shortUrl ?: ""
-        // use open graph
-        val firstUrl = if (medias.isEmpty() && urls.isNotEmpty()) urls.first().shortUrl else ""
+        val lastMediaUrl = medias.lastOrNull()?.url ?: ""
 
-        return str.remove(quotedUrl).remove(lastMediaUrl).remove(firstUrl)
+        return str.remove(quotedUrl).remove(lastMediaUrl)
+            .remove(ogUrl) // use open graph view
     }
 
     private fun replaceUrlEntities(spannable: SpannableStringBuilder,
-                                   entities: List<FormattedUrl>,
+                                   entities: List<Url>,
                                    listener: TweetItemListener) {
         entities.forEachIndexed { i, entity ->
-            val start = spannable.indexOf(entity.shortUrl)
-            val end = start + entity.shortUrl.length
+            val start = spannable.indexOf(entity.url)
+            val end = start + entity.url.length
 
             if (start >= 0) {
-                spannable.replace(start, end, entity.displayUrl)
-                val displayEnd = start + entity.displayUrl.length
+                spannable.replace(start, end, entity.display_url)
+                val displayEnd = start + entity.display_url.length
                 val span = object : ClickableSpan() {
                     override fun onClick(widget: View?) {
                         listener.onUrlClick(entity.url)
