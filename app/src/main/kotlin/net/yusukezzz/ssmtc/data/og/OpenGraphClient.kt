@@ -46,7 +46,11 @@ class OpenGraphClient {
             val resolvedUrl = res.request().url().toString()
             val body = res.body()
             val headerCharset: Charset? = body.contentType().charset(null)
-            val og = OpenGraphParser.parse(resolvedUrl, body.bytes(), headerCharset)
+            val og = if (headerCharset != null) {
+                OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
+            } else {
+                OpenGraphParser.parse(resolvedUrl, body.bytes(), headerCharset)
+            }
             body.close()
             og
         } successUi {
