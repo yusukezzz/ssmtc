@@ -16,6 +16,9 @@ object SearchQueryBuilder {
             FilterRule.Showing.ANY_MEDIA -> queries.add("filter:media")
             FilterRule.Showing.PHOTO -> queries.add("filter:images")
             FilterRule.Showing.VIDEO -> queries.add("filter:videos")
+            else -> {
+                /* do nothing */
+            }
         }
 
         return params.copy(query = urlencoder.encode(queries.joinToString(" ")))

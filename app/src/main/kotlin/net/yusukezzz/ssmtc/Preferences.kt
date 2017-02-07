@@ -97,8 +97,7 @@ open class Preferences(private val context: Context) {
             is Float -> editor.putFloat(key, value)
             is String -> editor.putString(key, value)
             is Boolean -> editor.putBoolean(key, value)
-            is Set<*> -> editor.putStringSet(key, value as Set<String>)
-            else -> throw RuntimeException("unknown type")
+            else -> throw RuntimeException("unknown type: $value")
         }
         editor.apply()
     }
