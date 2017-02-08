@@ -131,7 +131,6 @@
                 android:layout_height="wrap_content"
                 android:text="tweet body text"
                 android:textSize="14sp"
-                android:textAppearance="@android:style/TextAppearance.Material.Small"
                 android:layout_toEndOf="@id/tweet_user_image"
                 android:layout_below="@id/tweet_user_name" />
 

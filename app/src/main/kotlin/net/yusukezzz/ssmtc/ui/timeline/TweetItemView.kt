@@ -56,11 +56,11 @@ class TweetItemView : CardView {
     }
 
     fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {
-        tweet_retweeted_container.hide()
-        open_graph.hide()
-        quote_container.hide()
-
+        tweet_retweeted_container.gone()
+        quote_container.gone()
+        open_graph.gone()
         thumbnail_tile.removeAllViews()
+
         var removeUrl = ""
         if (tweet.hasVideo) {
             handleVideo(tweet.videos.first())
@@ -69,9 +69,10 @@ class TweetItemView : CardView {
         } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
             val urls = tweet.entities.urls
             // ignore host only url
-            val urlEntity = urls.filter { Uri.parse(it.expanded_url).path.isNotEmpty() }.firstOrNull() ?: urls.first()
-            removeUrl = urlEntity.url
-            handleOpenGraph(urlEntity.expanded_url)
+            urls.filter { Uri.parse(it.expanded_url).path.isNotEmpty() }.firstOrNull()?.let {
+                removeUrl = it.url // use open graph view instead of link text
+                handleOpenGraph(it.expanded_url)
+            }
         }
 
         val formatted = TextUtil.formattedText(tweet, listener, removeUrl, removeQuote)
@@ -133,7 +134,7 @@ class TweetItemView : CardView {
     fun bindRetweeted(tweet: Tweet) {
         bindTweet(tweet.retweeted_status!!)
         tweet_retweeted_message.text = tweet.user.name + resources.getString(R.string.retweeted_by)
-        tweet_retweeted_container.show()
+        tweet_retweeted_container.visible()
     }
 
     fun bindQuoted(tweet: Tweet) {
@@ -143,7 +144,7 @@ class TweetItemView : CardView {
         quote_text.movementMethod = LinkMovementMethod.getInstance()
         quote_user_name.text = quoted.user.name
         quote_user_screen_name.text = "@" + quoted.user.screenName
-        quote_container.show()
+        quote_container.visible()
     }
 
     fun cleanup() {
@@ -178,21 +179,20 @@ class TweetItemView : CardView {
     }
 
     private fun handleOpenGraph(url: String) {
-
         val og = ogClient.load(url, position)
         if (og == null) {
-            og_contents.hide()
-            og_loading.show()
+            og_contents.gone()
+            og_loading.visible()
         } else {
-            og_loading.hide()
             open_graph.og_title.text = og.title
             open_graph.og_host.text = Uri.parse(og.url).host
             PicassoUtil.opengraph(og.image, open_graph.og_image)
             open_graph.setOnClickListener {
                 listener.onUrlClick(og.url)
             }
-            og_contents.show()
+            og_loading.gone()
+            og_contents.visible()
         }
-        open_graph.show()
+        open_graph.visible()
     }
 }
