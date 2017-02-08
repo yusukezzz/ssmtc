@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -150,6 +151,8 @@ class TimelineActivity: AppCompatActivity(),
 
         val layoutManager = LinearLayoutManager(this)
         timeline_list.layoutManager = layoutManager
+        val decoration = DividerItemDecoration(this, layoutManager.orientation)
+        timeline_list.addItemDecoration(decoration)
 
         endlessScrollListener = EndlessRecyclerOnScrollListener(this, layoutManager)
         endlessScrollListener.setLoadMoreListener(this)

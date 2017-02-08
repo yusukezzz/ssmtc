@@ -2,10 +2,10 @@ package net.yusukezzz.ssmtc.ui.timeline
 
 import android.content.Context
 import android.net.Uri
-import android.support.v7.widget.CardView
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.open_graph.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
@@ -19,7 +19,7 @@ import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.text.DecimalFormat
 
-class TweetItemView : CardView {
+class TweetItemView : LinearLayout {
     private val numberFormatter = DecimalFormat("#,###,###")
     private var position: Int = 0
     private lateinit var listener: TweetItemListener

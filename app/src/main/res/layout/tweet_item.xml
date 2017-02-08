@@ -1,275 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
 <net.yusukezzz.ssmtc.ui.timeline.TweetItemView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardUseCompatPadding="true"
-    android:layout_marginTop="4dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
+    android:id="@+id/tweet_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/tweet_container"
-        android:orientation="vertical"
-        android:background="@color/colorPrimaryDark"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark">
 
-        <net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
-            android:id="@+id/thumbnail_tile"
-            android:background="@color/dark_grey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+        <!-- retweet message and icon -->
         <RelativeLayout
-            android:background="@color/colorPrimaryDark"
+            android:id="@+id/tweet_retweeted_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:id="@+id/tweet_retweeted_container"
-                android:layout_marginTop="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/tweet_retweeted_icon"
-                    android:src="@drawable/ic_twitter_retweet"
-                    android:tint="@color/action_retweet_on"
-                    android:layout_marginStart="8dp"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true" />
-
-                <TextView
-                    android:id="@+id/tweet_retweeted_message"
-                    android:text="retweeted by user_name"
-                    android:textSize="10sp"
-                    android:textColor="@color/textWhite"
-                    android:layout_marginStart="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/tweet_retweeted_icon"
-                    android:layout_centerVertical="true" />
-
-            </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp">
 
             <ImageView
-                android:id="@+id/tweet_user_image"
-                android:src="@drawable/ic_timeline_user"
-                android:layout_margin="8dp"
-                android:layout_width="@dimen/tweet_profile_image_size"
-                android:layout_height="@dimen/tweet_profile_image_size"
-                android:layout_below="@id/tweet_retweeted_container" />
-
-            <TextView
-                android:id="@+id/tweet_user_name"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="user_name"
-                android:textSize="10sp"
-                android:textColor="@color/textWhite"
-                android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_below="@id/tweet_retweeted_container" />
-
-            <TextView
-                android:id="@+id/tweet_user_screen_name"
+                android:id="@+id/tweet_retweeted_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="screen_name"
-                android:textSize="10sp"
-                android:textColor="@color/textWhite"
-                android:layout_toEndOf="@id/tweet_user_name"
-                android:layout_below="@id/tweet_retweeted_container" />
-
-            <ImageView
-                android:id="@+id/tweet_user_protected_icon"
-                android:src="@drawable/ic_protected_user"
-                android:tint="@color/lighter_grey"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_toEndOf="@id/tweet_user_screen_name"
-                android:layout_below="@id/tweet_retweeted_container" />
-
-            <ImageView
-                android:id="@+id/tweet_user_verified_icon"
-                android:src="@drawable/ic_verified_user"
-                android:tint="@color/light_blue"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_toEndOf="@id/tweet_user_protected_icon"
-                android:layout_below="@id/tweet_retweeted_container" />
+                android:src="@drawable/ic_twitter_retweet"
+                android:tint="@color/action_retweet_on" />
 
             <TextView
-                android:id="@+id/tweet_date"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_width="wrap_content"
+                android:id="@+id/tweet_retweeted_message"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:maxLines="1"
-                android:text="date"
-                android:textSize="10sp"
-                android:textColor="@color/textBlack"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/tweet_retweeted_container" />
-
-            <TextView
-                android:id="@+id/tweet_text"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/tweet_retweeted_icon"
+                android:text="retweeted by user_name"
                 android:textColor="@color/textWhite"
-                android:layout_marginEnd="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="tweet body text"
-                android:textSize="14sp"
-                android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_below="@id/tweet_user_name" />
-
-            <RelativeLayout
-                android:id="@+id/quote_container"
-                android:background="@drawable/border_frame"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:padding="8dp"
-                android:layout_below="@id/tweet_text"
-                android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/quote_user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="quote_user_name"
-                    android:textSize="10sp"
-                    android:textColor="@color/textWhite" />
-
-                <TextView
-                    android:id="@+id/quote_user_screen_name"
-                    android:layout_marginStart="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="quote_screen_name"
-                    android:textSize="10sp"
-                    android:textColor="@color/textWhite"
-                    android:layout_toEndOf="@id/quote_user_name" />
-
-                <TextView
-                    android:id="@+id/quote_text"
-                    android:textColor="@color/textWhite"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="quote body text"
-                    android:textSize="13sp"
-                    android:layout_below="@id/quote_user_name" />
-
-            </RelativeLayout>
-
-            <include
-                layout="@layout/open_graph"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_below="@id/quote_container" />
-
-            <LinearLayout
-                android:layout_toEndOf="@id/tweet_user_image"
-                android:layout_below="@id/open_graph"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="36dp">
-
-                <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-                    android:id="@+id/ic_twitter_reply"
-                    android:src="@drawable/ic_twitter_reply"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:padding="8dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:widthRatio="1"
-                    app:heightRatio="1" />
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1" />
-
-                <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-                    android:id="@+id/ic_twitter_retweet"
-                    android:src="@drawable/ic_twitter_retweet"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:padding="8dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:widthRatio="1"
-                    app:heightRatio="1" />
-
-                <TextView
-                    android:id="@+id/tweet_retweet_count"
-                    android:paddingStart="8dp"
-                    android:textSize="11sp"
-                    android:textColor="@color/action_icon_default"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-                    android:id="@+id/ic_twitter_like"
-                    android:src="@drawable/ic_twitter_like"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:clickable="true"
-                    android:padding="8dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:widthRatio="1"
-                    app:heightRatio="1" />
-
-                <TextView
-                    android:id="@+id/tweet_like_count"
-                    android:paddingStart="8dp"
-                    android:textSize="11sp"
-                    android:textColor="@color/action_icon_default"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-                    android:id="@+id/ic_tweet_share"
-                    android:src="@drawable/ic_share"
-                    android:tint="@color/action_icon_default"
-                    android:layout_marginEnd="8dp"
-                    android:padding="8dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:widthRatio="1"
-                    app:heightRatio="1" />
-
-            </LinearLayout>
+                android:textSize="10sp" />
 
         </RelativeLayout>
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/tweet_user_image"
+            android:layout_width="@dimen/tweet_profile_image_size"
+            android:layout_height="@dimen/tweet_profile_image_size"
+            android:layout_below="@id/tweet_retweeted_container"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_timeline_user" />
+
+        <TextView
+            android:id="@+id/tweet_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tweet_retweeted_container"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/tweet_user_image"
+            android:maxLines="1"
+            android:text="user_name"
+            android:textColor="@color/textWhite"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tweet_user_screen_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tweet_retweeted_container"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/tweet_user_name"
+            android:maxLines="1"
+            android:text="screen_name"
+            android:textColor="@color/textWhite"
+            android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/tweet_user_protected_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_below="@id/tweet_retweeted_container"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/tweet_user_screen_name"
+            android:src="@drawable/ic_protected_user"
+            android:tint="@color/lighter_grey" />
+
+        <ImageView
+            android:id="@+id/tweet_user_verified_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_below="@id/tweet_retweeted_container"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/tweet_user_protected_icon"
+            android:src="@drawable/ic_verified_user"
+            android:tint="@color/light_blue" />
+
+        <TextView
+            android:id="@+id/tweet_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/tweet_retweeted_container"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:maxLines="1"
+            android:text="date"
+            android:textColor="@color/textBlack"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tweet_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_below="@id/tweet_user_name"
+            android:layout_toEndOf="@id/tweet_user_image"
+            android:text="tweet body text"
+            android:textColor="@color/textWhite"
+            android:textSize="14sp" />
+
+        <net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
+            android:id="@+id/thumbnail_tile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tweet_text"
+            android:layout_toEndOf="@id/tweet_user_image"
+            android:background="@color/dark_grey" />
+
+        <!-- quote -->
+        <RelativeLayout
+            android:id="@+id/quote_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/thumbnail_tile"
+            android:layout_toEndOf="@id/tweet_user_image"
+            android:background="@drawable/border_frame"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/quote_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="quote_user_name"
+                android:textColor="@color/textWhite"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/quote_user_screen_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/quote_user_name"
+                android:maxLines="1"
+                android:text="quote_screen_name"
+                android:textColor="@color/textWhite"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/quote_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/quote_user_name"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:text="quote body text"
+                android:textColor="@color/textWhite"
+                android:textSize="13sp" />
+
+        </RelativeLayout>
+
+        <!-- open graph -->
+        <include
+            layout="@layout/open_graph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quote_container"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/tweet_user_image" />
+
+        <!-- reaction buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_below="@id/open_graph"
+            android:layout_toEndOf="@id/tweet_user_image"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
+                android:id="@+id/ic_twitter_reply"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_twitter_reply"
+                app:heightRatio="1"
+                app:widthRatio="1" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
+                android:id="@+id/ic_twitter_retweet"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_twitter_retweet"
+                app:heightRatio="1"
+                app:widthRatio="1" />
+
+            <TextView
+                android:id="@+id/tweet_retweet_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="8dp"
+                android:textColor="@color/action_icon_default"
+                android:textSize="11sp" />
+
+            <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
+                android:id="@+id/ic_twitter_like"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:padding="8dp"
+                android:src="@drawable/ic_twitter_like"
+                app:heightRatio="1"
+                app:widthRatio="1" />
+
+            <TextView
+                android:id="@+id/tweet_like_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="8dp"
+                android:textColor="@color/action_icon_default"
+                android:textSize="11sp" />
+
+            <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
+                android:id="@+id/ic_tweet_share"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_share"
+                android:tint="@color/action_icon_default"
+                app:heightRatio="1"
+                app:widthRatio="1" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </net.yusukezzz.ssmtc.ui.timeline.TweetItemView>
