@@ -55,14 +55,20 @@ class ThumbnailTileLayout : ViewGroup {
                 }
                 2 -> {
                     childHeightSpec = fullHeightSpec
+                    childWidthSpec -= marginPx
                 }
                 3 -> {
                     if (i == 0) {
                         childHeightSpec = fullHeightSpec
+                        childWidthSpec -= marginPx
+                    } else {
+                        childHeightSpec -= marginPx
+                        childWidthSpec -= marginPx
                     }
                 }
                 else -> {
-                    // use default
+                    childHeightSpec -= marginPx
+                    childWidthSpec -= marginPx
                 }
             }
             child.measure(childWidthSpec, childHeightSpec)
@@ -86,7 +92,7 @@ class ThumbnailTileLayout : ViewGroup {
             2 -> layoutTwo(left, top, right, bottom)
             3 -> layoutThree(left, top, right, bottom)
             4 -> layoutFour(left, top, right, bottom)
-            else -> throw IllegalStateException("cant layout thumbnails")
+            else -> throw IllegalStateException("cant layout thumbnails: $childCount")
         }
     }
 
@@ -108,10 +114,10 @@ class ThumbnailTileLayout : ViewGroup {
         // ---------
         val halfWidth = Math.round(right * 1f / 2)
         val child1 = getChildAt(0)
-        child1.layout(left, top, halfWidth, bottom) // left half
+        child1.layout(left, top, halfWidth - marginPx, bottom) // left half
 
         val child2 = getChildAt(1)
-        child2.layout(left + halfWidth, top, right, bottom) // right half
+        child2.layout(left + halfWidth + marginPx, top, right, bottom) // right half
     }
 
     private fun layoutThree(left: Int, top: Int, right: Int, bottom: Int) {
@@ -124,13 +130,13 @@ class ThumbnailTileLayout : ViewGroup {
         val halfHeight = Math.round(bottom * 1f / 2)
 
         val child1 = getChildAt(0)
-        child1.layout(left, top, halfWidth, bottom) // left half & full height
+        child1.layout(left, top, halfWidth - marginPx, bottom) // left half & full height
 
         val child2 = getChildAt(1)
-        child2.layout(left + halfWidth, top, right, halfHeight) // right half & top half height
+        child2.layout(left + halfWidth + marginPx, top, right, halfHeight - marginPx) // right half & top half height
 
         val child3 = getChildAt(2)
-        child3.layout(left + halfWidth, top + halfHeight, right, bottom) // right half & bottom half height
+        child3.layout(left + halfWidth + marginPx, top + halfHeight + marginPx, right, bottom) // right half & bottom half height
     }
 
     private fun layoutFour(left: Int, top: Int, right: Int, bottom: Int) {
@@ -143,15 +149,18 @@ class ThumbnailTileLayout : ViewGroup {
         val halfHeight = Math.round(bottom * 1f / 2)
 
         val child1 = getChildAt(0)
-        child1.layout(left, top, halfWidth, halfHeight) // left half & top half height
+        child1.layout(left, top, halfWidth - marginPx, halfHeight - marginPx) // left half & top half height
 
         val child2 = getChildAt(1)
-        child2.layout(left + halfWidth, top, right, bottom) // right half & top half height
+        child2.layout(left + halfWidth + marginPx, top, right, halfHeight - marginPx) // right half & top half height
 
         val child3 = getChildAt(2)
-        child3.layout(left, top + halfHeight, halfWidth, bottom) // left half & bottom half height
+        child3.layout(left, top + halfHeight + marginPx, halfWidth - marginPx, bottom) // left half & bottom half height
 
         val child4 = getChildAt(3)
-        child4.layout(left + halfWidth, top + halfHeight, right, bottom) // right half & bottom half height
+        child4.layout(left + halfWidth + marginPx, top + halfHeight + marginPx, right, bottom) // right half & bottom half height
     }
+
+    private val marginPx: Int
+        get() = Math.round(1.0 * resources.displayMetrics.density).toInt()
 }

@@ -61,7 +61,7 @@ object TextUtil {
                 val displayEnd = start + entity.display_url.length
                 val span = object : ClickableSpan() {
                     override fun onClick(widget: View?) {
-                        listener.onUrlClick(entity.url)
+                        listener.onUrlClick(entity.expanded_url)
                     }
                 }
 

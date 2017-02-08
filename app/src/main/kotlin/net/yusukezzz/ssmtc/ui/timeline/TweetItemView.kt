@@ -156,6 +156,7 @@ class TweetItemView : LinearLayout {
     private fun handlePhoto(photos: List<Media>) {
         photos.forEachIndexed { index, media ->
             val photoView = AspectRatioImageView(context)
+            photoView.setBackgroundColor(context.getCompatColor(R.color.darker_grey))
             thumbnail_tile.addView(photoView)
             photoView.setOnClickListener { listener.onImageClick(photos, index) }
             PicassoUtil.thumbnail(media.small_url, photoView)

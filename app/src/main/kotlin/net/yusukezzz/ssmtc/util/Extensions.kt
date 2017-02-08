@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.provider.MediaStore
@@ -45,7 +46,8 @@ fun Context.toast(error: Throwable) {
     toast(error.toString())
 }
 
-fun Context.getCompatColor(id: Int) = ContextCompat.getColor(this, id)
+fun Context.getCompatColor(id: Int): Int = ContextCompat.getColor(this, id)
+fun Context.getCompatDrawable(id: Int): Drawable = ContextCompat.getDrawable(this, id)
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable
     tint?.let { drawable.setTint(this.getCompatColor(it)) }

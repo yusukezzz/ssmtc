@@ -152,6 +152,7 @@ class TimelineActivity: AppCompatActivity(),
         val layoutManager = LinearLayoutManager(this)
         timeline_list.layoutManager = layoutManager
         val decoration = DividerItemDecoration(this, layoutManager.orientation)
+        decoration.setDrawable(getCompatDrawable(R.drawable.timeline_divider))
         timeline_list.addItemDecoration(decoration)
 
         endlessScrollListener = EndlessRecyclerOnScrollListener(this, layoutManager)

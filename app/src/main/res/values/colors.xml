@@ -4,8 +4,6 @@
     <color name="colorPrimaryDark">#222426</color>
     <color name="colorAccent">#82b3d3</color>
 
-    <color name="background">#444448</color>
-
     <color name="textWhite">#e1e8ed</color>
     <color name="textBlack">#8899a6</color>
     <color name="tweetButton">#2b7bb9</color>
