@@ -3,19 +3,22 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/timeline_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/timeline_title_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:hint="Title" />
+            android:hint="Title"
+            />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -24,14 +27,16 @@
         android:visibility="gone"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/timeline_query_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:hint="検索キーワード" />
+            android:hint="検索キーワード"
+            />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -39,25 +44,29 @@
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="表示コンテンツ" />
+        android:text="表示コンテンツ"
+        />
 
     <Spinner
         android:id="@+id/timeline_media_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        />
 
     <CheckBox
         android:layout_marginTop="16dp"
         android:id="@+id/include_rts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="リツイートを含める" />
+        android:text="リツイートを含める"
+        />
 
     <TextView
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="絞込キーワード（改行区切り）" />
+        android:text="絞込キーワード（改行区切り）"
+        />
 
     <EditText
         android:id="@+id/timeline_include"
@@ -65,13 +74,15 @@
         android:layout_height="wrap_content"
         android:minLines="3"
         android:gravity="top"
-        android:text="filter text" />
+        android:text="filter text"
+        />
 
     <TextView
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="無視キーワード（改行区切り）" />
+        android:text="無視キーワード（改行区切り）"
+        />
 
     <EditText
         android:id="@+id/timeline_exclude"
@@ -79,6 +90,7 @@
         android:layout_height="wrap_content"
         android:minLines="3"
         android:gravity="top"
-        android:text="ignore text" />
+        android:text="ignore text"
+        />
 
 </LinearLayout>

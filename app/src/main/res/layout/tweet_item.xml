@@ -5,19 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimaryDark"
+        >
 
         <!-- retweet message and icon -->
         <RelativeLayout
             android:id="@+id/tweet_retweeted_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            >
 
             <ImageView
                 android:id="@+id/tweet_retweeted_icon"
@@ -26,7 +29,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="8dp"
                 android:src="@drawable/ic_twitter_retweet"
-                android:tint="@color/action_retweet_on" />
+                android:tint="@color/action_retweet_on"
+                />
 
             <TextView
                 android:id="@+id/tweet_retweeted_message"
@@ -37,7 +41,8 @@
                 android:layout_toEndOf="@id/tweet_retweeted_icon"
                 android:text="retweeted by user_name"
                 android:textColor="@color/textWhite"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                />
 
         </RelativeLayout>
 
@@ -47,7 +52,8 @@
             android:layout_height="@dimen/tweet_profile_image_size"
             android:layout_below="@id/tweet_retweeted_container"
             android:layout_margin="8dp"
-            android:src="@drawable/ic_timeline_user" />
+            android:src="@drawable/ic_timeline_user"
+            />
 
         <TextView
             android:id="@+id/tweet_user_name"
@@ -59,7 +65,8 @@
             android:maxLines="1"
             android:text="user_name"
             android:textColor="@color/textWhite"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            />
 
         <TextView
             android:id="@+id/tweet_user_screen_name"
@@ -72,7 +79,8 @@
             android:maxLines="1"
             android:text="screen_name"
             android:textColor="@color/textWhite"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            />
 
         <ImageView
             android:id="@+id/tweet_user_protected_icon"
@@ -83,7 +91,8 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/tweet_user_screen_name"
             android:src="@drawable/ic_protected_user"
-            android:tint="@color/lighter_grey" />
+            android:tint="@color/lighter_grey"
+            />
 
         <ImageView
             android:id="@+id/tweet_user_verified_icon"
@@ -94,7 +103,8 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/tweet_user_protected_icon"
             android:src="@drawable/ic_verified_user"
-            android:tint="@color/light_blue" />
+            android:tint="@color/light_blue"
+            />
 
         <TextView
             android:id="@+id/tweet_date"
@@ -108,18 +118,20 @@
             android:maxLines="1"
             android:text="date"
             android:textColor="@color/textBlack"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            />
 
         <TextView
             android:id="@+id/tweet_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:layout_below="@id/tweet_user_name"
+            android:layout_marginEnd="8dp"
             android:layout_toEndOf="@id/tweet_user_image"
             android:text="tweet body text"
             android:textColor="@color/textWhite"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            />
 
         <net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
             android:id="@+id/thumbnail_tile"
@@ -127,19 +139,21 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tweet_text"
             android:layout_toEndOf="@id/tweet_user_image"
-            android:background="@color/dark_grey" />
+            android:background="@color/dark_grey"
+            />
 
         <!-- quote -->
         <RelativeLayout
             android:id="@+id/quote_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/thumbnail_tile"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            android:layout_below="@id/thumbnail_tile"
             android:layout_toEndOf="@id/tweet_user_image"
             android:background="@drawable/border_frame"
-            android:padding="8dp">
+            android:padding="8dp"
+            >
 
             <TextView
                 android:id="@+id/quote_user_name"
@@ -148,7 +162,8 @@
                 android:maxLines="1"
                 android:text="quote_user_name"
                 android:textColor="@color/textWhite"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                />
 
             <TextView
                 android:id="@+id/quote_user_screen_name"
@@ -159,7 +174,8 @@
                 android:maxLines="1"
                 android:text="quote_screen_name"
                 android:textColor="@color/textWhite"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                />
 
             <TextView
                 android:id="@+id/quote_text"
@@ -170,7 +186,8 @@
                 android:layout_marginTop="4dp"
                 android:text="quote body text"
                 android:textColor="@color/textWhite"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                />
 
         </RelativeLayout>
 
@@ -182,7 +199,8 @@
             android:layout_below="@id/quote_container"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@id/tweet_user_image" />
+            android:layout_toEndOf="@id/tweet_user_image"
+            />
 
         <!-- reaction buttons -->
         <LinearLayout
@@ -191,7 +209,8 @@
             android:layout_below="@id/open_graph"
             android:layout_toEndOf="@id/tweet_user_image"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
                 android:id="@+id/ic_twitter_reply"
@@ -203,12 +222,14 @@
                 android:padding="8dp"
                 android:src="@drawable/ic_twitter_reply"
                 app:heightRatio="1"
-                app:widthRatio="1" />
+                app:widthRatio="1"
+                />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                />
 
             <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
                 android:id="@+id/ic_twitter_retweet"
@@ -220,7 +241,8 @@
                 android:padding="8dp"
                 android:src="@drawable/ic_twitter_retweet"
                 app:heightRatio="1"
-                app:widthRatio="1" />
+                app:widthRatio="1"
+                />
 
             <TextView
                 android:id="@+id/tweet_retweet_count"
@@ -229,7 +251,8 @@
                 android:layout_weight="1"
                 android:paddingStart="8dp"
                 android:textColor="@color/action_icon_default"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                />
 
             <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
                 android:id="@+id/ic_twitter_like"
@@ -241,7 +264,8 @@
                 android:padding="8dp"
                 android:src="@drawable/ic_twitter_like"
                 app:heightRatio="1"
-                app:widthRatio="1" />
+                app:widthRatio="1"
+                />
 
             <TextView
                 android:id="@+id/tweet_like_count"
@@ -250,7 +274,8 @@
                 android:layout_weight="1"
                 android:paddingStart="8dp"
                 android:textColor="@color/action_icon_default"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                />
 
             <net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
                 android:id="@+id/ic_tweet_share"
@@ -262,7 +287,8 @@
                 android:src="@drawable/ic_share"
                 android:tint="@color/action_icon_default"
                 app:heightRatio="1"
-                app:widthRatio="1" />
+                app:widthRatio="1"
+                />
 
         </LinearLayout>
 

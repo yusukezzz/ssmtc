@@ -3,25 +3,29 @@
     android:id="@+id/open_graph"
     android:background="@drawable/border_frame"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/open_graph_size">
+    android:layout_height="@dimen/open_graph_size"
+    >
 
     <ProgressBar
         android:id="@+id/og_loading"
         style="@android:style/Widget.Holo.Light.ProgressBar"
         android:layout_gravity="center_horizontal"
         android:layout_width="@dimen/open_graph_size"
-        android:layout_height="@dimen/open_graph_size" />
+        android:layout_height="@dimen/open_graph_size"
+        />
 
     <RelativeLayout
         android:id="@+id/og_contents"
         android:background="?selectableItemBackground"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/open_graph_size">
+        android:layout_height="@dimen/open_graph_size"
+        >
 
         <ImageView
             android:id="@+id/og_image"
             android:layout_width="@dimen/open_graph_size"
-            android:layout_height="@dimen/open_graph_size" />
+            android:layout_height="@dimen/open_graph_size"
+            />
 
         <TextView
             android:id="@+id/og_title"
@@ -35,7 +39,8 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/textWhite"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            />
 
         <TextView
             android:id="@+id/og_host"
@@ -49,7 +54,8 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/textWhite"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            />
 
     </RelativeLayout>
 
