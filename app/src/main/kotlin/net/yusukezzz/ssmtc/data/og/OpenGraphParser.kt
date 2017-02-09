@@ -54,7 +54,6 @@ object OpenGraphParser {
 
     private fun parseMeta(url: String, head: CharSequence): OpenGraph {
         var title = ""
-        var desc = ""
         var image = ""
         var ogUrl = ""
 
@@ -62,8 +61,6 @@ object OpenGraphParser {
             val meta = it.value
             if (title.isEmpty() && meta.contains(OG_TITLE)) {
                 title = StringEscapeUtils.unescapeHtml4(extractContent(meta))
-            } else if (desc.isEmpty() && meta.contains(OG_DESC)) {
-                desc = StringEscapeUtils.unescapeHtml4(extractContent(meta))
             } else if (image.isEmpty() && meta.contains(OG_IMAGE)) {
                 image = extractContent(meta)
             } else if (ogUrl.isEmpty() && meta.contains(OG_URL)) {
@@ -80,7 +77,7 @@ object OpenGraphParser {
         if (title.isEmpty()) title = url
         if (ogUrl.isEmpty()) ogUrl = url
 
-        return OpenGraph(title, desc, image, ogUrl)
+        return OpenGraph(title, image, ogUrl)
     }
 
     private fun extractContent(meta: String): String {

@@ -1,29 +1,46 @@
 package net.yusukezzz.ssmtc.data.og
 
 import android.content.Context
-import com.jakewharton.disklrucache.DiskLruCache
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
+import org.apache.commons.codec.digest.DigestUtils
 import java.io.File
 
-class OGDiskCache(context: Context) {
+class OGDiskCache(val context: Context) {
     companion object {
         private const val CACHE_DIR = "og_cache"
-        private const val MAX_CACHE_SIZE = 256L
+        private const val MAX_CACHE_FILES = 1000
     }
 
-    private val cache = DiskLruCache.open(File(context.cacheDir, CACHE_DIR), 0, 1, MAX_CACHE_SIZE)
+    private val cacheDir = File(context.cacheDir, CACHE_DIR)
+
+    init {
+        cacheDir.mkdirs()
+    }
 
     fun get(url: String): OpenGraph? {
-        val data = cache.get(url) ?: return null
-        val json = data.getString(0)
-
-        return GsonHolder.gson.fromJson(json, OpenGraph::class.java)
+        synchronized(context) {
+            val cache = cacheFile(url)
+            if (!cache.exists()) {
+                return null
+            }
+            return GsonHolder.gson.fromJson(cache.readText(), OpenGraph::class.java)
+        }
     }
 
     fun put(url: String, og: OpenGraph) {
-        val json = GsonHolder.gson.toJson(og)
-        val editor = cache.edit(url)
-        editor.set(0, json)
-        editor.commit()
+        synchronized(context) {
+            cacheFile(url).writeText(GsonHolder.gson.toJson(og))
+            removeOldCaches()
+        }
     }
+
+    private fun removeOldCaches() {
+        val caches = cacheDir.listFiles().toList()
+        val deletions = caches.size - MAX_CACHE_FILES
+        if (deletions > 0) {
+            caches.sortedBy(File::lastModified).slice(0..(deletions - 1)).forEach { it.delete() }
+        }
+    }
+
+    private fun cacheFile(url: String): File = File(cacheDir, DigestUtils.md5Hex(url) + ".json")
 }

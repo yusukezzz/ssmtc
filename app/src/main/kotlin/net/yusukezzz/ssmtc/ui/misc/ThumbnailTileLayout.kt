@@ -161,6 +161,5 @@ class ThumbnailTileLayout : ViewGroup {
         child4.layout(left + halfWidth + marginPx, top + halfHeight + marginPx, right, bottom) // right half & bottom half height
     }
 
-    private val marginPx: Int
-        get() = Math.round(1.0 * resources.displayMetrics.density).toInt()
+    private val marginPx: Int by lazy { Math.round(2.0 * resources.displayMetrics.density).toInt() }
 }

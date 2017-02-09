@@ -50,8 +50,13 @@ class TimelineAdapter(val listener: TweetItemListener,
     override fun getItemId(pos: Int): Long = timeline[pos].id
 
     override fun onLoaded(pos: Int) {
-        // reread open graph cache
-        notifyItemChanged(pos)
+        // FIXME
+        try {
+            // reread open graph cache
+            notifyItemChanged(pos)
+        } catch (e: Exception) {
+            println(e)
+        }
     }
 
     fun getAll(): List<Tweet> = timeline.toList()
