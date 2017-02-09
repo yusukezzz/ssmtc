@@ -1,21 +1,20 @@
 package net.yusukezzz.ssmtc.data.og
 
+import android.content.Context
 import android.util.LruCache
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.alwaysUi
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.nio.charset.Charset
 
-class OpenGraphClient {
+class OpenGraphClient(context: Context) {
     companion object {
-        private const val MAX_CACHE_SIZE = 20
-
         private fun createTmpData(url: String): OpenGraph = OpenGraph(url, "", "", url)
     }
-    private val cache: LruCache<String, OpenGraph> by lazy { LruCache<String, OpenGraph>(MAX_CACHE_SIZE) }
+
+    private val memory = LruCache<String, OpenGraph>(10)
+    private val disk = OGDiskCache(context)
     private val okhttp = OkHttpClient.Builder().build()
     private lateinit var listener: OpenGraphListener
 
@@ -30,7 +29,7 @@ class OpenGraphClient {
     }
 
     fun load(url: String, pos: Int): OpenGraph? {
-        val og = cache.get(url)
+        val og: OpenGraph? = memory.get(url)
         if (og != null) {
             return og
         }
@@ -42,25 +41,28 @@ class OpenGraphClient {
 
     private fun enqueue(url: String, pos: Int) {
         task {
-            val req = Request.Builder().url(url).build()
-            val res = okhttp.newCall(req).execute()
-            val resolvedUrl = res.request().url().toString()
-            val body = res.body()
-            val headerCharset: Charset? = body.contentType().charset(null)
-            val og = if (headerCharset != null) {
-                OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
-            } else {
-                OpenGraphParser.parse(resolvedUrl, body.bytes())
+            var og = disk.get(url)
+            if (og == null) {
+                val req = Request.Builder().url(url).build()
+                val res = okhttp.newCall(req).execute()
+                val resolvedUrl = res.request().url().toString()
+                val body = res.body()
+                val headerCharset: Charset? = body.contentType().charset(null)
+                og = if (headerCharset != null) {
+                    OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
+                } else {
+                    OpenGraphParser.parse(resolvedUrl, body.bytes())
+                }
+                body.close()
+                memory.put(url, og)
+                disk.put(url, og)
             }
-            body.close()
-            og
-        } successUi {
-            cache.put(url, it)
-        } failUi {
+        } fail {
             println(it)
             it.printStackTrace()
             val og = createTmpData(url)
-            cache.put(url, og)
+            memory.put(url, og)
+            disk.put(url, og)
         } alwaysUi {
             listener.onLoaded(pos)
         }

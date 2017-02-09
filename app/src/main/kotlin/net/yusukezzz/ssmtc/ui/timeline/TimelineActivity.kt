@@ -33,6 +33,7 @@ import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
+import net.yusukezzz.ssmtc.data.og.OpenGraphClient
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
@@ -146,7 +147,8 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun setupTimelineView() {
-        timeline_list.adapter = TimelineAdapter(this).apply { setHasStableIds(true) }
+        val ogClient = OpenGraphClient(this)
+        timeline_list.adapter = TimelineAdapter(this, ogClient).apply { setHasStableIds(true) }
         timeline_list.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(this)
