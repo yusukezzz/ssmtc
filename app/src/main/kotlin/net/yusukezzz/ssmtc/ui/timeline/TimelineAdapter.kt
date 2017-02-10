@@ -10,7 +10,7 @@ import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import net.yusukezzz.ssmtc.util.inflate
 
 class TimelineAdapter(val listener: TweetItemListener,
-                      val ogClient: OpenGraphClient) : RecyclerView.Adapter<ViewHolder>(), OpenGraphClient.OpenGraphListener {
+                      val ogClient: OpenGraphClient) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         private class TweetViewHolder(val view: TweetItemView) : ViewHolder(view) {
             fun bindTo(tweet: Tweet, pos: Int) {
@@ -26,10 +26,6 @@ class TimelineAdapter(val listener: TweetItemListener,
 
             fun cleanup() = view.cleanup()
         }
-    }
-
-    init {
-        ogClient.setListener(this)
     }
 
     private var timeline: List<Tweet> = listOf()
@@ -48,16 +44,6 @@ class TimelineAdapter(val listener: TweetItemListener,
 
     override fun getItemCount(): Int = timeline.size
     override fun getItemId(pos: Int): Long = timeline[pos].id
-
-    override fun onLoaded(pos: Int) {
-        // FIXME
-        try {
-            // reread open graph cache
-            notifyItemChanged(pos)
-        } catch (e: Exception) {
-            println(e)
-        }
-    }
 
     fun getAll(): List<Tweet> = timeline.toList()
     fun clear() {

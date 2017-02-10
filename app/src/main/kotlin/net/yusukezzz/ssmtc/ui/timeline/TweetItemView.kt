@@ -180,20 +180,9 @@ class TweetItemView : LinearLayout {
     }
 
     private fun handleOpenGraph(url: String) {
-        val og = ogClient.load(url, position)
-        if (og == null) {
-            og_contents.gone()
-            og_loading.visible()
-        } else {
-            open_graph.og_title.text = og.title
-            open_graph.og_host.text = Uri.parse(og.url).host
-            PicassoUtil.opengraph(og.image, open_graph.og_image)
-            open_graph.setOnClickListener {
-                listener.onUrlClick(og.url)
-            }
-            og_loading.gone()
-            og_contents.visible()
-        }
+        open_graph.setListener(listener)
+        open_graph.reset()
         open_graph.visible()
+        ogClient.load(url, open_graph)
     }
 }
