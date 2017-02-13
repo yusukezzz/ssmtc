@@ -17,21 +17,17 @@ class OGDiskCache(val context: Context) {
         cacheDir.mkdirs()
     }
 
-    fun get(url: String): OpenGraph? {
-        synchronized(context) {
-            val cache = cacheFile(url)
-            if (!cache.exists()) {
-                return null
-            }
-            return GsonHolder.gson.fromJson(cache.readText(), OpenGraph::class.java)
+    fun get(url: String): OpenGraph? = synchronized(context) {
+        val cache = cacheFile(url)
+        if (!cache.exists()) {
+            return null
         }
+        return GsonHolder.gson.fromJson(cache.readText(), OpenGraph::class.java)
     }
 
-    fun put(url: String, og: OpenGraph) {
-        synchronized(context) {
-            cacheFile(url).writeText(GsonHolder.gson.toJson(og))
-            removeOldCaches()
-        }
+    fun put(url: String, og: OpenGraph) = synchronized(context) {
+        cacheFile(url).writeText(GsonHolder.gson.toJson(og))
+        removeOldCaches()
     }
 
     private fun removeOldCaches() {

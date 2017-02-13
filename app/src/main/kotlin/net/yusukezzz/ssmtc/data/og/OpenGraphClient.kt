@@ -14,7 +14,7 @@ class OpenGraphClient(context: Context) {
     companion object {
         private fun createTmpData(url: String): OpenGraph = OpenGraph(url, "", url)
         private fun createImageData(url: String): OpenGraph = OpenGraph(url, url, url)
-        private val IMAGE_EXTENSIONS = listOf<String>("jpg", "jpeg", "gif", "png")
+        private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
     }
 
     private val cache = OGDiskCache(context)
