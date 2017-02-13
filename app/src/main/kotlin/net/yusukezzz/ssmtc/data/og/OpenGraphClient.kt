@@ -72,8 +72,8 @@ class OpenGraphClient(context: Context) {
         val headBody = headRes.body()
         val contentType = headBody.contentType()
         headBody.close()
-        // ignore not HTML content
-        if (isNotHtml(contentType)) {
+        // ignore non HTML content
+        if (contentType.isNotHtml()) {
             val tmp = createTmpData(resolvedUrl)
             cache.put(resolvedUrl, tmp)
             return tmp
@@ -90,13 +90,13 @@ class OpenGraphClient(context: Context) {
     }
 
     private fun parseHtml(resolvedUrl: String, body: ResponseBody): OpenGraph = body.use {
-        if (hasCharset(body.contentType())) {
+        if (body.contentType().hasCharset()) {
             OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
         } else {
             OpenGraphParser.parse(resolvedUrl, body.bytes())
         }
     }
 
-    private fun isNotHtml(contentType: MediaType): Boolean = contentType.subtype() != "html"
-    private fun hasCharset(contentType: MediaType): Boolean = contentType.charset(null) != null
+    private fun MediaType.isNotHtml(): Boolean = this.subtype() != "html"
+    private fun MediaType.hasCharset(): Boolean = this.charset(null) != null
 }
