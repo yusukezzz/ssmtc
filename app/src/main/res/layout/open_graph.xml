@@ -23,6 +23,7 @@
 
         <ImageView
             android:id="@+id/og_image"
+            android:background="@color/dark_grey"
             android:layout_width="@dimen/open_graph_size"
             android:layout_height="@dimen/open_graph_size"
             />
