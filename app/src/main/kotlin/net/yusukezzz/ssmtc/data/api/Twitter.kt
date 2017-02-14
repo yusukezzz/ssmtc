@@ -7,7 +7,9 @@ import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import net.yusukezzz.ssmtc.util.toRequestBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Converter
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,11 +32,11 @@ class Twitter {
         .addInterceptor(SigningInterceptor(oauthConsumer))
         .addInterceptor(RetryWithDelayInterceptor())
         .build()
-    private val converter = GsonConverterFactory.create(GsonHolder.gson)
     private val builder = Retrofit.Builder()
-        .addConverterFactory(converter)
+        .addConverterFactory(GsonConverterFactory.create(GsonHolder.gson))
         .client(okhttp)
-    private val apiService = builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
+    private val apiRetrofit = builder.baseUrl(API_BASE_URL).build()
+    private val apiService = apiRetrofit.create(TwitterApi::class.java)
     private val uploadService = builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
 
     fun setTokens(token: String?, tokenSecret: String?): Twitter {
@@ -79,9 +81,6 @@ class Twitter {
     private fun mentionsTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
         execute(apiService.mentionsTimeline(params.count, maxId))
 
-    private fun directMessages(params: TimelineParameter, maxId: Long?): List<Tweet> =
-        execute(apiService.directMessages(params.count, maxId))
-
     private fun listTimeline(params: TimelineParameter, maxId: Long?): List<Tweet> =
         execute(apiService.listStatuses(params.listId, params.count, maxId))
 
@@ -100,10 +99,11 @@ class Twitter {
         return res.body()
     }
 
-    private fun <T> handleError(res: Response<T>) {
+    private fun handleError(res: Response<*>) {
         val statusCode = res.code()
-        val errConverter = converter.responseBodyConverter(TwitterErrorResponse::class.java, arrayOf(), null)
-        val errRes = errConverter.convert(res.errorBody()) as TwitterErrorResponse
+        val errConverter: Converter<ResponseBody, TwitterErrorResponse> =
+            apiRetrofit.responseBodyConverter(TwitterErrorResponse::class.java, arrayOf())
+        val errRes = errConverter.convert(res.errorBody())
 
         throw TwitterApiException("Twitter API error: status=$statusCode, cause=$errRes", statusCode, errRes.errors)
     }
@@ -146,12 +146,6 @@ interface TwitterApi {
 
     @GET("/1.1/statuses/mentions_timeline.json?tweet_mode=extended")
     fun mentionsTimeline(
-        @Query("count") count: Int?,
-        @Query("max_id") maxId: Long?
-    ): Call<List<Tweet>>
-
-    @GET("/1.1/direct_messages.json")
-    fun directMessages(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
