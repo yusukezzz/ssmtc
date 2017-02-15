@@ -13,12 +13,8 @@ class OGDiskCache(val context: Context) {
 
     private val cacheDir = File(context.cacheDir, CACHE_DIR)
 
-    init {
-        cacheDir.mkdirs()
-    }
-
     fun get(url: String): OpenGraph? = synchronized(context) {
-        val cache = cacheFile(url)
+        val cache = prepareCacheFile(url)
         if (!cache.exists()) {
             return null
         }
@@ -26,7 +22,7 @@ class OGDiskCache(val context: Context) {
     }
 
     fun put(url: String, og: OpenGraph) = synchronized(context) {
-        cacheFile(url).writeText(GsonHolder.gson.toJson(og))
+        prepareCacheFile(url).writeText(GsonHolder.gson.toJson(og))
         removeOldCaches()
     }
 
@@ -38,5 +34,5 @@ class OGDiskCache(val context: Context) {
         }
     }
 
-    private fun cacheFile(url: String): File = File(cacheDir, DigestUtils.md5Hex(url) + ".json")
+    private fun prepareCacheFile(url: String): File = File(cacheDir.apply { mkdirs() }, DigestUtils.md5Hex(url) + ".json")
 }
