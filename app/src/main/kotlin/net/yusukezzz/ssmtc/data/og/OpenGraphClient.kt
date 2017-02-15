@@ -12,7 +12,6 @@ import java.lang.ref.WeakReference
 
 class OpenGraphClient(context: Context) {
     companion object {
-        private const val METHOD_NOT_ALLOWED = 405
         private fun createTmpData(url: String): OpenGraph = OpenGraph(url, "", url)
         private fun createImageData(url: String): OpenGraph = OpenGraph(url, url, url)
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
@@ -91,10 +90,15 @@ class OpenGraphClient(context: Context) {
     }
 
     private fun parseHtml(resolvedUrl: String, body: ResponseBody): OpenGraph = body.use {
-        if (body.contentType().hasCharset()) {
-            OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
-        } else {
-            OpenGraphParser.parse(resolvedUrl, body.bytes())
+        try {
+            if (body.contentType().hasCharset()) {
+                OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
+            } else {
+                OpenGraphParser.parse(resolvedUrl, body.bytes())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
         }
     }
 
