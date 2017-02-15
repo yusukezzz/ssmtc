@@ -6,17 +6,16 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
 object OpenGraphParser {
-    val OG_TITLE = Regex("(og|twitter):title")
-    val OG_DESC = Regex("(og|twitter):description")
-    val OG_IMAGE = Regex("\"(og|twitter):image\"")
-    val OG_URL = Regex("(og|twitter):url")
+    private val OG_TITLE = Regex("(og|twitter):title")
+    private val OG_IMAGE = Regex("\"(og|twitter):image\"")
+    private val OG_URL = Regex("(og|twitter):url")
 
-    val REGEX_OPTS = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
-    val META_TAG = Regex("<meta.+?>", REGEX_OPTS)
-    val META_CHARSET_TAG = Regex("<meta.+?charset=(.+?)(\\s|>)", REGEX_OPTS)
-    val TITLE_TAG = Regex("<title>(.+?)</title>", REGEX_OPTS)
-    val HEAD_END_TAG = Regex("</head>", REGEX_OPTS)
-    const val CONTENT_KEY = "content="
+    private val REGEX_OPTS = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
+    private val META_TAG = Regex("<meta.+?>", REGEX_OPTS)
+    private val META_CHARSET_TAG = Regex("<meta.+?charset=(.+?)(\\s|>)", REGEX_OPTS)
+    private val TITLE_TAG = Regex("<title>(.+?)</title>", REGEX_OPTS)
+    private val HEAD_END_TAG = Regex("</head>", REGEX_OPTS)
+    private const val CONTENT_KEY = "content="
 
     fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
@@ -70,7 +69,7 @@ object OpenGraphParser {
 
         if (title.isEmpty()) {
             // use html title if available
-            TITLE_TAG.find(head)?.let { title = StringEscapeUtils.unescapeHtml4(it.groupValues[1]) }
+            TITLE_TAG.find(head)?.let { title = StringEscapeUtils.unescapeHtml4(it.groupValues[1].trim()) }
         }
 
         // fallback
