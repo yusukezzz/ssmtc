@@ -28,11 +28,14 @@ class OpenGraphLayout : FrameLayout, OpenGraphClient.OpenGraphLoadable {
     fun reset() {
         og_contents.gone()
         og_loading.visible()
+        this.visible()
     }
 
     override fun onLoad(og: OpenGraph) {
         og_title.text = og.title
-        og_host.text = Uri.parse(og.url).host
+        val host = Uri.parse(og.url).host
+        og_host.text = host
+        PicassoUtil.favicon(host, og_favicon)
         PicassoUtil.opengraph(og.image, og_image)
         this.setOnClickListener {
             listener.onUrlClick(og.url)

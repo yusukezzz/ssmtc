@@ -43,20 +43,33 @@
             android:textSize="12sp"
             />
 
-        <TextView
-            android:id="@+id/og_host"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/open_graph_margin"
-            android:layout_marginEnd="@dimen/open_graph_margin"
-            android:layout_marginBottom="@dimen/open_graph_margin"
+            android:orientation="horizontal"
             android:layout_toEndOf="@id/og_image"
             android:layout_alignParentBottom="true"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textColor="@color/textWhite"
-            android:textSize="10sp"
-            />
+            android:layout_marginStart="@dimen/open_graph_margin"
+            android:layout_marginBottom="@dimen/open_graph_margin"
+            android:layout_marginEnd="@dimen/open_graph_margin"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/og_favicon"
+                android:layout_width="12sp"
+                android:layout_height="12sp" />
+
+            <TextView
+                android:id="@+id/og_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/textWhite"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

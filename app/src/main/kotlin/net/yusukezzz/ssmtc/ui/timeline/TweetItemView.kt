@@ -182,7 +182,6 @@ class TweetItemView : LinearLayout {
     private fun handleOpenGraph(url: String) {
         open_graph.setListener(listener)
         open_graph.reset()
-        open_graph.visible()
         ogClient.load(url, open_graph)
     }
 }
