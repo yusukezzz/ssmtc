@@ -35,5 +35,5 @@ data class FilterRule(
         return false
     }
 
-    private fun List<String>.toRegex(): Regex = Regex(this.map(java.util.regex.Pattern::quote).joinToString("|"))
+    private fun List<String>.toRegex(): Regex = Regex(this.map(java.util.regex.Pattern::quote).joinToString("|"), RegexOption.IGNORE_CASE)
 }
