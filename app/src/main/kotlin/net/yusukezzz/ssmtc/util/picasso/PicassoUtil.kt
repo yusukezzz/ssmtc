@@ -14,7 +14,6 @@ import java.io.File
 object PicassoUtil {
     const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
     private const val ROUNDED_CORNER_RADIUS = 8
-    private const val FAVICON_API = "https://www.google.com/s2/favicons?domain="
 
     private val rounded: Transformation = RoundedTransformation(ROUNDED_CORNER_RADIUS)
 
@@ -36,13 +35,6 @@ object PicassoUtil {
 
     fun thumbnail(path: String, imgView: ImageView) {
         Picasso.with(imgView.context).loadFrom(path)
-            .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
-            .into(imgView)
-    }
-
-    fun favicon(host: String, imgView: ImageView) {
-        Picasso.with(imgView.context).loadFrom(FAVICON_API + host)
-            .priority(Picasso.Priority.LOW)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
             .into(imgView)
     }

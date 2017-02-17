@@ -33,9 +33,7 @@ class OpenGraphLayout : FrameLayout, OpenGraphClient.OpenGraphLoadable {
 
     override fun onLoad(og: OpenGraph) {
         og_title.text = og.title
-        val host = Uri.parse(og.url).host
-        og_host.text = host
-        PicassoUtil.favicon(host, og_favicon)
+        og_host.text = Uri.parse(og.url).host
         PicassoUtil.opengraph(og.image, og_image)
         this.setOnClickListener {
             listener.onUrlClick(og.url)
