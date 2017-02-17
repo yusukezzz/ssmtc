@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.LayoutInflater
 import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
@@ -32,7 +31,6 @@ class StatusUpdateActivity: AppCompatActivity() {
     }
 
     private var photos: Array<String>? = null
-    private val inflater by lazy { LayoutInflater.from(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

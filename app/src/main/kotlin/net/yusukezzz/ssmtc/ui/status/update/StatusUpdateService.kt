@@ -72,8 +72,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
                 twitter.upload(compressImage(it)).media_id
             }
 
-            val res = twitter.tweet(status, inReplyToStatusId, mediaIds)
-            println(res)
+            twitter.tweet(status, inReplyToStatusId, mediaIds)
             sendSuccessBroadcast()
         } catch (e: Throwable) {
             println(e.message)

@@ -71,7 +71,7 @@ class Twitter {
         execute(apiService.ownedLists(1000, userId)).lists
 
     fun tweet(status: String, inReplyToStatusId: Long? = null, mediaIds: List<Long>? = null): Tweet =
-        execute(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds))
+        execute(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds?.joinToString(",")))
 
     fun upload(media: File): UploadResult = execute(uploadService.upload(media.toRequestBody()))
 
@@ -191,7 +191,7 @@ interface TwitterApi {
     fun statusesUpdate(
         @Field("status") status: String,
         @Field("in_reply_to_status_id") inReplyToStatusId: Long?,
-        @Field("media_ids") mediaIds: List<Long>?
+        @Field("media_ids") mediaIds: String?
     ): Call<Tweet>
 
     @POST("/1.1/statuses/retweet/{id}.json")
