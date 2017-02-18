@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc
 
+import android.graphics.Bitmap.Config.RGB_565
 import com.deploygate.sdk.DeployGate
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.picasso.Picasso
@@ -17,11 +18,7 @@ class Application: android.app.Application() {
         AndroidThreeTen.init(this)
         PreferencesHolder.init(this)
         startKovenant()
-
-        val picasso = Picasso.Builder(this)
-            .defaultBitmapConfig(android.graphics.Bitmap.Config.RGB_565)
-            .build()
-        Picasso.setSingletonInstance(picasso)
+        Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
 
         DeployGate.install(this)
     }

@@ -7,9 +7,7 @@ import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import net.yusukezzz.ssmtc.util.toRequestBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.Converter
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -101,11 +99,7 @@ class Twitter {
 
     private fun handleError(res: Response<*>) {
         val statusCode = res.code()
-        val errConverter: Converter<ResponseBody, TwitterErrorResponse> =
-            apiRetrofit.responseBodyConverter(TwitterErrorResponse::class.java, arrayOf())
-        val errRes = errConverter.convert(res.errorBody())
-
-        throw TwitterApiException("Twitter API error: status=$statusCode, cause=$errRes", statusCode, errRes.errors)
+        RuntimeException("twitter API error code=$statusCode")
     }
 
     data class TwitterErrorResponse(val errors: List<TwitterErrorDetail>)
