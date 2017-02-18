@@ -10,11 +10,8 @@ class ThumbnailTileLayout : ViewGroup {
         const val HEIGHT_RATIO: Int = 9
     }
 
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (childCount == 0) {

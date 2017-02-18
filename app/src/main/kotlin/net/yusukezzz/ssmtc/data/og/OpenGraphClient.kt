@@ -63,15 +63,15 @@ class OpenGraphClient(context: Context) {
         val headReq = Request.Builder().url(url).head().build()
         val headRes = okhttp.newCall(headReq).execute()
         val resolvedUrl = headRes.request().url().toString()
+        val headBody = headRes.body()
+        val contentType = headBody.contentType()
+        headBody.close()
 
         val cached = cache.get(resolvedUrl)
         if (cached != null) {
             return cached
         }
 
-        val headBody = headRes.body()
-        val contentType = headBody.contentType()
-        headBody.close()
         // ignore non HTML content
         if (headRes.isSuccessful && contentType.isNotHtml()) {
             val tmp = createTmpData(resolvedUrl)

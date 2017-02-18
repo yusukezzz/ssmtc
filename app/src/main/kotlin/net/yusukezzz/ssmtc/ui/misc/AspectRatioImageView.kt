@@ -15,15 +15,13 @@ class AspectRatioImageView: ImageView {
     private var widthRatio: Int = 1
     private var heightRatio: Int = 1
 
-    constructor(context: Context): super(context)
-    constructor(context: Context, attrs: AttributeSet): super(context, attrs) {
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle) {
         val arr = context.obtainStyledAttributes(attrs, R.styleable.AspectRatioImageView)
         widthRatio = arr.getInteger(R.styleable.AspectRatioImageView_widthRatio, DEFAULT_WIDTH_RATIO)
         heightRatio = arr.getInteger(R.styleable.AspectRatioImageView_heightRatio, DEFAULT_HEIGHT_RATIO)
         arr.recycle()
     }
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int): super(context, attrs, defStyle)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)

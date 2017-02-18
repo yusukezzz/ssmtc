@@ -13,11 +13,8 @@ import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.visible
 
 class OpenGraphLayout : FrameLayout, OpenGraphClient.OpenGraphLoadable {
-    constructor(context: Context) : super(context)
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
 
     private lateinit var listener: TweetItemView.TweetItemListener
 

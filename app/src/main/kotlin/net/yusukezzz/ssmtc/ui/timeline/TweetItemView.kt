@@ -21,7 +21,6 @@ import java.text.DecimalFormat
 
 class TweetItemView : LinearLayout {
     private val numberFormatter = DecimalFormat("#,###,###")
-    private var position: Int = 0
     private lateinit var listener: TweetItemListener
     private lateinit var ogClient: OpenGraphClient
 
@@ -39,13 +38,8 @@ class TweetItemView : LinearLayout {
         fun onHashTagClick(hashTag: String)
     }
 
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
-
-    fun setPosition(pos: Int) {
-        this.position = pos
-    }
+    @JvmOverloads
+    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
 
     fun setTweetListener(listener: TweetItemListener) {
         this.listener = listener
