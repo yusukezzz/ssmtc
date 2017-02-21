@@ -12,8 +12,6 @@ import java.lang.ref.WeakReference
 
 class OpenGraphClient(context: Context) {
     companion object {
-        private fun createTmpData(url: String): OpenGraph = OpenGraph(url, "", url)
-        private fun createImageData(url: String): OpenGraph = OpenGraph(url, url, url)
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
     }
 
@@ -26,7 +24,7 @@ class OpenGraphClient(context: Context) {
 
     fun load(url: String, view: OpenGraphLoadable) {
         if (isImageUrl(url)) {
-            view.onLoad(createImageData(url))
+            view.onLoad(OpenGraph.imageData(url))
             return
         }
 
@@ -52,7 +50,7 @@ class OpenGraphClient(context: Context) {
         } failUi {
             println(it)
             it.printStackTrace()
-            val og = createTmpData(url)
+            val og = OpenGraph.tmpData(url)
             cache.put(url, og)
             target.get()?.onLoad(og)
         }
@@ -74,7 +72,7 @@ class OpenGraphClient(context: Context) {
 
         // ignore non HTML content
         if (headRes.isSuccessful && contentType.isNotHtml()) {
-            val tmp = createTmpData(resolvedUrl)
+            val tmp = OpenGraph.tmpData(resolvedUrl)
             cache.put(resolvedUrl, tmp)
             return tmp
         }
