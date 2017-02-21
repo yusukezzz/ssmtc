@@ -74,12 +74,13 @@ object OpenGraphParser {
 
         // fallback
         if (title.isEmpty()) title = url
-        if (ogUrl.isEmpty()) ogUrl = url
+        if (!ogUrl.startsWith("http")) ogUrl = url
 
         return OpenGraph(title, image, ogUrl)
     }
 
-    private fun extractContent(meta: String): String {
+    private fun extractContent(originalMeta: String): String {
+        val meta = originalMeta.replace(Regex("content\\s?=\\s?", REGEX_OPTS), CONTENT_KEY)
         val quoteAt = meta.indexOf(CONTENT_KEY) + CONTENT_KEY.length
         val quote = meta[quoteAt] // single or double quote char
         val start = quoteAt + 1
