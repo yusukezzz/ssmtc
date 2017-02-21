@@ -80,7 +80,7 @@ object OpenGraphParser {
     }
 
     private fun extractContent(originalMeta: String): String {
-        val meta = originalMeta.replace(Regex("content\\s?=\\s?", REGEX_OPTS), CONTENT_KEY)
+        val meta = originalMeta.replace(Regex("content\\s*?=\\s*?", REGEX_OPTS), CONTENT_KEY)
         val quoteAt = meta.indexOf(CONTENT_KEY) + CONTENT_KEY.length
         val quote = meta[quoteAt] // single or double quote char
         val start = quoteAt + 1
