@@ -53,7 +53,7 @@ class Twitter {
             TimelineParameter.TYPE_LISTS -> listTimeline(it, max)
             TimelineParameter.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(it), max)
             TimelineParameter.TYPE_USER -> userTimeline(it, max)
-            else -> throw RuntimeException("unknown parameter type: ${it.type.javaClass}")
+            else -> throw RuntimeException("unknown parameter type: ${it.type::class.java}")
         }
     }
 

@@ -7,8 +7,9 @@
     >
 
     <ProgressBar
+        style="@android:style/Widget.Material.Light.ProgressBar"
         android:id="@+id/og_loading"
-        style="@android:style/Widget.Holo.Light.ProgressBar"
+        android:indeterminateTint="@color/grey"
         android:layout_width="@dimen/open_graph_size"
         android:layout_height="@dimen/open_graph_size"
         android:layout_gravity="center_horizontal"
