@@ -68,6 +68,9 @@ class Twitter {
     fun ownedLists(userId: Long): List<TwList> =
         execute(apiService.ownedLists(1000, userId)).lists
 
+    fun blockedIds(): IdList = execute(apiService.blockedIds())
+    fun mutedIds(): IdList = execute(apiService.mutedIds())
+
     fun tweet(status: String, inReplyToStatusId: Long? = null, mediaIds: List<Long>? = null): Tweet =
         execute(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds?.joinToString(",")))
 
@@ -179,6 +182,12 @@ interface TwitterApi {
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Call<List<Tweet>>
+
+    @GET("/1.1/blocks/ids.json")
+    fun blockedIds(): Call<IdList>
+
+    @GET("/1.1/mutes/users/ids.json")
+    fun mutedIds(): Call<IdList>
 
     @FormUrlEncoded
     @POST("/1.1/statuses/update.json")

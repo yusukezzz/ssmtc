@@ -15,11 +15,19 @@ class TimelinePresenter(val view: TimelineContract.View, val twitter: Twitter, p
      */
     override fun loadTweets(maxId: Long?) {
         task {
+            twitter.blockedIds().ids
+        } and task {
+            twitter.mutedIds().ids
+        } and task {
             twitter.timeline(param, maxId)
-        } doneUi { tweets ->
+        } doneUi {
+            // blocked and muted user ids
+            // TODO: cache
+            val ignoreIds = (it.first.first + it.first.second).distinct()
+            val tweets = it.second
             // save last tweet id before filtering
             tweets.lastOrNull()?.let { view.setLastTweetId(it.id) }
-            val filtered = tweets.filter { param.filter.match(it) }
+            val filtered = tweets.filter { param.filter.match(it) && ignoreIds.contains(it.user.id).not() }
             if (maxId == null) {
                 view.setTweets(filtered)
             } else {
