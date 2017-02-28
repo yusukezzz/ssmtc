@@ -44,16 +44,14 @@ class TimelinePresenter(private val view: TimelineContract.View,
         task { Tuple2(twitter.timeline(param, maxId), ignoreIds) }
     }
 
-    private fun updateIgnoreIdsTask(): Promise<List<Long>, Exception> {
-        return task {
-            twitter.blockedIds().ids
-        } and task {
-            twitter.mutedIds().ids
-        } then {
-            // save blocked and muted user ids
-            ignoreIds = (it.first + it.second).distinct()
-            ignoreIds
-        }
+    private fun updateIgnoreIdsTask(): Promise<List<Long>, Exception> = task {
+        twitter.blockedIds().ids
+    } and task {
+        twitter.mutedIds().ids
+    } then {
+        // save blocked and muted user ids
+        ignoreIds = (it.first + it.second).distinct()
+        ignoreIds
     }
 
     override fun loadLists(userId: Long) {
