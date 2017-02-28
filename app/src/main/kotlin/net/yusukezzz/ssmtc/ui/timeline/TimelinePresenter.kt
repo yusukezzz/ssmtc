@@ -25,8 +25,8 @@ class TimelinePresenter(private val view: TimelineContract.View,
             val tweets = it.first
             val ignores = it.second
             // save last tweet id before filtering
-            tweets.lastOrNull()?.let { view.setLastTweetId(it.id) }
-            val filtered = tweets.filter { param.filter.match(it) && ignores.contains(it.user.id).not() }
+            tweets.lastOrNull()?.let { tw -> view.setLastTweetId(tw.id) }
+            val filtered = tweets.filter { tw -> param.filter.match(tw) && ignores.contains(tw.user.id).not() }
             if (maxId == null) {
                 view.setTweets(filtered)
             } else {
