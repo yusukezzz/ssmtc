@@ -1,13 +1,17 @@
 package net.yusukezzz.ssmtc.data.api.model
 
-import nz.bradcampbell.paperparcel.PaperParcel
-import nz.bradcampbell.paperparcel.PaperParcelable
+import paperparcel.PaperParcel
+import paperparcel.PaperParcelable
 
 @PaperParcel
 data class Entity(
     val urls: List<Url> = listOf(),
     val media: List<Media> = listOf()
-)
+) : PaperParcelable {
+    companion object {
+        @JvmField val CREATOR = PaperParcelEntity.CREATOR
+    }
+}
 
 @PaperParcel
 data class Url(
@@ -15,7 +19,11 @@ data class Url(
     val expanded_url: String,
     val display_url: String,
     val indices: List<Int>
-) {
+) : PaperParcelable {
+    companion object {
+        @JvmField val CREATOR = PaperParcelUrl.CREATOR
+    }
+
     val start: Int
         get() = indices[0]
     val end: Int
@@ -34,12 +42,12 @@ data class Media(
     val display_url: String,
     val indices: List<Int>,
     val video_info: VideoInfo?
-) {
+) : PaperParcelable {
     companion object {
         val TYPE_PHOTO = "photo"
         val TYPE_ANIMATED_GIF = "animated_gif"
         val TYPE_VIDEO = "video"
-        @JvmField val CREATOR = PaperParcelable.Creator(Media::class.java)
+        @JvmField val CREATOR = PaperParcelMedia.CREATOR
     }
 
     val isPhoto: Boolean
@@ -73,7 +81,7 @@ data class VideoInfo(
     val variants: List<VideoVariant>
 ): PaperParcelable {
     companion object {
-        @JvmField val CREATOR = PaperParcelable.Creator(VideoInfo::class.java)
+        @JvmField val CREATOR = PaperParcelVideoInfo.CREATOR
     }
 
     val mp4All: List<VideoVariant>
@@ -91,9 +99,10 @@ data class VideoVariant(
     val bitrate: Int,
     val content_type: String,
     val url: String
-) {
+) : PaperParcelable {
     companion object {
         val TYPE_MP4 = "video/mp4"
+        @JvmField val CREATOR = PaperParcelVideoVariant.CREATOR
     }
 
     val isMP4: Boolean

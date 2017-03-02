@@ -10,6 +10,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'deploygate'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.ben-manes.versions'
 
 android {
@@ -48,7 +49,7 @@ dependencies {
         support_version = '25.2.0'
         kovenant_version = '3.3.0'
         retrofit_version = '2.2.0'
-        paperparcel_version = '1.0.1'
+        paperparcel_version = '2.0.0'
         permission_dispatcher_version = '2.3.1'
     }
 
@@ -80,9 +81,9 @@ dependencies {
     // html entity decoding
     compile 'org.apache.commons:commons-lang3:3.5'
 
-    compile "com.github.grandstaish.paperparcel:paperparcel:$paperparcel_version"
-    compile "com.github.grandstaish.paperparcel:paperparcel-kotlin:$paperparcel_version"
-    kapt "com.github.grandstaish.paperparcel:compiler:$paperparcel_version"
+    compile "nz.bradcampbell:paperparcel:$paperparcel_version"
+    compile "nz.bradcampbell:paperparcel-kotlin:$paperparcel_version"
+    kapt "nz.bradcampbell:paperparcel-compiler:$paperparcel_version"
 
     compile 'com.deploygate:sdk:3.1.1'
     testCompile 'junit:junit:4.12'

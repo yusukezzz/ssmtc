@@ -1,8 +1,8 @@
 package net.yusukezzz.ssmtc.data.api.model
 
-import nz.bradcampbell.paperparcel.PaperParcel
-import nz.bradcampbell.paperparcel.PaperParcelable
 import org.threeten.bp.OffsetDateTime
+import paperparcel.PaperParcel
+import paperparcel.PaperParcelable
 
 @PaperParcel
 data class Tweet(
@@ -20,7 +20,7 @@ data class Tweet(
     var favorited: Boolean
 ) : PaperParcelable {
     companion object {
-        @JvmField val CREATOR = PaperParcelable.Creator(Tweet::class.java)
+        @JvmField val CREATOR = PaperParcelTweet.CREATOR
     }
 
     val permalinkUrl: String

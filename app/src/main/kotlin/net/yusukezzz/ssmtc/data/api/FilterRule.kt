@@ -1,15 +1,18 @@
 package net.yusukezzz.ssmtc.data.api
 
 import net.yusukezzz.ssmtc.data.api.FilterRule.Showing.ALL
+import paperparcel.PaperParcel
+import paperparcel.PaperParcelable
 
-@nz.bradcampbell.paperparcel.PaperParcel
+@PaperParcel
 data class FilterRule(
     val showing: net.yusukezzz.ssmtc.data.api.FilterRule.Showing,
     val includeWords: List<String>,
     val excludeWords: List<String>
-) {
+) : PaperParcelable {
     companion object {
         fun default(): net.yusukezzz.ssmtc.data.api.FilterRule = net.yusukezzz.ssmtc.data.api.FilterRule(ALL, listOf(), listOf())
+        @JvmField val CREATOR = PaperParcelFilterRule.CREATOR
     }
 
     enum class Showing {

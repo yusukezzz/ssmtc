@@ -1,7 +1,8 @@
 package net.yusukezzz.ssmtc.data.api.model
 
 import com.google.gson.annotations.SerializedName
-import nz.bradcampbell.paperparcel.PaperParcel
+import paperparcel.PaperParcel
+import paperparcel.PaperParcelable
 
 @PaperParcel
 data class User(
@@ -17,5 +18,9 @@ data class User(
     @SerializedName("followers_count") val followersCount: Long,
     @SerializedName("friends_count") val friendsCount: Long,
     @SerializedName("listed_count") val listedCount: Long
-)
+) : PaperParcelable {
+    companion object {
+        @JvmField val CREATOR = PaperParcelUser.CREATOR
+    }
+}
 

@@ -11,7 +11,6 @@ import android.support.v4.view.ViewPager
 import kotlinx.android.synthetic.main.photo_gallery.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
-import net.yusukezzz.ssmtc.data.api.model.MediaParcel
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.toast
 import org.threeten.bp.LocalDateTime
@@ -27,12 +26,12 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
 
         fun newIntent(context: Context, images: List<Media>, pos: Int): Intent =
             Intent(context, GalleryActivity::class.java).apply {
-                putExtra(ARG_IMAGES, images.map(::MediaParcel).toTypedArray())
+                putExtra(ARG_IMAGES, images.toTypedArray())
                 putExtra(ARG_START_POSITION, pos)
             }
     }
 
-    val images: List<Media> by lazy { intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as MediaParcel).data } }
+    val images: List<Media> by lazy { intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as Media) } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

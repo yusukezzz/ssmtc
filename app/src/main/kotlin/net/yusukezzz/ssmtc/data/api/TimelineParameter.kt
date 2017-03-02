@@ -1,8 +1,7 @@
 package net.yusukezzz.ssmtc.data.api
 
-import nz.bradcampbell.paperparcel.PaperParcel
-import nz.bradcampbell.paperparcel.PaperParcelable
-import kotlin.comparisons.compareValuesBy
+import paperparcel.PaperParcel
+import paperparcel.PaperParcelable
 
 @PaperParcel
 data class TimelineParameter(
@@ -18,7 +17,7 @@ data class TimelineParameter(
     override fun compareTo(other: TimelineParameter): Int = compareValuesBy(this, other, { it.type }, { it.title.toLowerCase() })
 
     companion object {
-        @JvmField val CREATOR = PaperParcelable.Creator(TimelineParameter::class.java)
+        @JvmField val CREATOR = PaperParcelTimelineParameter.CREATOR
 
         val MAX_RETRIEVE_COUNT = 50
 
