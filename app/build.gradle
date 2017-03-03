@@ -40,10 +40,6 @@ android {
     }
 }
 
-kapt {
-    generateStubs = true
-}
-
 dependencies {
     ext {
         support_version = '25.2.0'
