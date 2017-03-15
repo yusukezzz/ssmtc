@@ -1,6 +1,5 @@
 package net.yusukezzz.ssmtc.data.og
 
-import android.content.Context
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
@@ -10,13 +9,10 @@ import okhttp3.Request
 import okhttp3.ResponseBody
 import java.lang.ref.WeakReference
 
-class OpenGraphClient(context: Context) {
+class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttpClient) {
     companion object {
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
     }
-
-    private val cache = OGDiskCache(context)
-    private val okhttp = OkHttpClient.Builder().build()
 
     interface OpenGraphLoadable {
         fun onLoad(og: OpenGraph)

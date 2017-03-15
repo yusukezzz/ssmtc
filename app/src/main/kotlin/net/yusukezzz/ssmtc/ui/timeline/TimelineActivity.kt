@@ -20,6 +20,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.base_layout.*
 import kotlinx.android.synthetic.main.nav_header_main.*
@@ -41,7 +42,6 @@ import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
 import net.yusukezzz.ssmtc.util.*
-import net.yusukezzz.ssmtc.util.gson.GsonHolder
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.io.File
 import javax.inject.Inject
@@ -70,10 +70,16 @@ class TimelineActivity: AppCompatActivity(),
     private var lastTweetId: Long? = null
 
     @Inject
+    lateinit var gson: Gson
+
+    @Inject
     lateinit var prefs: Preferences
 
     @Inject
     lateinit var twitter: Twitter
+
+    @Inject
+    lateinit var ogClient: OpenGraphClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +119,7 @@ class TimelineActivity: AppCompatActivity(),
         super.onSaveInstanceState(outState)
 
         // save last tweets
-        val json = GsonHolder.gson.toJson(timelineAdapter.getAll())
+        val json = gson.toJson(timelineAdapter.getAll())
         lastTimelineFile.writeText(json)
         // save last scroll position
         outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager.onSaveInstanceState())
@@ -128,7 +134,7 @@ class TimelineActivity: AppCompatActivity(),
 
         // load tweets from file
         val json = lastTimelineFile.readText()
-        val tweets: List<Tweet> = GsonHolder.gson.fromJson(json, object : TypeToken<List<Tweet>>() {}.type)
+        val tweets: List<Tweet> = gson.fromJson(json, object : TypeToken<List<Tweet>>() {}.type)
         val timelineState = state.getParcelable<Parcelable>(STATE_RECYCLER_VIEW)
         timelineAdapter.set(tweets)
         timeline_list.layoutManager.onRestoreInstanceState(timelineState)
@@ -155,7 +161,6 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun setupTimelineView() {
-        val ogClient = OpenGraphClient(this)
         timeline_list.adapter = TimelineAdapter(this, ogClient).apply { setHasStableIds(true) }
         timeline_list.setHasFixedSize(true)
 

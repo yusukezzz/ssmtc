@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.github.gfx.util.encrypt.EncryptedSharedPreferences
 import com.github.gfx.util.encrypt.Encryption
+import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import net.yusukezzz.ssmtc.data.Account
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
-import net.yusukezzz.ssmtc.util.gson.GsonHolder
 
-open class Preferences(private val context: Context) {
+open class Preferences(private val context: Context, private val gson: Gson) {
     companion object {
         const val KEY_ACCOUNTS_JSON = "accounts_json"
         const val KEY_CURRENT_USER_ID = "current_user_id"
@@ -33,10 +33,10 @@ open class Preferences(private val context: Context) {
             return if (json.isEmpty()) {
                 listOf()
             } else {
-                GsonHolder.gson.fromJson<List<Account>>(json, accountsType)
+                gson.fromJson<List<Account>>(json, accountsType)
             }
         }
-        private set(value) = put(KEY_ACCOUNTS_JSON, GsonHolder.gson.toJson(value))
+        private set(value) = put(KEY_ACCOUNTS_JSON, gson.toJson(value))
 
     fun getAccount(userId: Long): Account? = accounts.find { it.user.id == userId }
 

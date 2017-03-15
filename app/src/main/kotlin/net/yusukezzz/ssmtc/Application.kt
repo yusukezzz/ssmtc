@@ -7,7 +7,6 @@ import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
 import net.yusukezzz.ssmtc.di.DaggerAppComponent
-import net.yusukezzz.ssmtc.util.PreferencesHolder
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 
@@ -20,7 +19,6 @@ open class Application : android.app.Application() {
         super.onCreate()
 
         AndroidThreeTen.init(this)
-        PreferencesHolder.init(this)
         startKovenant()
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
         initComponent()

@@ -13,6 +13,8 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
               private val apiService: TwitterApi,
               private val uploadService: UploadApi) {
     companion object {
+        const val API_BASE_URL = "https://api.twitter.com"
+        const val UPLOAD_BASE_URL = "https://upload.twitter.com"
         const val LANG = "ja"
         const val LOCALE = "ja"
         const val SEARCH_RESULT_TYPE = "recent"

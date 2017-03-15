@@ -1,28 +1,28 @@
 package net.yusukezzz.ssmtc.data.og
 
-import android.content.Context
-import net.yusukezzz.ssmtc.util.gson.GsonHolder
+import com.google.gson.Gson
 import org.apache.commons.codec.digest.DigestUtils
 import java.io.File
 
-class OGDiskCache(val context: Context) {
+class OGDiskCache(private val appCacheDir: File,
+                  private val gson: Gson) {
     companion object {
-        private const val CACHE_DIR = "og_cache"
+        private const val CACHE_DIR_NAME = "og_cache"
         private const val MAX_CACHE_FILES = 1000
     }
 
-    private val cacheDir = File(context.cacheDir, CACHE_DIR)
+    private val cacheDir = File(appCacheDir, CACHE_DIR_NAME)
 
-    fun get(url: String): OpenGraph? = synchronized(context) {
+    fun get(url: String): OpenGraph? = synchronized(appCacheDir) {
         val cache = prepareCacheFile(url)
         if (!cache.exists()) {
             return null
         }
-        return GsonHolder.gson.fromJson(cache.readText(), OpenGraph::class.java)
+        return gson.fromJson(cache.readText(), OpenGraph::class.java)
     }
 
-    fun put(url: String, og: OpenGraph) = synchronized(context) {
-        prepareCacheFile(url).writeText(GsonHolder.gson.toJson(og))
+    fun put(url: String, og: OpenGraph) = synchronized(appCacheDir) {
+        prepareCacheFile(url).writeText(gson.toJson(og))
         removeOldCaches()
     }
 

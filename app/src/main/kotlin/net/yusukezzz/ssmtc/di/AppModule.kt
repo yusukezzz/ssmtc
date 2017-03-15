@@ -8,8 +8,12 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.api.Twitter.Companion.API_BASE_URL
+import net.yusukezzz.ssmtc.data.api.Twitter.Companion.UPLOAD_BASE_URL
 import net.yusukezzz.ssmtc.data.api.TwitterApi
 import net.yusukezzz.ssmtc.data.api.UploadApi
+import net.yusukezzz.ssmtc.data.og.OGDiskCache
+import net.yusukezzz.ssmtc.data.og.OpenGraphClient
 import net.yusukezzz.ssmtc.util.gson.DateTimeTypeConverter
 import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import okhttp3.OkHttpClient
@@ -18,18 +22,19 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import se.akerfeldt.okhttp.signpost.SigningInterceptor
+import java.io.File
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 class AppModule(private val app: Application) {
-    companion object {
-        const val API_BASE_URL = "https://api.twitter.com"
-        const val UPLOAD_BASE_URL = "https://upload.twitter.com"
-    }
-
     @Provides
     @Singleton
     fun provideApplication(): Application = app
+
+    @Provides
+    @Named("cacheDir")
+    fun provideCacheDir(app: Application): File = app.cacheDir
 
     @Provides
     @Singleton
@@ -39,7 +44,7 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun providePreferences(): Preferences = Preferences(app.applicationContext)
+    fun providePreferences(gson: Gson): Preferences = Preferences(app.applicationContext, gson)
 
     @Provides
     @Singleton
@@ -47,7 +52,7 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideOkhttp(oauthConsumer: OkHttpOAuthConsumer): OkHttpClient = OkHttpClient.Builder()
+    fun provideTwitterOkhttp(oauthConsumer: OkHttpOAuthConsumer): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(SigningInterceptor(oauthConsumer))
         .addInterceptor(RetryWithDelayInterceptor())
         .build()
@@ -69,4 +74,12 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideTwitter(oauthConsumer: OkHttpOAuthConsumer, apiService: TwitterApi, uploadService: UploadApi): Twitter = Twitter(oauthConsumer, apiService, uploadService)
+
+    @Provides
+    @Singleton
+    fun provideOGDiskCache(@Named("cacheDir") cacheDir: File, gson: Gson): OGDiskCache = OGDiskCache(cacheDir, gson)
+
+    @Provides
+    @Singleton
+    fun provideOpenGraphClient(cache: OGDiskCache): OpenGraphClient = OpenGraphClient(cache, OkHttpClient.Builder().build())
 }

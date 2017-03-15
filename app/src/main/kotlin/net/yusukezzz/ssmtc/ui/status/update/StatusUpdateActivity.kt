@@ -8,13 +8,19 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.status_update.*
+import net.yusukezzz.ssmtc.Application
+import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-import net.yusukezzz.ssmtc.util.*
+import net.yusukezzz.ssmtc.util.getExtraStreamOrNull
+import net.yusukezzz.ssmtc.util.getImagePath
+import net.yusukezzz.ssmtc.util.getLongExtraOrNull
+import net.yusukezzz.ssmtc.util.getStringExtraOrNull
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
+import javax.inject.Inject
 
 @RuntimePermissions
 class StatusUpdateActivity: AppCompatActivity() {
@@ -30,10 +36,16 @@ class StatusUpdateActivity: AppCompatActivity() {
             }
     }
 
+    @Inject
+    lateinit var prefs: Preferences
+
     private var photos: Array<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Application.component.inject(this)
+
         setContentView(R.layout.status_update)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
         setSupportActionBar(status_update_toolbar)
@@ -61,7 +73,7 @@ class StatusUpdateActivity: AppCompatActivity() {
             showSelectedPhotos(arrayOf(path))
         }
 
-        val account = PreferencesHolder.prefs.currentAccount!!
+        val account = prefs.currentAccount!!
         PicassoUtil.userIcon(account.user, toolbar_avatar)
         toolbar_screen_name.text = account.user.screenName
     }
