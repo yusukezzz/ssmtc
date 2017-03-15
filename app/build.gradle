@@ -46,7 +46,8 @@ dependencies {
         kovenant_version = '3.3.0'
         retrofit_version = '2.2.0'
         paperparcel_version = '2.0.0'
-        permission_dispatcher_version = '2.3.1'
+        permission_dispatcher_version = '2.3.2'
+        dagger_version = '2.9'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -56,6 +57,9 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:customtabs:$support_version"
     compile "com.android.support:design:$support_version"
+
+    compile "com.google.dagger:dagger:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     compile "com.github.hotchemi:permissionsdispatcher:$permission_dispatcher_version"
     kapt "com.github.hotchemi:permissionsdispatcher-processor:$permission_dispatcher_version"
@@ -82,7 +86,17 @@ dependencies {
     kapt "nz.bradcampbell:paperparcel-compiler:$paperparcel_version"
 
     compile 'com.deploygate:sdk:3.1.1'
-    testCompile 'junit:junit:4.12'
+
+    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-core:2.7.17"
+    testCompile "org.robolectric:robolectric:3.3.1"
+
+    // workaround for some errors when testing
+    // https://github.com/robolectric/robolectric/issues/1932
+    // java.lang.NoClassDefFoundError: javax/microedition/khronos/opengles/GL
+    // java.lang.NoClassDefFoundError: Could not initialize class android.graphics.Canvas
+    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
 }
 repositories {
     mavenCentral()

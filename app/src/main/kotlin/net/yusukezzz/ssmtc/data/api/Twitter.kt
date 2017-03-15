@@ -1,41 +1,22 @@
 package net.yusukezzz.ssmtc.data.api
 
-import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.data.api.model.*
-import net.yusukezzz.ssmtc.util.gson.GsonHolder
-import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import net.yusukezzz.ssmtc.util.toRequestBody
-import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
-import se.akerfeldt.okhttp.signpost.SigningInterceptor
 import java.io.File
 
-class Twitter {
+class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
+              private val apiService: TwitterApi,
+              private val uploadService: UploadApi) {
     companion object {
-        const val API_BASE_URL = "https://api.twitter.com"
-        const val UPLOAD_BASE_URL = "https://upload.twitter.com"
         const val LANG = "ja"
         const val LOCALE = "ja"
         const val SEARCH_RESULT_TYPE = "recent"
     }
-
-    private val oauthConsumer = OkHttpOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
-    private val okhttp = OkHttpClient.Builder()
-        .addInterceptor(SigningInterceptor(oauthConsumer))
-        .addInterceptor(RetryWithDelayInterceptor())
-        .build()
-    private val builder = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create(GsonHolder.gson))
-        .client(okhttp)
-    private val apiRetrofit = builder.baseUrl(API_BASE_URL).build()
-    private val apiService = apiRetrofit.create(TwitterApi::class.java)
-    private val uploadService = builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
 
     fun setTokens(token: String?, tokenSecret: String?): Twitter {
         oauthConsumer.setTokenWithSecret(token, tokenSecret)

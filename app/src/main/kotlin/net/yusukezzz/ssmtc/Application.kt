@@ -4,13 +4,17 @@ import android.graphics.Bitmap.Config.RGB_565
 import com.deploygate.sdk.DeployGate
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.picasso.Picasso
-import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.di.AppComponent
+import net.yusukezzz.ssmtc.di.AppModule
+import net.yusukezzz.ssmtc.di.DaggerAppComponent
 import net.yusukezzz.ssmtc.util.PreferencesHolder
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 
-class Application: android.app.Application() {
-    val twitter by lazy { Twitter() }
+open class Application : android.app.Application() {
+    companion object {
+        lateinit var component: AppComponent
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -19,6 +23,7 @@ class Application: android.app.Application() {
         PreferencesHolder.init(this)
         startKovenant()
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
+        initComponent()
 
         DeployGate.install(this)
     }
@@ -26,5 +31,11 @@ class Application: android.app.Application() {
     override fun onTerminate() {
         stopKovenant()
         super.onTerminate()
+    }
+
+    open fun initComponent() {
+        component = DaggerAppComponent.builder()
+            .appModule(AppModule(this))
+            .build()
     }
 }

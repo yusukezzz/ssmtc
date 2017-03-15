@@ -7,10 +7,12 @@ import android.graphics.Bitmap
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v7.app.NotificationCompat
 import id.zelory.compressor.Compressor
+import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.Twitter
 import java.io.File
+import javax.inject.Inject
 
 class StatusUpdateService: IntentService("StatusUpdateService") {
     companion object {
@@ -40,6 +42,12 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         }
     }
 
+    @Inject
+    lateinit var prefs: Preferences
+
+    @Inject
+    lateinit var twitter: Twitter
+
     private val compressor by lazy {
         Compressor.Builder(this)
             .setMaxWidth(PHOTO_MAX_WIDTH)
@@ -47,6 +55,11 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
             .setQuality(PHOTO_QUALITY)
             .setCompressFormat(Bitmap.CompressFormat.JPEG) // should respect original?
             .build()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Application.component.inject(this)
     }
 
     override fun onHandleIntent(intent: Intent) {
@@ -65,8 +78,8 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         manager.notify(0, builder.build())
 
         try {
-            val account = Preferences(this).currentAccount!!
-            val twitter = Twitter().setTokens(account.accessToken, account.secretToken)
+            val account = prefs.currentAccount!!
+            val twitter = twitter.setTokens(account.accessToken, account.secretToken)
 
             val mediaIds = photos?.map {
                 twitter.upload(compressImage(it)).media_id

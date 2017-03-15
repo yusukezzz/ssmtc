@@ -29,6 +29,7 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -43,6 +44,7 @@ import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.gson.GsonHolder
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.io.File
+import javax.inject.Inject
 
 class TimelineActivity: AppCompatActivity(),
     TimelineContract.View,
@@ -62,15 +64,21 @@ class TimelineActivity: AppCompatActivity(),
     private lateinit var endlessScrollListener: EndlessRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
-    private val app: Application by lazy { application as Application }
-    private val prefs: Preferences by lazy { PreferencesHolder.prefs }
     private val lastTimelineFile by lazy { File(applicationContext.cacheDir, "last_timeline.json") }
 
     // Oldest tweet id on current timeline (use for next paging request)
     private var lastTweetId: Long? = null
 
+    @Inject
+    lateinit var prefs: Preferences
+
+    @Inject
+    lateinit var twitter: Twitter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Application.component.inject(this)
 
         if (prefs.currentAccount == null) {
             launchAuthorizeActivity()
@@ -115,7 +123,7 @@ class TimelineActivity: AppCompatActivity(),
 
     private fun restoreTimeline(state: Bundle) {
         toolbar_title.text = prefs.currentTimeline.title
-        presenter = TimelinePresenter(this, app.twitter, prefs.currentTimeline)
+        presenter = TimelinePresenter(this, twitter, prefs.currentTimeline)
         updateTimelineMenu()
 
         // load tweets from file
@@ -244,7 +252,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun loadAccount() {
         val account = prefs.currentAccount!!
-        app.twitter.setTokens(account.accessToken, account.secretToken)
+        twitter.setTokens(account.accessToken, account.secretToken)
 
         val headerView = nav_view.getHeaderView(0)
         val profileImage = headerView.findViewById(R.id.profile_image) as ImageView
@@ -325,7 +333,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun switchTimeline(timeline: TimelineParameter) {
         toolbar_title.text = timeline.title
-        presenter = TimelinePresenter(this, app.twitter, timeline)
+        presenter = TimelinePresenter(this, twitter, timeline)
         updateTimelineMenu()
         initializeTimeline()
     }
