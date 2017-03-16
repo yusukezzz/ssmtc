@@ -18,7 +18,6 @@ open class Application : android.app.Application() {
     override fun onCreate() {
         super.onCreate()
 
-        AndroidThreeTen.init(this)
         startKovenant()
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
         initComponent()
@@ -32,6 +31,7 @@ open class Application : android.app.Application() {
     }
 
     open fun initComponent() {
+        AndroidThreeTen.init(this)
         component = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()

@@ -78,7 +78,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         manager.notify(0, builder.build())
 
         try {
-            val account = prefs.currentAccount!!
+            val account = prefs.getCurrentAccount()!!
             val twitter = twitter.setTokens(account.accessToken, account.secretToken)
 
             val mediaIds = photos?.map {

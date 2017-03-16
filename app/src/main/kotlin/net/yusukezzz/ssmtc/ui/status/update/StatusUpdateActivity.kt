@@ -73,7 +73,7 @@ class StatusUpdateActivity: AppCompatActivity() {
             showSelectedPhotos(arrayOf(path))
         }
 
-        val account = prefs.currentAccount!!
+        val account = prefs.getCurrentAccount()!!
         PicassoUtil.userIcon(account.user, toolbar_avatar)
         toolbar_screen_name.text = account.user.screenName
     }

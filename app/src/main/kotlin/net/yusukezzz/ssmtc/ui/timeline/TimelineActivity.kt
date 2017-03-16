@@ -86,7 +86,7 @@ class TimelineActivity: AppCompatActivity(),
 
         Application.component.inject(this)
 
-        if (prefs.currentAccount == null) {
+        if (prefs.getCurrentAccount() == null) {
             launchAuthorizeActivity()
             finish()
             return
@@ -226,7 +226,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun handleAccountNavigation(item: MenuItem): Boolean {
-        val accounts = (prefs.accounts - prefs.currentAccount!!)
+        val accounts = (prefs.accounts - prefs.getCurrentAccount()!!)
         prefs.currentUserId = accounts[item.order].user.id
         loadAccount()
         showTimelineNavigation()
@@ -256,7 +256,7 @@ class TimelineActivity: AppCompatActivity(),
     fun launchAuthorizeActivity() = startActivity(Intent(this, AuthorizeActivity::class.java))
 
     fun loadAccount() {
-        val account = prefs.currentAccount!!
+        val account = prefs.getCurrentAccount()!!
         twitter.setTokens(account.accessToken, account.secretToken)
 
         val headerView = nav_view.getHeaderView(0)
@@ -294,7 +294,7 @@ class TimelineActivity: AppCompatActivity(),
         nav_view.menu.clear()
         btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_up)
         nav_view.inflateMenu(R.menu.menu_drawer_account)
-        (prefs.accounts - prefs.currentAccount!!).forEachIndexed { i, account ->
+        (prefs.accounts - prefs.getCurrentAccount()!!).forEachIndexed { i, account ->
             nav_view.menu.add(R.id.menu_account, Menu.NONE, i, account.user.screenName)
         }
     }
@@ -309,7 +309,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun removeAccount() {
         prefs.removeCurrentAccount()
-        if (prefs.currentAccount == null) {
+        if (prefs.getCurrentAccount() == null) {
             launchAuthorizeActivity()
         } else {
             loadAccount()
@@ -319,7 +319,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun updateTimelineMenu() {
         nav_view.menu.removeGroup(R.id.menu_timeline)
-        prefs.currentAccount!!.timelines.forEachIndexed { index, timeline ->
+        prefs.getCurrentAccount()!!.timelines.forEachIndexed { index, timeline ->
             nav_view.menu.add(R.id.menu_timeline, Menu.NONE, index, timeline.title)
                 .setCheckable(true)
                 .setIcon(timelineIcon(timeline.type))

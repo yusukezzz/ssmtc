@@ -9,9 +9,9 @@ import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import java.io.File
 
-class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
-              private val apiService: TwitterApi,
-              private val uploadService: UploadApi) {
+open class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
+                   private val apiService: TwitterApi,
+                   private val uploadService: UploadApi) {
     companion object {
         const val API_BASE_URL = "https://api.twitter.com"
         const val UPLOAD_BASE_URL = "https://upload.twitter.com"

@@ -9,7 +9,7 @@ import okhttp3.Request
 import okhttp3.ResponseBody
 import java.lang.ref.WeakReference
 
-class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttpClient) {
+open class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttpClient) {
     companion object {
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
     }

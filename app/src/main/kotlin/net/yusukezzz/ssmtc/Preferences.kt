@@ -20,9 +20,6 @@ open class Preferences(private val context: Context, private val gson: Gson) {
     }
     private val accountsType = object: TypeToken<List<Account>>() {}.type
 
-    val currentAccount: Account?
-        get() = getAccount(currentUserId)
-
     var currentUserId: Long
         get() = getLong(KEY_CURRENT_USER_ID)
         set(value) = put(KEY_CURRENT_USER_ID, value)
@@ -38,6 +35,8 @@ open class Preferences(private val context: Context, private val gson: Gson) {
         }
         private set(value) = put(KEY_ACCOUNTS_JSON, gson.toJson(value))
 
+    open fun getCurrentAccount(): Account? = getAccount(currentUserId)
+
     fun getAccount(userId: Long): Account? = accounts.find { it.user.id == userId }
 
     fun saveAccount(account: Account) {
@@ -45,7 +44,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
     }
 
     fun removeCurrentAccount() {
-        accounts = accounts.minus(currentAccount!!)
+        accounts = accounts.minus(getCurrentAccount()!!)
         if (accounts.isEmpty()) {
             currentUserId = 0
         } else {
@@ -54,24 +53,24 @@ open class Preferences(private val context: Context, private val gson: Gson) {
     }
 
     val currentTimeline: TimelineParameter
-        get() = currentAccount!!.timelines[currentTimelineIndex]
+        get() = getCurrentAccount()!!.timelines[currentTimelineIndex]
 
     var currentTimelineIndex: Int
-        get() = currentAccount!!.lastTimelineIndex
-        set(value) = currentAccount!!.run {
+        get() = getCurrentAccount()!!.lastTimelineIndex
+        set(value) = getCurrentAccount()!!.run {
             lastTimelineIndex = value
             saveAccount(this)
         }
 
     fun addTimeline(param: TimelineParameter) {
-        val account = currentAccount!!
+        val account = getCurrentAccount()!!
         account.timelines = account.timelines.plus(param).sorted()
         saveAccount(account)
         currentTimelineIndex = account.timelines.indexOf(param)
     }
 
     fun updateCurrentTimeline(param: TimelineParameter) {
-        val account = currentAccount!!
+        val account = getCurrentAccount()!!
         val tmpList = account.timelines.toMutableList()
         val pos = tmpList.indexOf(currentTimeline)
         tmpList[pos] = param
@@ -81,7 +80,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
     }
 
     fun removeCurrentTimeline() {
-        val account = currentAccount!!
+        val account = getCurrentAccount()!!
         account.timelines = account.timelines.minus(currentTimeline)
         saveAccount(account)
         currentTimelineIndex = 0
