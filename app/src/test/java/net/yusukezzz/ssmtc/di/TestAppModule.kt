@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.di
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
+import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.data.api.Twitter
@@ -21,18 +22,23 @@ class TestAppModule(private val app: Application) {
     @Singleton
     fun provideGson(): Gson = mockGson
 
-    val mockPrefs = Mockito.mock(Preferences::class.java)
+    val mockPrefs: Preferences = Mockito.mock(Preferences::class.java)
     @Provides
     @Singleton
     fun providePreferences(): Preferences = mockPrefs
 
-    val mockTwitter = Mockito.mock(Twitter::class.java)
+    val mockTwitter: Twitter = Mockito.mock(Twitter::class.java)
     @Provides
     @Singleton
     fun provideTwitter(): Twitter = mockTwitter
 
-    val mockOGClient = Mockito.mock(OpenGraphClient::class.java)
+    val mockOGClient: OpenGraphClient = Mockito.mock(OpenGraphClient::class.java)
     @Provides
     @Singleton
     fun provideOpenGraphClient(): OpenGraphClient = mockOGClient
+
+    val mockCompressor: Compressor = Mockito.mock(Compressor::class.java)
+    @Provides
+    @Singleton
+    fun provideCompressor(): Compressor = mockCompressor
 }

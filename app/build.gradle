@@ -42,7 +42,7 @@ android {
 
 dependencies {
     ext {
-        support_version = '25.2.0'
+        support_version = '25.3.0'
         kovenant_version = '3.3.0'
         retrofit_version = '2.2.0'
         paperparcel_version = '2.0.0'
@@ -119,10 +119,11 @@ tasks.withType(Test) {
     testLogging {
         // set options for log level LIFECYCLE
         events "passed", "skipped", "failed", "standardOut"
-        showExceptions true
         exceptionFormat "full"
         showCauses true
+        showExceptions true
         showStackTraces true
+        showStandardStreams true
 
         // set options for log level DEBUG and INFO
         debug {
@@ -134,6 +135,8 @@ tasks.withType(Test) {
 
         afterSuite { desc, result ->
             if (!desc.parent) { // will match the outermost suite
+                def time = "\nTest time: ${(result.endTime - result.startTime) / 1000} secs"
+                println(time)
                 def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
                 def startItem = '|  ', endItem = '  |'
                 def repeatLength = startItem.length() + output.length() + endItem.length()
