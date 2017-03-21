@@ -52,7 +52,7 @@ object TextUtil {
     private fun replaceUrlEntities(spannable: SpannableStringBuilder,
                                    entities: List<Url>,
                                    listener: TweetItemListener) {
-        entities.forEachIndexed { i, entity ->
+        entities.forEach { entity ->
             val start = spannable.indexOf(entity.url)
             val end = start + entity.url.length
 

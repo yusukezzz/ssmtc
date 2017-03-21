@@ -37,7 +37,7 @@ class TextInputDialog : BaseDialogFragment() {
         val dialog = AlertDialog.Builder(context).apply {
             setTitle(title)
             setView(linear)
-            setPositiveButton(R.string.input_dialog_ok, { dialog, which ->
+            setPositiveButton(R.string.input_dialog_ok, { _, _ ->
                 val input = edit.text.toString().trim()
                 val timeline = when (type) {
                     TimelineParameter.TYPE_SEARCH -> TimelineParameter.search(input)
@@ -46,7 +46,7 @@ class TextInputDialog : BaseDialogFragment() {
                 }
                 listener.onTimelineSelect(timeline)
             })
-            setNegativeButton(R.string.input_dialog_cancel, { d, w -> /* do nothing */ })
+            setNegativeButton(R.string.input_dialog_cancel, { _, _ -> /* do nothing */ })
         }.create()
 
         dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)

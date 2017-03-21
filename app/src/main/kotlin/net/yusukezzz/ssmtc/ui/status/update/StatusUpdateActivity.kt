@@ -102,7 +102,7 @@ class StatusUpdateActivity: AppCompatActivity() {
         if (paths.isEmpty()) return
 
         photos = paths
-        paths.forEachIndexed { i, path ->
+        paths.forEachIndexed { _, path ->
             val imgView = AspectRatioImageView(this)
             status_thumbnail_tile.addView(imgView)
             PicassoUtil.thumbnail(path, imgView)

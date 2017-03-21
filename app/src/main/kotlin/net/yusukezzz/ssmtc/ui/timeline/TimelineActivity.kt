@@ -302,8 +302,8 @@ class TimelineActivity: AppCompatActivity(),
     fun confirmRemoveAccount() {
         AlertDialog.Builder(this)
             .setMessage(R.string.confirm_account_remove_message)
-            .setPositiveButton(R.string.confirm_account_remove_ok, { dialog, which -> removeAccount() })
-            .setNegativeButton(R.string.confirm_account_remove_cancel, { d, w -> /* do nothing */ })
+            .setPositiveButton(R.string.confirm_account_remove_ok, { _, _ -> removeAccount() })
+            .setNegativeButton(R.string.confirm_account_remove_cancel, { _, _ -> /* do nothing */ })
             .show()
     }
 

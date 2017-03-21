@@ -17,7 +17,7 @@ class TimelineSelectDialog : BaseDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(activity).apply {
             setTitle(R.string.timeline_selector_title)
-            setItems(TIMELINE_TYPES) { dialog, which ->
+            setItems(TIMELINE_TYPES) { _, which ->
                 when (which) {
                     TimelineParameter.TYPE_HOME -> listener.onTimelineSelect(TimelineParameter.home())
                     TimelineParameter.TYPE_MENTIONS -> listener.onTimelineSelect(TimelineParameter.mentions())
@@ -26,7 +26,7 @@ class TimelineSelectDialog : BaseDialogFragment() {
                     TimelineParameter.TYPE_USER -> listener.onScreenNameInputOpen()
                 }
             }
-            setNegativeButton(R.string.timeline_selector_cancel) { d, w -> /* do nothing */ }
+            setNegativeButton(R.string.timeline_selector_cancel) { _, _ -> /* do nothing */ }
         }.create()
     }
 }
