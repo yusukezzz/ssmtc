@@ -135,12 +135,9 @@ tasks.withType(Test) {
 
         afterSuite { desc, result ->
             if (!desc.parent) { // will match the outermost suite
-                def time = "\nTest time: ${(result.endTime - result.startTime) / 1000} secs"
-                println(time)
-                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
-                def startItem = '|  ', endItem = '  |'
-                def repeatLength = startItem.length() + output.length() + endItem.length()
-                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+                def time = "\nTest time: ${(result.endTime - result.startTime) / 1000} secs\n"
+                def output = "${time}\nResults: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)\n"
+                println(output)
             }
         }
     }
