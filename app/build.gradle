@@ -47,7 +47,7 @@ dependencies {
         retrofit_version = '2.2.0'
         paperparcel_version = '2.0.0'
         permission_dispatcher_version = '2.3.2'
-        dagger_version = '2.9'
+        dagger_version = '2.10'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
