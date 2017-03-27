@@ -177,7 +177,7 @@ class TimelineActivity: AppCompatActivity(),
         swipe_refresh.setOnRefreshListener(this)
         swipe_refresh.setColorSchemeResources(R.color.green, R.color.red, R.color.blue, R.color.yellow)
 
-        findViewById(R.id.toolbar_title).setOnClickListener {
+        toolbar_title.setOnClickListener {
             timeline_list.scrollToPosition(0)
         }
 
