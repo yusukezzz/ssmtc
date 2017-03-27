@@ -1,5 +1,7 @@
 package net.yusukezzz.ssmtc.data.og
 
+import nl.komponents.kovenant.Kovenant
+import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
@@ -8,11 +10,14 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
 import java.lang.ref.WeakReference
+import java.util.*
 
 open class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttpClient) {
     companion object {
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
     }
+
+    private val tasks: WeakHashMap<OpenGraphLoadable, Promise<OpenGraph, Exception>> = WeakHashMap()
 
     interface OpenGraphLoadable {
         fun onLoad(og: OpenGraph)
@@ -36,19 +41,29 @@ open class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: O
 
     private fun isImageUrl(url: String): Boolean = IMAGE_EXTENSIONS.contains(ext(url))
 
+    private class OGCancelException : Exception()
     private fun enqueue(url: String, view: OpenGraphLoadable) {
-        val target = WeakReference<OpenGraphLoadable>(view)
-        // FIXME: Make it possible to cancel when the view is recycled before the async task is completed
-        task {
-            resolve(url)
-        } successUi {
-            target.get()?.onLoad(it)
-        } failUi {
-            println(it)
-            it.printStackTrace()
-            val og = OpenGraph.tmpData(url)
-            cache.put(url, og)
-            target.get()?.onLoad(og)
+        synchronized(view) {
+            val target = WeakReference<OpenGraphLoadable>(view)
+            tasks.remove(view)?.let {
+                Kovenant.cancel(it, OGCancelException())
+            }
+            val t = task {
+                resolve(url)
+            } successUi {
+                target.get()?.onLoad(it)
+            } failUi {
+                println(it)
+                it.printStackTrace()
+                if (it !is OGCancelException) {
+                    val og = OpenGraph.tmpData(url)
+                    cache.put(url, og)
+                    target.get()?.onLoad(og)
+                }
+            } always {
+                target.get()?.let { tasks.remove(it) }
+            }
+            tasks.put(view, t)
         }
     }
 
@@ -68,7 +83,11 @@ open class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: O
 
         // ignore non HTML content
         if (headRes.isSuccessful && contentType.isNotHtml()) {
-            val tmp = OpenGraph.tmpData(resolvedUrl)
+            val tmp = if (isImageUrl(resolvedUrl)) {
+                OpenGraph.imageData(resolvedUrl)
+            } else {
+                OpenGraph.tmpData(resolvedUrl)
+            }
             cache.put(resolvedUrl, tmp)
             return tmp
         }
