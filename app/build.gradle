@@ -93,14 +93,8 @@ dependencies {
 
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:2.7.17"
-    testCompile "org.robolectric:robolectric:3.3.1"
-
-    // workaround for some errors when testing
-    // https://github.com/robolectric/robolectric/issues/1932
-    // java.lang.NoClassDefFoundError: javax/microedition/khronos/opengles/GL
-    // java.lang.NoClassDefFoundError: Could not initialize class android.graphics.Canvas
-    testCompile 'org.khronos:opengl-api:gl1.1-android-2.1_r1'
+    testCompile "org.mockito:mockito-core:2.7.19"
+    testCompile "org.robolectric:robolectric:3.3.2"
 }
 repositories {
     mavenCentral()
