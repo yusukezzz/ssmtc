@@ -6,12 +6,13 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import kotlinx.android.synthetic.main.video_player.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.TextUtil
+import net.yusukezzz.ssmtc.util.gone
+import net.yusukezzz.ssmtc.util.visible
 
 class VideoPlayerActivity: MediaBaseActivity(),
     MediaPlayer.OnPreparedListener,
@@ -48,8 +49,8 @@ class VideoPlayerActivity: MediaBaseActivity(),
     }
 
     override fun onPrepared(mp: MediaPlayer?) {
-        video_loading_bar.visibility = View.GONE
-        video_time.visibility = View.VISIBLE
+        video_loading_bar.gone()
+        video_time.visible()
 
         totalDurationMilliSec = media_video.duration
         totalDurationTime = TextUtil.milliSecToTime(totalDurationMilliSec)
@@ -65,6 +66,8 @@ class VideoPlayerActivity: MediaBaseActivity(),
 
     override fun onStop() {
         handler.removeCallbacks(updateTask)
+        media_video.setOnPreparedListener(null)
+        media_video.setOnCompletionListener(null)
         super.onStop()
     }
 
