@@ -64,11 +64,11 @@ class VideoPlayerActivity: MediaBaseActivity(),
         updateProgress(totalDurationMilliSec)
     }
 
-    override fun onStop() {
+    override fun onDestroy() {
         handler.removeCallbacks(updateTask)
         media_video.setOnPreparedListener(null)
         media_video.setOnCompletionListener(null)
-        super.onStop()
+        super.onDestroy()
     }
 
     private fun updateProgress(currentMilliSec: Int) {
