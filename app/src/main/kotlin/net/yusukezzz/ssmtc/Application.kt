@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc
 
+import android.content.Context
 import android.graphics.Bitmap.Config.RGB_565
 import com.deploygate.sdk.DeployGate
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -16,6 +17,7 @@ import nl.komponents.kovenant.android.stopKovenant
 open class Application : android.app.Application() {
     companion object {
         lateinit var component: AppComponent
+        fun getRefWatcher(context: Context): RefWatcher = (context.applicationContext as Application).refWatcher
     }
 
     private lateinit var refWatcher: RefWatcher
