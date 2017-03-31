@@ -3,7 +3,9 @@ package net.yusukezzz.ssmtc
 import android.graphics.Bitmap.Config.RGB_565
 import com.deploygate.sdk.DeployGate
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.squareup.leakcanary.AndroidExcludedRefs
 import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
@@ -16,6 +18,8 @@ open class Application : android.app.Application() {
         lateinit var component: AppComponent
     }
 
+    private lateinit var refWatcher: RefWatcher
+
     override fun onCreate() {
         super.onCreate()
 
@@ -24,7 +28,7 @@ open class Application : android.app.Application() {
             // You should not init your app in this process.
             return
         }
-        LeakCanary.install(this)
+        refWatcher = installLeakCanary()
 
         startKovenant()
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
@@ -43,5 +47,14 @@ open class Application : android.app.Application() {
         component = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()
+    }
+
+    protected fun installLeakCanary(): RefWatcher {
+        val excludes = AndroidExcludedRefs.createAppDefaults()
+            .instanceField("android.media.MediaPlayer", "mSubtitleController")
+            .build()
+        return LeakCanary.refWatcher(this)
+            .excludedRefs(excludes)
+            .buildAndInstall()
     }
 }
