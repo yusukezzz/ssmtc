@@ -65,11 +65,9 @@ class VideoPlayerActivity: MediaBaseActivity(),
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         handler.removeCallbacks(updateTask)
-        media_video.setOnPreparedListener(null)
-        media_video.setOnCompletionListener(null)
         media_video.stopPlayback()
+        super.onDestroy()
     }
 
     private fun updateProgress(currentMilliSec: Int) {
