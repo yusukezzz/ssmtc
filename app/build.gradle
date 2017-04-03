@@ -42,10 +42,10 @@ android {
 
 dependencies {
     ext {
-        support_version = '25.3.0'
+        support_version = '25.3.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.2.0'
-        paperparcel_version = '2.0.0'
+        paperparcel_version = '2.0.1'
         permission_dispatcher_version = '2.3.2'
         dagger_version = '2.10'
         leakcanary_version = '1.5'
@@ -93,7 +93,7 @@ dependencies {
 
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:2.7.19"
+    testCompile "org.mockito:mockito-core:2.7.21"
     testCompile "org.robolectric:robolectric:3.3.2"
 }
 repositories {
@@ -111,7 +111,20 @@ buildscript {
     }
 }
 
-task depchk(dependsOn: dependencyUpdates)
+// ignore unstable releases
+dependencyUpdates.resolutionStrategy = {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'eap'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
+task depupd(dependsOn: dependencyUpdates)
 
 tasks.withType(Test) {
     testLogging {
