@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc
 
+import com.squareup.leakcanary.RefWatcher
 import dagger.Component
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.TestAppModule
@@ -21,9 +22,7 @@ class TestApplication : Application() {
             .build()
     }
 
-    override fun installLeakCanary() {
-        // do nothing
-    }
+    override fun installLeakCanary(): RefWatcher = RefWatcher.DISABLED
 }
 
 @Singleton

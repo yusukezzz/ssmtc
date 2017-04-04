@@ -1,9 +1,7 @@
 package net.yusukezzz.ssmtc
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap.Config.RGB_565
-import android.os.Bundle
 import com.deploygate.sdk.DeployGate
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
@@ -12,7 +10,6 @@ import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
 import net.yusukezzz.ssmtc.di.DaggerAppComponent
-import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
 
@@ -27,6 +24,11 @@ open class Application : android.app.Application() {
     override fun onCreate() {
         super.onCreate()
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return
+        }
         installLeakCanary()
 
         startKovenant()
@@ -48,36 +50,5 @@ open class Application : android.app.Application() {
             .build()
     }
 
-    open protected fun installLeakCanary() {
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-
-        val watcher = LeakCanary.refWatcher(this).build()
-        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
-            override fun onActivityPaused(activity: Activity?) {}
-
-            override fun onActivityResumed(activity: Activity?) {}
-
-            override fun onActivityStarted(activity: Activity?) {}
-
-            override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
-
-            override fun onActivityStopped(activity: Activity?) {}
-
-            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {}
-
-            override fun onActivityDestroyed(activity: Activity?) {
-                // ignore VideoView context leak
-                if (activity is VideoPlayerActivity) {
-                    return
-                }
-                watcher.watch(activity)
-            }
-        })
-
-        refWatcher = watcher
-    }
+    open protected fun installLeakCanary(): RefWatcher = RefWatcher.DISABLED
 }
