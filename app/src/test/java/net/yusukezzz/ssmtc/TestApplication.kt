@@ -20,6 +20,10 @@ class TestApplication : Application() {
             .testAppModule(module)
             .build()
     }
+
+    override fun installLeakCanary() {
+        // do nothing
+    }
 }
 
 @Singleton

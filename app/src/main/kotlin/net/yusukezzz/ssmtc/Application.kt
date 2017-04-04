@@ -27,12 +27,7 @@ open class Application : android.app.Application() {
     override fun onCreate() {
         super.onCreate()
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-        refWatcher = installLeakCanary()
+        installLeakCanary()
 
         startKovenant()
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
@@ -53,7 +48,13 @@ open class Application : android.app.Application() {
             .build()
     }
 
-    protected fun installLeakCanary(): RefWatcher {
+    open protected fun installLeakCanary() {
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return
+        }
+
         val watcher = LeakCanary.refWatcher(this).build()
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityPaused(activity: Activity?) {}
@@ -77,6 +78,6 @@ open class Application : android.app.Application() {
             }
         })
 
-        return watcher
+        refWatcher = watcher
     }
 }
