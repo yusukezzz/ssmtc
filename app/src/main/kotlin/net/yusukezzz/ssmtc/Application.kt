@@ -2,7 +2,6 @@ package net.yusukezzz.ssmtc
 
 import android.content.Context
 import android.graphics.Bitmap.Config.RGB_565
-import com.deploygate.sdk.DeployGate
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
@@ -34,8 +33,6 @@ open class Application : android.app.Application() {
         startKovenant()
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
         initComponent()
-
-        DeployGate.install(this)
     }
 
     override fun onTerminate() {

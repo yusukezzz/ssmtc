@@ -2,11 +2,17 @@ package net.yusukezzz.ssmtc
 
 import android.app.Activity
 import android.os.Bundle
+import com.deploygate.sdk.DeployGate
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
 
 class DebugApplication: Application() {
+    override fun onCreate() {
+        super.onCreate()
+        DeployGate.install(this)
+    }
+
     override fun installLeakCanary(): RefWatcher {
         val watcher = LeakCanary.refWatcher(this).build()
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
