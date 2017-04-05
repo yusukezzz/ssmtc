@@ -104,7 +104,7 @@ class TimelineActivity: AppCompatActivity(),
             restoreTimeline(savedInstanceState)
         } else {
             // initial load
-            switchTimeline(prefs.currentTimeline)
+            switchTimeline(prefs.getCurrentTimeline())
         }
     }
 
@@ -128,8 +128,8 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun restoreTimeline(state: Bundle) {
-        toolbar_title.text = prefs.currentTimeline.title
-        presenter = TimelinePresenter(this, twitter, prefs.currentTimeline)
+        toolbar_title.text = prefs.getCurrentTimeline().title
+        presenter = TimelinePresenter(this, twitter, prefs.getCurrentTimeline())
         updateTimelineMenu()
 
         // load tweets from file
@@ -201,7 +201,7 @@ class TimelineActivity: AppCompatActivity(),
         when (item.itemId) {
             R.id.remove_timeline -> {
                 prefs.removeCurrentTimeline()
-                switchTimeline(prefs.currentTimeline)
+                switchTimeline(prefs.getCurrentTimeline())
             }
             R.id.setting_timeline -> {
                 showTimelineSettingDialog()
@@ -230,14 +230,14 @@ class TimelineActivity: AppCompatActivity(),
         prefs.currentUserId = accounts[item.order].user.id
         loadAccount()
         showTimelineNavigation()
-        switchTimeline(prefs.currentTimeline)
+        switchTimeline(prefs.getCurrentTimeline())
 
         return false
     }
 
     fun handleTimelineNavigation(item: MenuItem): Boolean {
         prefs.currentTimelineIndex = item.order
-        switchTimeline(prefs.currentTimeline)
+        switchTimeline(prefs.getCurrentTimeline())
 
         return true
     }
@@ -313,7 +313,7 @@ class TimelineActivity: AppCompatActivity(),
             launchAuthorizeActivity()
         } else {
             loadAccount()
-            switchTimeline(prefs.currentTimeline)
+            switchTimeline(prefs.getCurrentTimeline())
         }
     }
 
@@ -387,7 +387,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun showTimelineSettingDialog() {
-        TimelineSettingDialog.newInstance(prefs.currentTimeline)
+        TimelineSettingDialog.newInstance(prefs.getCurrentTimeline())
             .setTimelineSettingListener(this)
             .show(supportFragmentManager, "TimelineSettingDialog")
     }

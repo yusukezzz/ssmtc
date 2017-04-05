@@ -52,8 +52,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
         }
     }
 
-    val currentTimeline: TimelineParameter
-        get() = getCurrentAccount()!!.timelines[currentTimelineIndex]
+    open fun getCurrentTimeline(): TimelineParameter = getCurrentAccount()!!.timelines[currentTimelineIndex]
 
     var currentTimelineIndex: Int
         get() = getCurrentAccount()!!.lastTimelineIndex
@@ -72,7 +71,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
     fun updateCurrentTimeline(param: TimelineParameter) {
         val account = getCurrentAccount()!!
         val tmpList = account.timelines.toMutableList()
-        val pos = tmpList.indexOf(currentTimeline)
+        val pos = tmpList.indexOf(getCurrentTimeline())
         tmpList[pos] = param
         account.timelines = tmpList.sorted()
         saveAccount(account)
@@ -81,7 +80,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
 
     fun removeCurrentTimeline() {
         val account = getCurrentAccount()!!
-        account.timelines = account.timelines.minus(currentTimeline)
+        account.timelines = account.timelines.minus(getCurrentTimeline())
         saveAccount(account)
         currentTimelineIndex = 0
     }

@@ -20,7 +20,7 @@ open class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
         const val SEARCH_RESULT_TYPE = "recent"
     }
 
-    fun setTokens(token: String?, tokenSecret: String?): Twitter {
+    open fun setTokens(token: String?, tokenSecret: String?): Twitter {
         oauthConsumer.setTokenWithSecret(token, tokenSecret)
 
         return this
@@ -28,7 +28,7 @@ open class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())
 
-    fun timeline(params: TimelineParameter, maxId: Long? = null): List<Tweet> = params.let {
+    open fun timeline(params: TimelineParameter, maxId: Long? = null): List<Tweet> = params.let {
         val max = maxId?.dec()
         when (it.type) {
             TimelineParameter.TYPE_HOME -> homeTimeline(it, max)

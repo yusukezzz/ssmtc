@@ -15,6 +15,7 @@ import nl.komponents.kovenant.android.stopKovenant
 open class Application : android.app.Application() {
     companion object {
         lateinit var component: AppComponent
+        private var picassoInitialized = false
         fun getRefWatcher(context: Context): RefWatcher = (context.applicationContext as Application).refWatcher
     }
 
@@ -31,7 +32,11 @@ open class Application : android.app.Application() {
         installLeakCanary()
 
         startKovenant()
-        Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
+        if (!picassoInitialized) {
+            // for robolectric test, picasso can set singleton instance only once
+            picassoInitialized = true
+            Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
+        }
         initComponent()
     }
 
