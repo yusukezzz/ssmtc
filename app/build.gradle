@@ -76,6 +76,9 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    testCompile('org.threeten:threetenbp:1.3.3') {
+        exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
+    }
     compile 'se.akerfeldt:okhttp-signpost:1.1.0'
     compile 'id.zelory:compressor:1.0.5'
 

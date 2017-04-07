@@ -106,6 +106,7 @@ class TimelineActivity: AppCompatActivity(),
             // initial load
             switchTimeline(prefs.getCurrentTimeline())
         }
+        println("hoge")
     }
 
     override fun onStart() {
