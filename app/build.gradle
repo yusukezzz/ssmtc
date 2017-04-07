@@ -130,21 +130,12 @@ task depupd(dependsOn: dependencyUpdates)
 
 tasks.withType(Test) {
     testLogging {
-        // set options for log level LIFECYCLE
-        events "passed", "skipped", "failed", "standardOut"
-        exceptionFormat "full"
-        showCauses true
-        showExceptions true
-        showStackTraces true
-        showStandardStreams true
-
-        // set options for log level DEBUG and INFO
-        debug {
-            events "started", "passed", "skipped", "failed", "standardOut", "standardError"
-            exceptionFormat "full"
+        afterTest { desc, result ->
+            println(desc.className + " > " + desc.name + " ${result.resultType}")
+            if (result.resultType == TestResult.ResultType.FAILURE && result.exception != null) {
+                result.exception.printStackTrace()
+            }
         }
-        info.events = debug.events
-        info.exceptionFormat = debug.exceptionFormat
 
         afterSuite { desc, result ->
             if (!desc.parent) { // will match the outermost suite
