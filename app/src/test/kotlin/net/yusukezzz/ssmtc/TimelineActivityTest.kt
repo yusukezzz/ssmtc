@@ -1,7 +1,6 @@
 package net.yusukezzz.ssmtc
 
 import android.content.ComponentName
-import android.support.v7.widget.RecyclerView
 import net.yusukezzz.ssmtc.data.Account
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.Entity
@@ -70,20 +69,17 @@ class TimelineActivityTest {
     }
 
     @Test
-    fun shouldMoreLoadTweetsIfTimelineEndReached() {
+    fun shouldPagingRequestIfLastTweetIdExists() {
         val timelines = listOf(TimelineParameter.home())
         val prefs = getModule().mockPrefs
         Mockito.`when`(prefs.getCurrentAccount()).thenReturn(mockAccount(timelines))
         Mockito.`when`(prefs.getCurrentTimeline()).thenReturn(timelines.first())
 
-        val tweets = (50..100).map { mockTweet(it.toLong()) }.reversed()
-        Mockito.`when`(getModule().mockTwitter.timeline(timelines.first(), null)).thenReturn(tweets)
-
+        val lastTweetId = 100L
         val act = Robolectric.buildActivity(TimelineActivity::class.java).create().get()
-        val timeline = act.findViewById(R.id.timeline_list) as RecyclerView
-        timeline.scrollToPosition(tweets.size - 1)
+        act.setLastTweetId(lastTweetId)
+        act.onLoadMore()
 
-        verify(getModule().mockTwitter).timeline(timelines.first(), null)
-        verify(getModule().mockTwitter).timeline(timelines.first(), tweets.last().id)
+        verify(getModule().mockTwitter).timeline(timelines.first(), lastTweetId)
     }
 }
