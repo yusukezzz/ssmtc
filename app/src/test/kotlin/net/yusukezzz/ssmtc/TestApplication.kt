@@ -12,7 +12,18 @@ import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
 import javax.inject.Singleton
 
 class TestApplication : Application() {
+    companion object {
+        private var picassoInitialized = false
+    }
     val module: TestAppModule = TestAppModule(this)
+
+    override fun initPicasso() {
+        if (!picassoInitialized) {
+            // for robolectric test, picasso can set singleton instance only once
+            picassoInitialized = true
+            super.initPicasso()
+        }
+    }
 
     override fun initComponent() {
         // ignore for missing TZDB.dat

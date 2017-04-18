@@ -32,17 +32,17 @@ open class Application : android.app.Application() {
         installLeakCanary()
 
         startKovenant()
-        if (!picassoInitialized) {
-            // for robolectric test, picasso can set singleton instance only once
-            picassoInitialized = true
-            Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
-        }
+        initPicasso()
         initComponent()
     }
 
     override fun onTerminate() {
         stopKovenant()
         super.onTerminate()
+    }
+
+    open fun initPicasso() {
+        Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
     }
 
     open fun initComponent() {
