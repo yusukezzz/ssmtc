@@ -15,6 +15,7 @@ import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.data.og.OpenGraphClient
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
+import net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.text.DecimalFormat
@@ -49,17 +50,24 @@ class TweetItemView : LinearLayout {
         this.ogClient = client
     }
 
-    fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {
+    fun bind(tweet: Tweet) = when {
+        tweet.isRetweet -> bindRetweeted(tweet)
+        tweet.isRetweetWithQuoted -> bindQuoted(tweet)
+        else -> bindTweet(tweet)
+    }
+
+    private fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {
         tweet_retweeted_container.gone()
         quote_container.gone()
         open_graph.gone()
         thumbnail_tile.removeAllViews()
+        quote_thumbnail_tile.removeAllViews()
 
         var removeUrl = ""
         if (tweet.hasVideo) {
-            handleVideo(tweet.videos.first())
+            handleVideo(tweet.videos.first(), thumbnail_tile)
         } else if (tweet.hasPhoto) {
-            handlePhoto(tweet.photos)
+            handlePhoto(tweet.photos, thumbnail_tile)
         } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
             val urls = tweet.entities.urls
             // ignore host only url
@@ -82,6 +90,24 @@ class TweetItemView : LinearLayout {
             tweet_text.beVisibleIf(formatted.isNotEmpty())
         }
         handleReaction(tweet)
+    }
+
+    private fun bindRetweeted(tweet: Tweet) {
+        bindTweet(tweet.retweeted_status!!)
+        tweet_retweeted_message.text = tweet.user.name + resources.getString(R.string.retweeted_by)
+        tweet_retweeted_container.visible()
+    }
+
+    private fun bindQuoted(tweet: Tweet) {
+        bindTweet(tweet, true)
+        val quoted = tweet.quoted_status!!
+        quote_text.text = TextUtil.formattedText(quoted, listener)
+        quote_text.movementMethod = LinkMovementMethod.getInstance()
+        quote_user_name.text = quoted.user.name
+        quote_user_screen_name.text = "@" + quoted.user.screenName
+        if (quoted.hasVideo) handleVideo(quoted.videos.first(), quote_thumbnail_tile)
+        if (quoted.hasPhoto) handlePhoto(quoted.photos, quote_thumbnail_tile)
+        quote_container.visible()
     }
 
     private fun handleReaction(tweet: Tweet) {
@@ -125,49 +151,34 @@ class TweetItemView : LinearLayout {
         ic_tweet_share.setOnClickListener { listener.onShareClick(tweet) }
     }
 
-    fun bindRetweeted(tweet: Tweet) {
-        bindTweet(tweet.retweeted_status!!)
-        tweet_retweeted_message.text = tweet.user.name + resources.getString(R.string.retweeted_by)
-        tweet_retweeted_container.visible()
-    }
-
-    fun bindQuoted(tweet: Tweet) {
-        bindTweet(tweet, true)
-        val quoted = tweet.quoted_status!!
-        quote_text.text = TextUtil.formattedText(quoted, listener)
-        quote_text.movementMethod = LinkMovementMethod.getInstance()
-        quote_user_name.text = quoted.user.name
-        quote_user_screen_name.text = "@" + quoted.user.screenName
-        quote_container.visible()
-    }
-
     fun cleanup() {
         PicassoUtil.cancel(tweet_user_image)
         PicassoUtil.cancel(open_graph.og_image)
         thumbnail_tile.children { PicassoUtil.cancel(it) }
+        quote_thumbnail_tile.children { PicassoUtil.cancel(it) }
     }
 
-    private fun handlePhoto(photos: List<Media>) {
+    private fun handlePhoto(photos: List<Media>, tile: ThumbnailTileLayout) {
         photos.forEachIndexed { index, media ->
             val photoView = AspectRatioImageView(context)
             photoView.setBackgroundColor(context.getCompatColor(R.color.darker_grey))
-            thumbnail_tile.addView(photoView)
+            tile.addView(photoView)
             photoView.setOnClickListener { listener.onImageClick(photos, index) }
             PicassoUtil.thumbnail(media.small_url, photoView)
         }
     }
 
-    private fun handleVideo(video: Media) {
+    private fun handleVideo(video: Media, tile: ThumbnailTileLayout) {
         if (video.video_info == null) return
 
-        val container = thumbnail_tile.inflate(R.layout.media_video)
+        val container = tile.inflate(R.layout.media_video)
         container.ic_play_circle.setImageResource(R.drawable.ic_play_video)
         container.media_video_time.text = if (video.isGif) {
             "GIF"
         } else {
             TextUtil.milliSecToTime(video.video_info.duration_millis)
         }
-        thumbnail_tile.addView(container)
+        tile.addView(container)
         val imgView = media_video_thumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
         PicassoUtil.thumbnail(video.small_url, imgView)

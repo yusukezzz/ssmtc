@@ -13,12 +13,7 @@ class TimelineAdapter(val listener: TweetItemListener,
                       val ogClient: OpenGraphClient) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         private class TweetViewHolder(val view: TweetItemView) : ViewHolder(view) {
-            fun bindTo(tweet: Tweet) = when {
-                tweet.isRetweet -> view.bindRetweeted(tweet)
-                tweet.isRetweetWithQuoted -> view.bindQuoted(tweet)
-                else -> view.bindTweet(tweet)
-            }
-
+            fun bind(tweet: Tweet) = view.bind(tweet)
             fun cleanup() = view.cleanup()
         }
     }
@@ -33,7 +28,7 @@ class TimelineAdapter(val listener: TweetItemListener,
         return TweetViewHolder(tweetView)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, pos: Int): Unit = (holder as TweetViewHolder).bindTo(timeline[pos])
+    override fun onBindViewHolder(holder: ViewHolder, pos: Int): Unit = (holder as TweetViewHolder).bind(timeline[pos])
 
     override fun onViewRecycled(holder: ViewHolder): Unit = (holder as TweetViewHolder).cleanup()
 

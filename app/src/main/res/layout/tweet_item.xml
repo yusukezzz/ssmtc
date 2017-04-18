@@ -183,11 +183,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/quote_user_name"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="4dp"
                 android:text="quote body text"
                 android:textColor="@color/textWhite"
                 android:textSize="13sp"
+                />
+
+            <net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
+                android:id="@+id/quote_thumbnail_tile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_below="@id/quote_text"
                 />
 
         </RelativeLayout>
