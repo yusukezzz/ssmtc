@@ -15,7 +15,6 @@ import nl.komponents.kovenant.android.stopKovenant
 open class Application : android.app.Application() {
     companion object {
         lateinit var component: AppComponent
-        private var picassoInitialized = false
         fun getRefWatcher(context: Context): RefWatcher = (context.applicationContext as Application).refWatcher
     }
 
