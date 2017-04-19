@@ -7,7 +7,8 @@ import net.yusukezzz.ssmtc.di.TestAppModule
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateService
-import net.yusukezzz.ssmtc.ui.timeline.TimelineActivity
+import net.yusukezzz.ssmtc.ui.timeline.TimelineComponent
+import net.yusukezzz.ssmtc.ui.timeline.TimelineModule
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
 import javax.inject.Singleton
 
@@ -39,7 +40,7 @@ class TestApplication : Application() {
 @Singleton
 @Component(modules = arrayOf(TestAppModule::class))
 interface TestAppComponent : AppComponent {
-    override fun inject(activity: TimelineActivity)
+    override fun plus(timelineModule: TimelineModule): TimelineComponent
     override fun inject(activity: AuthorizeActivity)
     override fun inject(activity: StatusUpdateActivity)
     override fun inject(dialog: TimelineSettingDialog)

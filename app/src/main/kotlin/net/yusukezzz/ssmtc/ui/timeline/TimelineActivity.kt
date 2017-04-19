@@ -30,7 +30,6 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
-import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -60,7 +59,6 @@ class TimelineActivity: AppCompatActivity(),
         const val STATE_RECYCLER_VIEW = "state_recycler_view"
     }
 
-    private lateinit var presenter: TimelineContract.Presenter
     private lateinit var endlessScrollListener: EndlessRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
@@ -76,7 +74,7 @@ class TimelineActivity: AppCompatActivity(),
     lateinit var prefs: Preferences
 
     @Inject
-    lateinit var twitter: Twitter
+    lateinit var presenter: TimelineContract.Presenter
 
     @Inject
     lateinit var ogClient: OpenGraphClient
@@ -84,7 +82,7 @@ class TimelineActivity: AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Application.component.inject(this)
+        Application.component.plus(TimelineModule(this)).inject(this)
 
         if (prefs.getCurrentAccount() == null) {
             launchAuthorizeActivity()
@@ -129,7 +127,7 @@ class TimelineActivity: AppCompatActivity(),
 
     private fun restoreTimeline(state: Bundle) {
         toolbar_title.text = prefs.getCurrentTimeline().title
-        presenter = TimelinePresenter(this, twitter, prefs.getCurrentTimeline())
+        presenter.setTimelineParameter(prefs.getCurrentTimeline())
         updateTimelineMenu()
 
         // load tweets from file
@@ -257,7 +255,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun loadAccount() {
         val account = prefs.getCurrentAccount()!!
-        twitter.setTokens(account.accessToken, account.secretToken)
+        presenter.setTokens(account)
 
         val headerView = nav_view.getHeaderView(0)
         val profileImage = headerView.findViewById(R.id.profile_image) as ImageView
@@ -338,7 +336,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun switchTimeline(timeline: TimelineParameter) {
         toolbar_title.text = timeline.title
-        presenter = TimelinePresenter(this, twitter, timeline)
+        presenter.setTimelineParameter(timeline)
         updateTimelineMenu()
         initializeTimeline()
     }

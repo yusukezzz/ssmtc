@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
+import net.yusukezzz.ssmtc.data.Account
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -11,9 +12,17 @@ import nl.komponents.kovenant.then
 import nl.komponents.kovenant.ui.alwaysUi
 
 class TimelinePresenter(private val view: TimelineContract.View,
-                        private val twitter: Twitter,
-                        private val param: TimelineParameter) : TimelineContract.Presenter {
+                        private val twitter: Twitter) : TimelineContract.Presenter {
     private var ignoreIds: List<Long> = listOf()
+    private lateinit var param: TimelineParameter
+
+    override fun setTimelineParameter(param: TimelineParameter) {
+        this.param = param
+    }
+
+    override fun setTokens(account: Account) {
+        twitter.setTokens(account.accessToken, account.secretToken)
+    }
 
     /**
      * Load tweet from timeline API
