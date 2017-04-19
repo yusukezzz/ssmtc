@@ -9,7 +9,7 @@ import com.google.gson.reflect.TypeToken
 import net.yusukezzz.ssmtc.data.Account
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 
-open class Preferences(private val context: Context, private val gson: Gson) {
+class Preferences(private val context: Context, private val gson: Gson) {
     companion object {
         const val KEY_ACCOUNTS_JSON = "accounts_json"
         const val KEY_CURRENT_USER_ID = "current_user_id"
@@ -35,7 +35,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
         }
         private set(value) = put(KEY_ACCOUNTS_JSON, gson.toJson(value))
 
-    open fun getCurrentAccount(): Account? = getAccount(currentUserId)
+    fun getCurrentAccount(): Account? = getAccount(currentUserId)
 
     fun getAccount(userId: Long): Account? = accounts.find { it.user.id == userId }
 
@@ -52,7 +52,7 @@ open class Preferences(private val context: Context, private val gson: Gson) {
         }
     }
 
-    open fun getCurrentTimeline(): TimelineParameter = getCurrentAccount()!!.timelines[currentTimelineIndex]
+    fun getCurrentTimeline(): TimelineParameter = getCurrentAccount()!!.timelines[currentTimelineIndex]
 
     var currentTimelineIndex: Int
         get() = getCurrentAccount()!!.lastTimelineIndex
