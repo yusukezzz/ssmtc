@@ -14,4 +14,6 @@
     <dimen name="open_graph_margin">8dp</dimen>
 
     <dimen name="media_photo_margin">0.5dp</dimen>
+
+    <dimen name="progress_large_size">72dp</dimen>
 </resources>

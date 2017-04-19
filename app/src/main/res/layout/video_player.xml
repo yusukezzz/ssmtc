@@ -29,8 +29,8 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:indeterminateTint="@android:color/white"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/progress_large_size"
+        android:layout_height="@dimen/progress_large_size"
         />
 
 </FrameLayout>
