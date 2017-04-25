@@ -2,15 +2,15 @@ package net.yusukezzz.ssmtc.data.og
 
 import com.google.gson.Gson
 import org.apache.commons.codec.digest.DigestUtils
+import org.threeten.bp.Instant
 import java.io.File
 
 class OGDiskCache(private val appCacheDir: File,
                   private val gson: Gson) {
     companion object {
         private const val CACHE_DIR_NAME = "og_cache"
-        private const val MAX_CACHE_FILES = 1000
+        private const val CACHE_EXPIRE_MILLI_SECONDS = 86400 * 3 * 1000L // 3 days
     }
-
     private val cacheDir = File(appCacheDir, CACHE_DIR_NAME)
 
     fun get(url: String): OpenGraph? = synchronized(appCacheDir) {
@@ -23,14 +23,14 @@ class OGDiskCache(private val appCacheDir: File,
 
     fun put(url: String, og: OpenGraph) = synchronized(appCacheDir) {
         prepareCacheFile(url).writeText(gson.toJson(og))
-        removeOldCaches()
     }
 
-    private fun removeOldCaches() {
-        val caches = cacheDir.listFiles().toList()
-        val deletions = caches.size - MAX_CACHE_FILES
-        if (deletions > 0) {
-            caches.sortedBy(File::lastModified).slice(0..(deletions - 1)).forEach { it.delete() }
+    fun removeOldCaches() = synchronized(appCacheDir) {
+        val expired = Instant.now().toEpochMilli() - CACHE_EXPIRE_MILLI_SECONDS
+        cacheDir.listFiles().toList().forEach {
+            if (it.lastModified() < expired) {
+                it.delete()
+            }
         }
     }
 

@@ -23,6 +23,10 @@ class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttp
         fun onLoad(og: OpenGraph)
     }
 
+    init {
+        task { cache.removeOldCaches() }
+    }
+
     fun load(url: String, view: OpenGraphLoadable) {
         if (isImageUrl(url)) {
             view.onLoad(OpenGraph.imageData(url))
@@ -45,6 +49,7 @@ class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttp
     private fun enqueue(url: String, view: OpenGraphLoadable) {
         synchronized(view) {
             val target = WeakReference<OpenGraphLoadable>(view)
+            // cancel if there are any old requests for the same view
             tasks.remove(view)?.let {
                 Kovenant.cancel(it, OGCancelException())
             }

@@ -21,7 +21,9 @@ import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.text.DecimalFormat
 
 class TweetItemView : LinearLayout {
-    private val numberFormatter = DecimalFormat("#,###,###")
+    companion object {
+        private val numberFormatter = DecimalFormat("#,###,###")
+    }
     private lateinit var listener: TweetItemListener
     private lateinit var ogClient: OpenGraphClient
 
@@ -147,7 +149,6 @@ class TweetItemView : LinearLayout {
         ic_twitter_like.setColorFilter(context.getCompatColor(likeColor))
         ic_twitter_like.setOnClickListener { listener.onLikeClick(tweet) }
 
-        // handle more actions
         ic_tweet_share.setOnClickListener { listener.onShareClick(tweet) }
     }
 
