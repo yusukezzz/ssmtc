@@ -9,9 +9,9 @@ import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import java.io.File
 
-open class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
-                   private val apiService: TwitterApi,
-                   private val uploadService: UploadApi) {
+class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
+              private val apiService: TwitterApi,
+              private val uploadService: UploadApi) {
     companion object {
         const val API_BASE_URL = "https://api.twitter.com"
         const val UPLOAD_BASE_URL = "https://upload.twitter.com"
@@ -20,7 +20,7 @@ open class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
         const val SEARCH_RESULT_TYPE = "recent"
     }
 
-    open fun setTokens(token: String?, tokenSecret: String?): Twitter {
+    fun setTokens(token: String?, tokenSecret: String?): Twitter {
         oauthConsumer.setTokenWithSecret(token, tokenSecret)
 
         return this
@@ -28,7 +28,7 @@ open class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())
 
-    open fun timeline(params: TimelineParameter, maxId: Long? = null): List<Tweet> = params.let {
+    fun timeline(params: TimelineParameter, maxId: Long? = null): List<Tweet> = params.let {
         val max = maxId?.dec()
         when (it.type) {
             TimelineParameter.TYPE_HOME -> homeTimeline(it, max)
