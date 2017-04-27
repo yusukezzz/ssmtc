@@ -29,12 +29,9 @@ class OpenGraphTask(val url: String,
         } successUi {
             target.get()?.onLoad(it)
         } failUi {
-            println(it)
             it.printStackTrace()
             if (it !is OGCancelException) {
-                val og = OpenGraph.tmpData(url)
-                cache.put(url, og)
-                target.get()?.onLoad(og)
+                target.get()?.onLoad(fallback(url))
             }
         } always {
             done()
