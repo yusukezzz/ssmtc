@@ -6,13 +6,13 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.open_graph.view.*
 import net.yusukezzz.ssmtc.data.og.OpenGraph
-import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.og.OpenGraphLoadable
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView
 import net.yusukezzz.ssmtc.util.gone
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.visible
 
-class OpenGraphLayout : FrameLayout, OpenGraphClient.OpenGraphLoadable {
+class OpenGraphLayout : FrameLayout, OpenGraphLoadable {
     @JvmOverloads
     constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
 

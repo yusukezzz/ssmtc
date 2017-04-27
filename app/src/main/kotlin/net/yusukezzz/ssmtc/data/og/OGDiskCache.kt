@@ -13,12 +13,17 @@ class OGDiskCache(private val appCacheDir: File,
     }
     private val cacheDir = File(appCacheDir, CACHE_DIR_NAME)
 
+    init {
+        cacheDir.mkdirs()
+    }
+
     fun get(url: String): OpenGraph? = synchronized(appCacheDir) {
         val cache = prepareCacheFile(url)
         if (!cache.exists()) {
             return null
         }
         return gson.fromJson(cache.readText(), OpenGraph::class.java)
+        //.let { it.copy(title = "[C] " + it.title) } // append cache mark for debug
     }
 
     fun put(url: String, og: OpenGraph) = synchronized(appCacheDir) {
@@ -34,5 +39,5 @@ class OGDiskCache(private val appCacheDir: File,
         }
     }
 
-    private fun prepareCacheFile(url: String): File = File(cacheDir.apply { mkdirs() }, DigestUtils.md5Hex(url) + ".json")
+    private fun prepareCacheFile(url: String): File = File(cacheDir, DigestUtils.md5Hex(url) + ".json")
 }

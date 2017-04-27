@@ -17,8 +17,10 @@ object OpenGraphParser {
     private val HEAD_END_TAG = Regex("</head>", REGEX_OPTS)
     private const val CONTENT_KEY = "content="
 
+    // parse from decoded HTML
     fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
+    // guess charset encoding from HTML meta tag
     fun parse(url: String, bytes: ByteArray): OpenGraph {
         val head = parseHead(bytes.inputStream().bufferedReader(StandardCharsets.US_ASCII))
         val headCharset = parseCharset(head)
