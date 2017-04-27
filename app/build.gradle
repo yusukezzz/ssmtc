@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
-        minSdkVersion 22
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
