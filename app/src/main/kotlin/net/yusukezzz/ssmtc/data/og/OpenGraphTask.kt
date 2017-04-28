@@ -14,6 +14,7 @@ class OpenGraphTask(private val url: String,
                     private val cache: OGDiskCache) {
     companion object {
         const val MAX_CONTENT_SIZE = 64 * 1024 // 64KB
+        const val USER_AGENT = "Mozilla/5.0 (Linux; Android 7.1.2; Nexus 5X Build/N2G47F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Mobile Safari/537.36"
 
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
         private fun ext(url: String): String = url.split(".").last().toLowerCase()
@@ -42,7 +43,7 @@ class OpenGraphTask(private val url: String,
 
     private fun resolve(): OpenGraph {
         // request redirected url and content-type without body
-        call = okhttp.newCall(Request.Builder().url(url).head().build())
+        call = okhttp.newCall(Request.Builder().url(url).head().header("User-Agent", USER_AGENT).build())
         val headRes = call!!.execute()
         val resolvedUrl = headRes.request().url().toString()
         val headBody = headRes.body()
@@ -67,7 +68,7 @@ class OpenGraphTask(private val url: String,
         }
 
         // request HTML body
-        call = okhttp.newCall(Request.Builder().url(resolvedUrl).build())
+        call = okhttp.newCall(Request.Builder().url(resolvedUrl).header("User-Agent", USER_AGENT).build())
         val res = call!!.execute()
         val body = res.body()
         val og = parseHtml(resolvedUrl, body)
