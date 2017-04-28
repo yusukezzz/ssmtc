@@ -17,7 +17,7 @@ class OGDiskCache(private val appCacheDir: File,
         cacheDir.mkdirs()
     }
 
-    fun get(url: String): OpenGraph? = synchronized(appCacheDir) {
+    fun get(url: String): OpenGraph? = synchronized(OGDiskCache::class) {
         val cache = prepareCacheFile(url)
         if (!cache.exists()) {
             return null
@@ -26,11 +26,11 @@ class OGDiskCache(private val appCacheDir: File,
         //.let { it.copy(title = "[C] " + it.title) } // append cache mark for debug
     }
 
-    fun put(url: String, og: OpenGraph) = synchronized(appCacheDir) {
+    fun put(url: String, og: OpenGraph) = synchronized(OGDiskCache::class) {
         prepareCacheFile(url).writeText(gson.toJson(og))
     }
 
-    fun removeOldCaches() = synchronized(appCacheDir) {
+    fun removeOldCaches() = synchronized(OGDiskCache::class) {
         val expired = Instant.now().toEpochMilli() - CACHE_EXPIRE_MILLI_SECONDS
         cacheDir.listFiles().toList().forEach {
             if (it.lastModified() < expired) {

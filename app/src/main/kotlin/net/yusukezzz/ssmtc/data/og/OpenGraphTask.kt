@@ -8,8 +8,8 @@ import nl.komponents.kovenant.ui.successUi
 import okhttp3.*
 import java.lang.ref.WeakReference
 
-class OpenGraphTask(val url: String,
-                    val target: WeakReference<OpenGraphLoadable>,
+class OpenGraphTask(private val url: String,
+                    private val target: WeakReference<OpenGraphLoadable>,
                     private val okhttp: OkHttpClient,
                     private val cache: OGDiskCache) {
     companion object {

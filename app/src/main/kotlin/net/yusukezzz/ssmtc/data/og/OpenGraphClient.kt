@@ -6,9 +6,6 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttpClient) {
-    companion object {
-    }
-
     private val tasks: WeakHashMap<OpenGraphLoadable, OpenGraphTask> = WeakHashMap()
 
     init {
@@ -25,7 +22,7 @@ class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttp
     }
 
     private fun enqueue(url: String, view: OpenGraphLoadable) {
-        synchronized(view) {
+        synchronized(OpenGraphClient::class) {
             // cancel if there are any old requests for the same view
             tasks.remove(view)?.let(OpenGraphTask::cancel)
 
