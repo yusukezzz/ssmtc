@@ -24,7 +24,7 @@ class OpenGraphTask(private val url: String,
     private var call: Call? = null
     private var realTask: Promise<OpenGraph, Exception>? = null
 
-    fun execute(done: () -> Unit): OpenGraphTask {
+    fun execute(callback: () -> Unit): OpenGraphTask {
         realTask = task {
             resolve()
         } successUi {
@@ -35,7 +35,7 @@ class OpenGraphTask(private val url: String,
                 target.get()?.onLoad(fallback(url))
             }
         } always {
-            done()
+            callback()
         }
 
         return this

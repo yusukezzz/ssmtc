@@ -13,15 +13,6 @@ class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttp
     }
 
     fun load(url: String, view: OpenGraphLoadable) {
-        val og: OpenGraph? = cache.get(url)
-        if (og != null) {
-            view.onLoad(og)
-        } else {
-            enqueue(url, view)
-        }
-    }
-
-    private fun enqueue(url: String, view: OpenGraphLoadable) {
         synchronized(OpenGraphClient::class) {
             // cancel if there are any old requests for the same view
             tasks.remove(view)?.let(OpenGraphTask::cancel)
