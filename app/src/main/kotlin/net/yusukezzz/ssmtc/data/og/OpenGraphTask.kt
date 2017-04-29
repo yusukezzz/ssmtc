@@ -41,9 +41,12 @@ class OpenGraphTask(private val url: String,
         return this
     }
 
+    private fun requestBuilder(url: String): Request.Builder
+        = Request.Builder().url(url).header("User-Agent", USER_AGENT)
+
     private fun resolve(): OpenGraph {
         // request redirected url and content-type without body
-        call = okhttp.newCall(Request.Builder().url(url).head().header("User-Agent", USER_AGENT).build())
+        call = okhttp.newCall(requestBuilder(url).head().build())
         val headRes = call!!.execute()
         val resolvedUrl = headRes.request().url().toString()
         val headBody = headRes.body()
@@ -68,7 +71,7 @@ class OpenGraphTask(private val url: String,
         }
 
         // request HTML body
-        call = okhttp.newCall(Request.Builder().url(resolvedUrl).header("User-Agent", USER_AGENT).build())
+        call = okhttp.newCall(requestBuilder(resolvedUrl).build())
         val res = call!!.execute()
         val body = res.body()
         val og = parseHtml(resolvedUrl, body)
