@@ -75,7 +75,7 @@ class OpenGraphTask(private val url: String,
         val res = call!!.execute()
         val body = res.body()
         val og = parseHtml(resolvedUrl, body)
-        cache.put(resolvedUrl, og)
+        cache.put(url, og)
 
         return og
     }
