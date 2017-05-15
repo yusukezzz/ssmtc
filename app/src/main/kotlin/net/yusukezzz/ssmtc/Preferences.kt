@@ -6,7 +6,7 @@ import com.github.gfx.util.encrypt.EncryptedSharedPreferences
 import com.github.gfx.util.encrypt.Encryption
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import net.yusukezzz.ssmtc.data.Account
+import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 
 class Preferences(private val context: Context, private val gson: Gson) {
@@ -18,28 +18,28 @@ class Preferences(private val context: Context, private val gson: Gson) {
     private val sharedPrefs: SharedPreferences by lazy {
         EncryptedSharedPreferences(Encryption.getDefaultCipher(), context)
     }
-    private val accountsType = object: TypeToken<List<Account>>() {}.type
+    private val accountsType = object : TypeToken<List<SsmtcAccount>>() {}.type
 
     var currentUserId: Long
         get() = getLong(KEY_CURRENT_USER_ID)
         set(value) = put(KEY_CURRENT_USER_ID, value)
 
-    var accounts: List<Account>
+    var accounts: List<SsmtcAccount>
         get() {
             val json = getString(KEY_ACCOUNTS_JSON)
             return if (json.isEmpty()) {
                 listOf()
             } else {
-                gson.fromJson<List<Account>>(json, accountsType)
+                gson.fromJson<List<SsmtcAccount>>(json, accountsType)
             }
         }
         private set(value) = put(KEY_ACCOUNTS_JSON, gson.toJson(value))
 
-    fun getCurrentAccount(): Account? = getAccount(currentUserId)
+    fun getCurrentAccount(): SsmtcAccount? = getAccount(currentUserId)
 
-    fun getAccount(userId: Long): Account? = accounts.find { it.user.id == userId }
+    fun getAccount(userId: Long): SsmtcAccount? = accounts.find { it.user.id == userId }
 
-    fun saveAccount(account: Account) {
+    fun saveAccount(account: SsmtcAccount) {
         accounts = accounts.filterNot { it.user.id == account.user.id }.plus(account).sortedBy { it.user.id }
     }
 

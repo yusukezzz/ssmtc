@@ -51,6 +51,16 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".AccountAuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/account_authenticator" />
+        </service>
+
         <service android:name=".ui.status.update.StatusUpdateService" />
 
         <receiver

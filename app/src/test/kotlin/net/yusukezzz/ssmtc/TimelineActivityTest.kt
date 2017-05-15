@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc
 
 import android.content.ComponentName
-import net.yusukezzz.ssmtc.data.Account
+import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.Entity
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -34,8 +34,8 @@ class TimelineActivityTest {
     private fun mockUser(id: Long = 1): User =
         User(id, "name", "screenName", false, false, "profileImage", "profileImageHttps", 0, 0, 0, 0, 0)
 
-    private fun mockAccount(timelines: List<TimelineParameter>): Account =
-        Account("dummyToken", "dummySecret", mockUser(), timelines, 0)
+    private fun mockAccount(timelines: List<TimelineParameter>): SsmtcAccount =
+        SsmtcAccount("dummyToken", "dummySecret", mockUser(), timelines, 0)
 
     private fun mockTweet(id: Long) =
         Tweet(id, "tweet $id", mockUser(), Entity(), Entity(), nowDateTime, null, null, 0, 0, false, false)

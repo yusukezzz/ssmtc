@@ -6,7 +6,14 @@ import paperparcel.PaperParcel
 import paperparcel.PaperParcelable
 
 @PaperParcel
-data class Account(
+data class Credential(val token: String, val tokenSecret: String) : PaperParcelable {
+    companion object {
+        @JvmField val CREATOR = PaperParcelCredential.CREATOR
+    }
+}
+
+@PaperParcel
+data class SsmtcAccount(
     val accessToken: String,
     val secretToken: String,
     val user: User,
@@ -14,6 +21,6 @@ data class Account(
     var lastTimelineIndex: Int
 ): PaperParcelable {
     companion object {
-        @JvmField val CREATOR = PaperParcelAccount.CREATOR
+        @JvmField val CREATOR = PaperParcelSsmtcAccount.CREATOR
     }
 }

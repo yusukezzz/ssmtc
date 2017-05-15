@@ -2,7 +2,8 @@ package net.yusukezzz.ssmtc.ui.authorize
 
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
-import net.yusukezzz.ssmtc.data.Account
+import net.yusukezzz.ssmtc.data.Credential
+import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.Twitter
 import nl.komponents.kovenant.task
@@ -36,13 +37,15 @@ class AuthorizePresenter(
             provider.retrieveAccessToken(consumer, pin)
             consumer
         } then {
+            val cred = Credential(it.token, it.tokenSecret)
             val user = twitter.setTokens(it.token, it.tokenSecret).verifyCredentials()
             val home = TimelineParameter.home()
-            val account = Account(it.token, it.tokenSecret, user, listOf(home), 0)
+            val account = SsmtcAccount(it.token, it.tokenSecret, user, listOf(home), 0)
             prefs.saveAccount(account)
             prefs.currentUserId = user.id
+            Pair(cred, user)
         } doneUi {
-            view.authorized()
+            view.authorized(it.first, it.second)
         }
     }
 
