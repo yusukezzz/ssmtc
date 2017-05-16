@@ -43,7 +43,8 @@ object PicassoUtil {
     fun opengraph(path: String, imgView: ImageView) {
         val ph = imgView.context.getVectorDrawable(R.drawable.og_placeholder, R.color.light_grey)
         // use zimage.io resized url
-        Picasso.with(imgView.context).loadFrom(Zimage.url(path))
+        val url = if (path.startsWith("http")) Zimage.url(path) else ""
+        Picasso.with(imgView.context).loadFrom(url)
             .priority(Picasso.Priority.LOW)
             .placeholder(ph)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
