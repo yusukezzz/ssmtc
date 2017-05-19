@@ -23,6 +23,8 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     companion object {
         const val ACCOUNT_DATA_ID = "account_data_id"
         const val ACCOUNT_DATA_USER = "account_data_user"
+        const val ACCOUNT_TYPE = "net.yusukezzz.ssmtc.account"
+        const val ACCOUNT_AUTH_TOKEN_TYPE = "net.yusukezzz.ssmtc.account.token"
     }
 
     @Inject
@@ -69,11 +71,12 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
 
     private fun addAccount(credential: Credential, user: User) {
         val am = AccountManager.get(this)
-        val account = Account(user.screenName, "net.yusukezzz.ssmtc.account")
+        val account = Account(user.screenName, ACCOUNT_TYPE)
         // Don't add UserData in this method, see http://stackoverflow.com/a/29776224/859190
         am.addAccountExplicitly(account, null, null)
 
         am.setUserData(account, ACCOUNT_DATA_ID, user.id.toString())
         am.setUserData(account, ACCOUNT_DATA_USER, gson.toJson(user))
+        am.setAuthToken(account, ACCOUNT_AUTH_TOKEN_TYPE, gson.toJson(credential))
     }
 }

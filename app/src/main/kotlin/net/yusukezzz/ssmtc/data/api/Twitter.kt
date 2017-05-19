@@ -80,7 +80,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
             handleError(res)
         }
 
-        return res.body()
+        return res.body()!!
     }
 
     private fun handleError(res: Response<*>) {
