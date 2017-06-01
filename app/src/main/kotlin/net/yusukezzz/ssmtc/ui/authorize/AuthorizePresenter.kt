@@ -12,7 +12,6 @@ import nl.komponents.kovenant.then
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthConsumer
 import oauth.signpost.basic.DefaultOAuthProvider
-import java.io.File
 
 class AuthorizePresenter(val view: AuthorizeContract.View,
                          val prefs: Preferences,
@@ -46,7 +45,6 @@ class AuthorizePresenter(val view: AuthorizeContract.View,
             val timelines = timelineRepo.initialize(user.id)
             val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
             accountRepo.add(ssmtcAccount)
-            File("/data/user/0/net.yusukezzz.ssmtc/files/timelines").list().forEach { println(it) }
         } doneUi {
             view.authorized()
         }

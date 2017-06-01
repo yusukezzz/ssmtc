@@ -82,8 +82,6 @@ dependencies {
     compile 'se.akerfeldt:okhttp-signpost:1.1.0'
     compile 'id.zelory:compressor:1.0.5'
 
-    compile 'com.github.gfx.util.encrypt:android-encrypt-utils:2.0.0'
-
     // html entity decoding
     compile 'org.apache.commons:commons-lang3:3.5'
 
