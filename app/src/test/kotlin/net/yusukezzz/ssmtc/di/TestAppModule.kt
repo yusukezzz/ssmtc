@@ -8,6 +8,8 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import org.mockito.Mockito
 import javax.inject.Singleton
 
@@ -41,4 +43,14 @@ class TestAppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideCompressor(): Compressor = mockCompressor
+
+    val mockAccountRepo: SsmtcAccountRepository = Mockito.mock(SsmtcAccountRepository::class.java)
+    @Provides
+    @Singleton
+    fun provideSsmtcAccountRepository(): SsmtcAccountRepository = mockAccountRepo
+
+    val mockTimelineRepo: TimelineRepository = Mockito.mock(TimelineRepository::class.java)
+    @Provides
+    @Singleton
+    fun provideTimelineRepository(): TimelineRepository = mockTimelineRepo
 }

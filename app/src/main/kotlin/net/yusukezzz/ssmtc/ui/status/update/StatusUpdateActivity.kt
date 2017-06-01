@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.getExtraStreamOrNull
@@ -38,6 +39,9 @@ class StatusUpdateActivity: AppCompatActivity() {
 
     @Inject
     lateinit var prefs: Preferences
+
+    @Inject
+    lateinit var accountRepo: SsmtcAccountRepository
 
     private var photos: Array<String>? = null
 
@@ -73,7 +77,7 @@ class StatusUpdateActivity: AppCompatActivity() {
             showSelectedPhotos(arrayOf(path))
         }
 
-        val account = prefs.getCurrentAccount()!!
+        val account = accountRepo.find(prefs.currentUserId)!!
         PicassoUtil.userIcon(account.user, toolbar_avatar)
         toolbar_screen_name.text = account.user.screenName
     }

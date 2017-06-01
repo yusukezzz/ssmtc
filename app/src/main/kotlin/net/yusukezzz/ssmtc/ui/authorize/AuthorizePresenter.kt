@@ -4,18 +4,21 @@ import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.data.Credential
 import net.yusukezzz.ssmtc.data.SsmtcAccount
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.then
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthConsumer
 import oauth.signpost.basic.DefaultOAuthProvider
+import java.io.File
 
-class AuthorizePresenter(
-    val view: AuthorizeContract.View,
-    val prefs: Preferences,
-    val twitter: Twitter): AuthorizeContract.Presenter {
+class AuthorizePresenter(val view: AuthorizeContract.View,
+                         val prefs: Preferences,
+                         val twitter: Twitter,
+                         val timelineRepo: TimelineRepository,
+                         val accountRepo: SsmtcAccountRepository) : AuthorizeContract.Presenter {
 
     private val consumer = DefaultOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
     private val provider = DefaultOAuthProvider(
@@ -39,13 +42,13 @@ class AuthorizePresenter(
         } then {
             val cred = Credential(it.token, it.tokenSecret)
             val user = twitter.setTokens(it.token, it.tokenSecret).verifyCredentials()
-            val home = TimelineParameter.home()
-            val account = SsmtcAccount(it.token, it.tokenSecret, user, listOf(home), 0)
-            prefs.saveAccount(account)
             prefs.currentUserId = user.id
-            Pair(cred, user)
+            val timelines = timelineRepo.initialize(user.id)
+            val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
+            accountRepo.add(ssmtcAccount)
+            File("/data/user/0/net.yusukezzz.ssmtc/files/timelines").list().forEach { println(it) }
         } doneUi {
-            view.authorized(it.first, it.second)
+            view.authorized()
         }
     }
 

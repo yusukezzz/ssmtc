@@ -83,9 +83,6 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         val newFilter = FilterRule(showing, includeWords, excludeWords)
 
         val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter, includeRetweets = includeRts)
-        println(newTimeline)
-        prefs.updateCurrentTimeline(newTimeline)
-
         listener.onSaveTimeline(newTimeline)
     }
 }

@@ -29,12 +29,14 @@ import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
@@ -74,17 +76,22 @@ class TimelineActivity: AppCompatActivity(),
     lateinit var prefs: Preferences
 
     @Inject
+    lateinit var accountRepo: SsmtcAccountRepository
+
+    @Inject
     lateinit var presenter: TimelineContract.Presenter
 
     @Inject
     lateinit var ogClient: OpenGraphClient
+
+    private fun currentAccount(): SsmtcAccount = accountRepo.find(prefs.currentUserId)!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Application.component.plus(TimelineModule(this)).inject(this)
 
-        if (prefs.getCurrentAccount() == null) {
+        if (prefs.currentUserId == 0L) {
             launchAuthorizeActivity()
             finish()
             return
@@ -96,13 +103,13 @@ class TimelineActivity: AppCompatActivity(),
 
         setupDrawerView()
         setupTimelineView()
-        loadAccount()
 
         if (savedInstanceState != null && lastTimelineFile.exists()) {
+            loadAccount(init = false)
             restoreTimeline(savedInstanceState)
         } else {
             // initial load
-            switchTimeline(prefs.getCurrentTimeline())
+            loadAccount()
         }
     }
 
@@ -126,8 +133,9 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun restoreTimeline(state: Bundle) {
-        toolbar_title.text = prefs.getCurrentTimeline().title
-        presenter.setTimelineParameter(prefs.getCurrentTimeline())
+        val current = currentAccount().currentTimeline()
+        toolbar_title.text = current.title
+        presenter.setTimelineParameter(current)
         updateTimelineMenu()
 
         // load tweets from file
@@ -198,12 +206,15 @@ class TimelineActivity: AppCompatActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.remove_timeline -> {
-                prefs.removeCurrentTimeline()
-                switchTimeline(prefs.getCurrentTimeline())
+                val account = currentAccount()
+                if (account.timelines.size == 1) {
+                    toast("タイムラインは1つ以上必要です")
+                } else {
+                    accountRepo.update(account.withoutCurrentTimeline())
+                    switchTimeline(currentAccount().currentTimeline())
+                }
             }
-            R.id.setting_timeline -> {
-                showTimelineSettingDialog()
-            }
+            R.id.setting_timeline -> showTimelineSettingDialog()
         }
         return true
     }
@@ -215,27 +226,28 @@ class TimelineActivity: AppCompatActivity(),
             return true
         }
 
-        when (item.groupId) {
-            R.id.menu_account -> return handleAccountNavigation(item)
-            R.id.menu_timeline -> return handleTimelineNavigation(item)
-            R.id.menu_manage -> return handleManageNavigation(item)
-            else -> return false
+        return when (item.groupId) {
+            R.id.menu_account -> handleAccountNavigation(item)
+            R.id.menu_timeline -> handleTimelineNavigation(item)
+            R.id.menu_manage -> handleManageNavigation(item)
+            else -> false
         }
     }
 
     fun handleAccountNavigation(item: MenuItem): Boolean {
-        val accounts = (prefs.accounts - prefs.getCurrentAccount()!!)
-        prefs.currentUserId = accounts[item.order].user.id
+        val account = accountRepo.findAll()[item.order]
+        prefs.currentUserId = account.user.id
         loadAccount()
         showTimelineNavigation()
-        switchTimeline(prefs.getCurrentTimeline())
 
         return false
     }
 
     fun handleTimelineNavigation(item: MenuItem): Boolean {
-        prefs.currentTimelineIndex = item.order
-        switchTimeline(prefs.getCurrentTimeline())
+        val account = currentAccount()
+        val timeline = account.timelines[item.order]
+        accountRepo.update(account.copy(currentTimelineUuid = timeline.uuid))
+        switchTimeline(timeline)
 
         return true
     }
@@ -253,9 +265,9 @@ class TimelineActivity: AppCompatActivity(),
 
     fun launchAuthorizeActivity() = startActivity(Intent(this, AuthorizeActivity::class.java))
 
-    fun loadAccount() {
-        val account = prefs.getCurrentAccount()!!
-        presenter.setTokens(account)
+    fun loadAccount(init: Boolean = true) {
+        val account = currentAccount()
+        presenter.setTokens(account.credential)
 
         val headerView = nav_view.getHeaderView(0)
         val profileImage = headerView.findViewById(R.id.profile_image) as ImageView
@@ -266,6 +278,10 @@ class TimelineActivity: AppCompatActivity(),
 
         accountSelectBtn.setOnClickListener {
             toggleNavigationContents()
+        }
+
+        if (init) {
+            switchTimeline(account.currentTimeline())
         }
     }
 
@@ -292,7 +308,7 @@ class TimelineActivity: AppCompatActivity(),
         nav_view.menu.clear()
         btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_up)
         nav_view.inflateMenu(R.menu.menu_drawer_account)
-        (prefs.accounts - prefs.getCurrentAccount()!!).forEachIndexed { i, account ->
+        (accountRepo.findAll() - currentAccount()).forEachIndexed { i, account ->
             nav_view.menu.add(R.id.menu_account, Menu.NONE, i, account.user.screenName)
         }
     }
@@ -306,22 +322,23 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun removeAccount() {
-        prefs.removeCurrentAccount()
-        if (prefs.getCurrentAccount() == null) {
+        accountRepo.delete(currentAccount())
+        if (accountRepo.findAll().isEmpty()) {
             launchAuthorizeActivity()
         } else {
+            prefs.currentUserId = accountRepo.findAll().first().user.id
             loadAccount()
-            switchTimeline(prefs.getCurrentTimeline())
         }
     }
 
     fun updateTimelineMenu() {
         nav_view.menu.removeGroup(R.id.menu_timeline)
-        prefs.getCurrentAccount()!!.timelines.forEachIndexed { index, timeline ->
+        val account = currentAccount()
+        account.timelines.forEachIndexed { index, timeline ->
             nav_view.menu.add(R.id.menu_timeline, Menu.NONE, index, timeline.title)
                 .setCheckable(true)
                 .setIcon(timelineIcon(timeline.type))
-                .isChecked = (index == prefs.currentTimelineIndex)
+                .isChecked = (timeline.uuid == account.currentTimelineUuid)
         }
     }
 
@@ -354,7 +371,8 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     override fun onTimelineSelect(timeline: TimelineParameter) {
-        prefs.addTimeline(timeline)
+        val account = currentAccount()
+        accountRepo.update(account.copy(timelines = account.timelines + timeline, currentTimelineUuid = timeline.uuid))
         switchTimeline(timeline)
     }
 
@@ -385,12 +403,18 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun showTimelineSettingDialog() {
-        TimelineSettingDialog.newInstance(prefs.getCurrentTimeline())
+        TimelineSettingDialog.newInstance(currentAccount().currentTimeline())
             .setTimelineSettingListener(this)
             .show(supportFragmentManager, "TimelineSettingDialog")
     }
 
-    override fun onSaveTimeline(timeline: TimelineParameter) = switchTimeline(timeline)
+    override fun onSaveTimeline(timeline: TimelineParameter) {
+        val account = currentAccount()
+        accountRepo.update(account.copy(
+            timelines = account.timelines.filterNot { it.uuid == timeline.uuid } + timeline,
+            currentTimelineUuid = timeline.uuid))
+        switchTimeline(timeline)
+    }
 
     override fun onBackPressed() = toggleDrawer()
 

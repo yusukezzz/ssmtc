@@ -2,9 +2,11 @@ package net.yusukezzz.ssmtc.data.api
 
 import paperparcel.PaperParcel
 import paperparcel.PaperParcelable
+import java.util.*
 
 @PaperParcel
 data class TimelineParameter(
+    val uuid: UUID,
     val type: Int,
     val title: String,
     val count: Int = TimelineParameter.MAX_RETRIEVE_COUNT,
@@ -27,11 +29,13 @@ data class TimelineParameter(
         val TYPE_SEARCH = 3
         val TYPE_USER = 4
 
-        fun home(): TimelineParameter = TimelineParameter(TYPE_HOME, "Home")
-        fun mentions(): TimelineParameter = TimelineParameter(TYPE_MENTIONS, "Mentions")
-        fun list(listId: Long, slug: String) = TimelineParameter(type = TYPE_LISTS, title = slug, listId = listId)
-        fun search(query: String) = TimelineParameter(type = TYPE_SEARCH, title = query, query = query)
-        fun user(screenName: String) = TimelineParameter(type = TYPE_USER, title = screenName, screenName = screenName)
+        // factory
+        fun home(): TimelineParameter = TimelineParameter(UUID.randomUUID(), TYPE_HOME, "Home")
+
+        fun mentions(): TimelineParameter = TimelineParameter(UUID.randomUUID(), TYPE_MENTIONS, "Mentions")
+        fun list(listId: Long, slug: String) = TimelineParameter(uuid = UUID.randomUUID(), type = TYPE_LISTS, title = slug, listId = listId)
+        fun search(query: String) = TimelineParameter(uuid = UUID.randomUUID(), type = TYPE_SEARCH, title = query, query = query)
+        fun user(screenName: String) = TimelineParameter(uuid = UUID.randomUUID(), type = TYPE_USER, title = screenName, screenName = screenName)
     }
 }
 

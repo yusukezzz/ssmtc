@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.di
 
+import android.accounts.AccountManager
 import android.graphics.Bitmap
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -16,6 +17,8 @@ import net.yusukezzz.ssmtc.data.api.TwitterApi
 import net.yusukezzz.ssmtc.data.api.UploadApi
 import net.yusukezzz.ssmtc.data.og.OGDiskCache
 import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import net.yusukezzz.ssmtc.util.gson.DateTimeTypeConverter
 import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import okhttp3.OkHttpClient
@@ -43,6 +46,10 @@ class AppModule(private val app: Application) {
     @Provides
     @Named("cacheDir")
     fun provideCacheDir(app: Application): File = app.cacheDir
+
+    @Provides
+    @Named("filesDir")
+    fun provideFilesDir(app: Application): File = app.filesDir
 
     @Provides
     @Singleton
@@ -99,4 +106,18 @@ class AppModule(private val app: Application) {
         .setQuality(PHOTO_QUALITY)
         .setCompressFormat(Bitmap.CompressFormat.JPEG) // should respect original?
         .build()
+
+    @Provides
+    @Singleton
+    fun provideTimelineParameterRepository(@Named("filesDir") filesDir: File, gson: Gson): TimelineRepository = TimelineRepository(filesDir, gson)
+
+    @Provides
+    @Singleton
+    fun provideAccountManager(): AccountManager = AccountManager.get(app.applicationContext)
+
+    @Provides
+    @Singleton
+    fun provideSsmtcAccountRepository(am: AccountManager,
+                                      gson: Gson,
+                                      timelineRepository: TimelineRepository): SsmtcAccountRepository = SsmtcAccountRepository(am, gson, timelineRepository)
 }

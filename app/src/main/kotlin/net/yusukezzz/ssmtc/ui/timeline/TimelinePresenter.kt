@@ -1,6 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import net.yusukezzz.ssmtc.data.SsmtcAccount
+import net.yusukezzz.ssmtc.data.Credential
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -20,8 +20,8 @@ class TimelinePresenter(private val view: TimelineContract.View,
         this.param = param
     }
 
-    override fun setTokens(account: SsmtcAccount) {
-        twitter.setTokens(account.accessToken, account.secretToken)
+    override fun setTokens(credential: Credential) {
+        twitter.setTokens(credential.token, credential.tokenSecret)
     }
 
     /**

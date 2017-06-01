@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc
 
 import android.content.ComponentName
+import net.yusukezzz.ssmtc.data.Credential
 import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.Entity
@@ -35,7 +36,7 @@ class TimelineActivityTest {
         User(id, "name", "screenName", false, false, "profileImage", "profileImageHttps", 0, 0, 0, 0, 0)
 
     private fun mockAccount(timelines: List<TimelineParameter>): SsmtcAccount =
-        SsmtcAccount("dummyToken", "dummySecret", mockUser(), timelines, 0)
+        SsmtcAccount(Credential("dummyToken", "dummyTokenSecret"), mockUser(), timelines, timelines.first().uuid)
 
     private fun mockTweet(id: Long) =
         Tweet(id, "tweet $id", mockUser(), Entity(), Entity(), nowDateTime, null, null, 0, 0, false, false)
@@ -48,7 +49,7 @@ class TimelineActivityTest {
     @Test
     fun shouldStartAuthorizeIfNotLoggedIn() {
         val prefs = getModule().mockPrefs
-        Mockito.`when`(prefs.getCurrentAccount()).thenReturn(null)
+        Mockito.`when`(prefs.currentUserId).thenReturn(0L)
 
         val act = Robolectric.buildActivity(TimelineActivity::class.java).create().get()
         val nextIntent = Shadows.shadowOf(act).peekNextStartedActivityForResult().intent
@@ -60,8 +61,9 @@ class TimelineActivityTest {
     fun shouldLoadInitialTweetsIfLoggedIn() {
         val timelines = listOf(TimelineParameter.home())
         val prefs = getModule().mockPrefs
-        Mockito.`when`(prefs.getCurrentAccount()).thenReturn(mockAccount(timelines))
-        Mockito.`when`(prefs.getCurrentTimeline()).thenReturn(timelines.first())
+        val accountRepo = getModule().mockAccountRepo
+        Mockito.`when`(prefs.currentUserId).thenReturn(mockUser().id)
+        Mockito.`when`(accountRepo.find(mockUser().id)).thenReturn(mockAccount(timelines))
 
         Robolectric.buildActivity(TimelineActivity::class.java).create().get()
 
@@ -72,8 +74,9 @@ class TimelineActivityTest {
     fun shouldPagingRequestIfLastTweetIdExists() {
         val timelines = listOf(TimelineParameter.home())
         val prefs = getModule().mockPrefs
-        Mockito.`when`(prefs.getCurrentAccount()).thenReturn(mockAccount(timelines))
-        Mockito.`when`(prefs.getCurrentTimeline()).thenReturn(timelines.first())
+        val accountRepo = getModule().mockAccountRepo
+        Mockito.`when`(prefs.currentUserId).thenReturn(mockUser().id)
+        Mockito.`when`(accountRepo.find(mockUser().id)).thenReturn(mockAccount(timelines))
 
         val lastTweetId = 100L
         val act = Robolectric.buildActivity(TimelineActivity::class.java).create().get()

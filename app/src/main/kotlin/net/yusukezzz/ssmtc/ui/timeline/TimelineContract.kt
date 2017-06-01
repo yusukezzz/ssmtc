@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import net.yusukezzz.ssmtc.BasePresenter
-import net.yusukezzz.ssmtc.data.SsmtcAccount
+import net.yusukezzz.ssmtc.data.Credential
 import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -9,7 +9,7 @@ import net.yusukezzz.ssmtc.data.api.model.Tweet
 interface TimelineContract {
     interface Presenter: BasePresenter {
         fun setTimelineParameter(param: TimelineParameter)
-        fun setTokens(account: SsmtcAccount)
+        fun setTokens(credential: Credential)
         fun loadTweets(maxId: Long? = null)
         fun loadLists(userId: Long)
         fun like(tweet: Tweet)

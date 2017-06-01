@@ -10,6 +10,7 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import java.io.File
 import javax.inject.Inject
 
@@ -43,6 +44,9 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
     @Inject
     lateinit var compressor: Compressor
 
+    @Inject
+    lateinit var accountRepo: SsmtcAccountRepository
+
     override fun onCreate() {
         super.onCreate()
         Application.component.inject(this)
@@ -64,8 +68,8 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         manager.notify(0, builder.build())
 
         try {
-            val account = prefs.getCurrentAccount()!!
-            val twitter = twitter.setTokens(account.accessToken, account.secretToken)
+            val account = accountRepo.find(prefs.currentUserId)!!
+            val twitter = twitter.setTokens(account.credential.token, account.credential.tokenSecret)
 
             val mediaIds = photos?.map {
                 twitter.upload(compressor.compressImage(it)).media_id
