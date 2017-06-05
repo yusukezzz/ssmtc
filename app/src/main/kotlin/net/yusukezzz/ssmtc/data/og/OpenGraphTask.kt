@@ -28,11 +28,11 @@ class OpenGraphTask(private val url: String,
         realTask = task {
             resolve()
         } successUi {
-            target.get()?.onLoad(it)
+            target.get()?.onComplete(it)
         } failUi {
             it.printStackTrace()
             if (it !is OGCancelException) {
-                target.get()?.onLoad(fallback(url))
+                target.get()?.onComplete(fallback(url))
             }
         } always {
             done()

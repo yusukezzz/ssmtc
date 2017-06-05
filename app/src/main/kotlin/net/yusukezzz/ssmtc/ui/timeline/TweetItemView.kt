@@ -154,7 +154,7 @@ class TweetItemView : LinearLayout {
 
     fun cleanup() {
         PicassoUtil.cancel(tweet_user_image)
-        PicassoUtil.cancel(open_graph.og_image)
+        open_graph.reset()
         thumbnail_tile.children { PicassoUtil.cancel(it) }
         quote_thumbnail_tile.children { PicassoUtil.cancel(it) }
     }
@@ -186,8 +186,9 @@ class TweetItemView : LinearLayout {
     }
 
     private fun handleOpenGraph(url: String) {
-        open_graph.setListener(listener)
-        open_graph.reset()
-        ogClient.load(url, open_graph)
+        if (open_graph.isEmpty()) {
+            open_graph.setListener(listener)
+            ogClient.load(url, open_graph)
+        }
     }
 }
