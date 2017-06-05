@@ -3,7 +3,6 @@ package net.yusukezzz.ssmtc.ui.misc
 import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
-import android.view.View
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.open_graph.view.*
 import net.yusukezzz.ssmtc.data.og.OpenGraph
@@ -22,8 +21,6 @@ class OpenGraphLayout : FrameLayout, OpenGraphLoadable {
     fun setListener(listener: TweetItemView.TweetItemListener) {
         this.listener = listener
     }
-
-    fun isEmpty(): Boolean = (this.visibility == View.GONE)
 
     fun reset() {
         PicassoUtil.cancel(og_image)
