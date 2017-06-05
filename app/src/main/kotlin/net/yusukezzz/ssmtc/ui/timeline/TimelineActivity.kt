@@ -235,7 +235,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun handleAccountNavigation(item: MenuItem): Boolean {
-        val account = accountRepo.findAll()[item.order]
+        val account = (accountRepo.findAll() - currentAccount())[item.order]
         prefs.currentUserId = account.user.id
         loadAccount()
         showTimelineNavigation()
