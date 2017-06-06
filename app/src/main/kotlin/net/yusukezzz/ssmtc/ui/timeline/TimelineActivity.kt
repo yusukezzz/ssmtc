@@ -111,6 +111,8 @@ class TimelineActivity: AppCompatActivity(),
             // initial load
             loadAccount()
         }
+
+        ogClient.cleanup()
     }
 
     override fun onStart() {

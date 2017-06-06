@@ -14,7 +14,6 @@ class OpenGraphTask(private val url: String,
                     private val cache: OGDiskCache) {
     companion object {
         const val MAX_CONTENT_SIZE = 64 * 1024 // 64KB
-        const val USER_AGENT = "Mozilla/5.0 (Linux; Android 7.1.2; Nexus 5X Build/N2G47F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Mobile Safari/537.36"
 
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
         private fun ext(url: String): String = url.split(".").last().toLowerCase()
@@ -41,8 +40,7 @@ class OpenGraphTask(private val url: String,
         return this
     }
 
-    private fun requestBuilder(u: String): Request.Builder
-        = Request.Builder().url(u).header("User-Agent", USER_AGENT)
+    private fun requestBuilder(u: String): Request.Builder = Request.Builder().url(u)
 
     private fun resolve(): OpenGraph {
         val cached = cache.get(url)

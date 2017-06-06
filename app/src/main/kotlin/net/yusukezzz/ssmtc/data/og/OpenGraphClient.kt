@@ -8,10 +8,6 @@ import java.util.*
 class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttpClient) {
     private val tasks: WeakHashMap<OpenGraphLoadable, OpenGraphTask> = WeakHashMap()
 
-    init {
-        task { cache.removeOldCaches() }
-    }
-
     fun load(url: String, view: OpenGraphLoadable) {
         view.onStart()
         val og = cache.get(url)
@@ -21,6 +17,10 @@ class OpenGraphClient(private val cache: OGDiskCache, private val okhttp: OkHttp
         }
 
         enqueue(url, view)
+    }
+
+    fun cleanup() {
+        task { cache.removeOldCaches() }
     }
 
     private fun enqueue(url: String, view: OpenGraphLoadable) {
