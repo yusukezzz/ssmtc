@@ -26,7 +26,7 @@ data class SsmtcAccount(
 
     fun currentTimeline(): TimelineParameter = timelines.find { it.uuid == currentTimelineUuid }!!
     fun withoutCurrentTimeline(): SsmtcAccount {
-        val newTimelines = timelines.filterNot { it.uuid != currentTimelineUuid }
+        val newTimelines = timelines.filterNot { it.uuid == currentTimelineUuid }
         return this.copy(timelines = newTimelines, currentTimelineUuid = newTimelines.first().uuid)
     }
 }

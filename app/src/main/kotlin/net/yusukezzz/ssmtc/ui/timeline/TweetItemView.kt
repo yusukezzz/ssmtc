@@ -82,6 +82,7 @@ class TweetItemView : LinearLayout {
         val formatted = TextUtil.formattedText(tweet, listener, removeUrl, removeQuote)
         with(tweet) {
             PicassoUtil.userIcon(user, tweet_user_image)
+            tweet_user_image.setOnClickListener { listener.onScreenNameClick(user.screenName) }
             tweet_user_name.text = user.name
             tweet_user_screen_name.text = "@" + user.screenName
             tweet_user_protected_icon.beVisibleIf(user.isProtected)
