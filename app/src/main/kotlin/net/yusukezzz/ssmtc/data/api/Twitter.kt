@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.data.api
 
+import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.model.*
 import net.yusukezzz.ssmtc.util.toRequestBody
 import okhttp3.RequestBody
@@ -20,10 +21,8 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
         const val SEARCH_RESULT_TYPE = "recent"
     }
 
-    fun setTokens(token: String?, tokenSecret: String?): Twitter {
-        oauthConsumer.setTokenWithSecret(token, tokenSecret)
-
-        return this
+    fun setTokens(credentials: Credentials) {
+        oauthConsumer.setTokenWithSecret(credentials.token, credentials.tokenSecret)
     }
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())

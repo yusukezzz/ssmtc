@@ -69,7 +69,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
 
         try {
             val account = accountRepo.find(prefs.currentUserId)!!
-            val twitter = twitter.setTokens(account.credential.token, account.credential.tokenSecret)
+            twitter.setTokens(account.credentials)
 
             val mediaIds = photos?.map {
                 twitter.upload(compressor.compressImage(it)).media_id

@@ -2,7 +2,7 @@ package net.yusukezzz.ssmtc.ui.authorize
 
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
-import net.yusukezzz.ssmtc.data.Credential
+import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
@@ -39,8 +39,9 @@ class AuthorizePresenter(val view: AuthorizeContract.View,
             provider.retrieveAccessToken(consumer, pin)
             consumer
         } then {
-            val cred = Credential(it.token, it.tokenSecret)
-            val user = twitter.setTokens(it.token, it.tokenSecret).verifyCredentials()
+            val cred = Credentials(it.token, it.tokenSecret)
+            twitter.setTokens(cred)
+            val user = twitter.verifyCredentials()
             prefs.currentUserId = user.id
             val timelines = timelineRepo.initialize(user.id)
             val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)

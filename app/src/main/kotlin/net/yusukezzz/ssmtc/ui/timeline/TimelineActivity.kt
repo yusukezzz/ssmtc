@@ -269,7 +269,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun loadAccount(init: Boolean = true) {
         val account = currentAccount()
-        presenter.setTokens(account.credential)
+        presenter.setTokens(account.credentials)
 
         val headerView = nav_view.getHeaderView(0)
         val profileImage = headerView.findViewById(R.id.profile_image) as ImageView

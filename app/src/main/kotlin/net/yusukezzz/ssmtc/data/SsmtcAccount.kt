@@ -7,15 +7,15 @@ import paperparcel.PaperParcelable
 import java.util.*
 
 @PaperParcel
-data class Credential(val token: String, val tokenSecret: String) : PaperParcelable {
+data class Credentials(val token: String, val tokenSecret: String) : PaperParcelable {
     companion object {
-        @JvmField val CREATOR = PaperParcelCredential.CREATOR
+        @JvmField val CREATOR = PaperParcelCredentials.CREATOR
     }
 }
 
 @PaperParcel
 data class SsmtcAccount(
-    val credential: Credential,
+    val credentials: Credentials,
     val user: User,
     var timelines: List<TimelineParameter>,
     var currentTimelineUuid: UUID
