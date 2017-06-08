@@ -5,15 +5,20 @@ import net.yusukezzz.ssmtc.data.api.TimelineParameter
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.combine.Tuple2
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
 import nl.komponents.kovenant.then
 import nl.komponents.kovenant.ui.alwaysUi
+import org.threeten.bp.OffsetDateTime
 
 class TimelinePresenter(private val view: TimelineContract.View,
                         private val twitter: Twitter) : TimelineContract.Presenter {
+    companion object {
+        // block & mute ids API rate limit is 15req/15min
+        const val IGNORE_IDS_CACHE_SECONDS: Long = 60L
+    }
     private var ignoreIds: List<Long> = listOf()
+    private var ignoreIdsLastUpdatedAt: OffsetDateTime = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
     private lateinit var param: TimelineParameter
 
     override fun setTimelineParameter(param: TimelineParameter) {
@@ -30,12 +35,10 @@ class TimelinePresenter(private val view: TimelineContract.View,
      * @param maxId
      */
     override fun loadTweets(maxId: Long?) {
-        fetchTweetsWithIgnoreIds(maxId) doneUi {
-            val tweets = it.first
-            val ignores = it.second
+        fetchTweetsAndUpdateIgnoreIds(maxId) doneUi { tweets ->
             // save last tweet id before filtering
             tweets.lastOrNull()?.let { tw -> view.setLastTweetId(tw.id) }
-            val filtered = tweets.filter { tw -> param.filter.match(tw) && ignores.contains(tw.user.id).not() }
+            val filtered = tweets.filter { tw -> param.filter.match(tw) && ignoreIds.contains(tw.user.id).not() }
             if (maxId == null) {
                 view.setTweets(filtered)
             } else {
@@ -46,12 +49,18 @@ class TimelinePresenter(private val view: TimelineContract.View,
         }
     }
 
-    private fun fetchTweetsWithIgnoreIds(maxId: Long?): Promise<Tuple2<List<Tweet>, List<Long>>, Exception> = if (maxId == null) {
-        task { twitter.timeline(param, maxId) } and updateIgnoreIdsTask()
-    } else {
-        // use cached ignoreIds
-        task { Tuple2(twitter.timeline(param, maxId), ignoreIds) }
+    private fun fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
+                                              now: OffsetDateTime = OffsetDateTime.now()): Promise<List<Tweet>, Exception> {
+        return if (maxId == null && shouldIgnoreIdsUpdate(now)) {
+            updateIgnoreIdsTask() and task { twitter.timeline(param, maxId) } then { it.second }
+        } else {
+            // use cached ignoreIds
+            task { twitter.timeline(param, maxId) }
+        }
     }
+
+    private fun shouldIgnoreIdsUpdate(now: OffsetDateTime): Boolean =
+        now.isAfter(ignoreIdsLastUpdatedAt.plusSeconds(IGNORE_IDS_CACHE_SECONDS))
 
     private fun updateIgnoreIdsTask(): Promise<List<Long>, Exception> = task {
         twitter.blockedIds().ids
@@ -59,6 +68,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
         twitter.mutedIds().ids
     } then {
         // save blocked and muted user ids
+        ignoreIdsLastUpdatedAt = OffsetDateTime.now()
         ignoreIds = (it.first + it.second).distinct()
         ignoreIds
     }

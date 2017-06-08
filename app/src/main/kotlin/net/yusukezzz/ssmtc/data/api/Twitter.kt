@@ -85,7 +85,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     private fun handleError(res: Response<*>) {
         val statusCode = res.code()
-        RuntimeException("twitter API error code=$statusCode")
+        throw RuntimeException("twitter API error code=$statusCode")
     }
 
     data class TwitterErrorResponse(val errors: List<TwitterErrorDetail>)

@@ -31,6 +31,7 @@ class OpenGraphTask(private val url: String,
         } failUi {
             println("OpenGraphTask failed: $it")
             if (it !is OGCancelException) {
+                println(url)
                 it.printStackTrace()
                 target.get()?.onComplete(fallback(url))
             }
