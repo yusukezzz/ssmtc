@@ -20,7 +20,7 @@ class OpenGraphTask(private val url: String,
         fun isImageUrl(url: String): Boolean = IMAGE_EXTENSIONS.contains(ext(url))
     }
 
-    private var call: Call? = null
+    private var httpCall: Call? = null
     private var realTask: Promise<OpenGraph, Exception>? = null
 
     fun execute(done: () -> Unit): OpenGraphTask {
@@ -29,8 +29,9 @@ class OpenGraphTask(private val url: String,
         } successUi {
             target.get()?.onComplete(it)
         } failUi {
-            it.printStackTrace()
+            println("OpenGraphTask failed: $it")
             if (it !is OGCancelException) {
+                it.printStackTrace()
                 target.get()?.onComplete(fallback(url))
             }
         } always {
@@ -49,8 +50,8 @@ class OpenGraphTask(private val url: String,
         }
 
         // request redirected url and content-type without body
-        call = okhttp.newCall(requestBuilder(url).head().build())
-        val headRes = call!!.execute()
+        httpCall = okhttp.newCall(requestBuilder(url).head().build())
+        val headRes = httpCall!!.execute()
         val resolvedUrl = headRes.request().url().toString()
         val headBody = headRes.body()
         val contentType = headBody!!.contentType()
@@ -69,8 +70,8 @@ class OpenGraphTask(private val url: String,
         }
 
         // request HTML body
-        call = okhttp.newCall(requestBuilder(resolvedUrl).build())
-        val res = call!!.execute()
+        httpCall = okhttp.newCall(requestBuilder(resolvedUrl).build())
+        val res = httpCall!!.execute()
         val body = res.body()!!
         val og = parseHtml(resolvedUrl, body)
         cache.put(url, og)
@@ -81,7 +82,7 @@ class OpenGraphTask(private val url: String,
     private class OGCancelException : Exception()
 
     fun cancel() {
-        call?.let(Call::cancel)
+        httpCall?.let(Call::cancel)
         realTask?.let { Kovenant.cancel(it, OGCancelException()) }
     }
 
