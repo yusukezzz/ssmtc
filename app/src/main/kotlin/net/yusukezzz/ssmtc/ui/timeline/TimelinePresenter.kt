@@ -49,18 +49,19 @@ class TimelinePresenter(private val view: TimelineContract.View,
 
     private fun fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
                                               now: OffsetDateTime = OffsetDateTime.now()): Promise<List<Tweet>, Exception> {
-        return if (maxId == null && shouldIgnoreIdsUpdate(now)) {
-            updateIgnoreIdsTask() and task { twitter.timeline(param, maxId) } then { it.second }
+        val fetchTweetsTask = task { twitter.timeline(param, maxId) }
+        return if (shouldIgnoreIdsUpdate(now)) {
+            updateIgnoreIdsTask() and fetchTweetsTask then { it.second }
         } else {
             // use cached ignoreIds
-            task { twitter.timeline(param, maxId) }
+            fetchTweetsTask
         }
     }
 
     private fun shouldIgnoreIdsUpdate(now: OffsetDateTime): Boolean =
         now.isAfter(ignoreIdsLastUpdatedAt.plusSeconds(IGNORE_IDS_CACHE_SECONDS))
 
-    private fun updateIgnoreIdsTask(): Promise<List<Long>, Exception> = task {
+    private fun updateIgnoreIdsTask(): Promise<Unit, Exception> = task {
         twitter.blockedIds().ids
     } and task {
         twitter.mutedIds().ids
@@ -68,7 +69,6 @@ class TimelinePresenter(private val view: TimelineContract.View,
         // save blocked and muted user ids
         ignoreIdsLastUpdatedAt = OffsetDateTime.now()
         ignoreIds = (it.first + it.second).distinct()
-        ignoreIds
     }
 
     override fun loadLists(userId: Long) {
