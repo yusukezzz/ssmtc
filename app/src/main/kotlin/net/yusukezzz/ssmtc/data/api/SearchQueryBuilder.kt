@@ -5,7 +5,7 @@ import org.apache.commons.codec.net.URLCodec
 object SearchQueryBuilder {
     val urlencoder = URLCodec("UTF-8")
 
-    fun build(params: TimelineParameter): TimelineParameter {
+    fun build(params: Timeline): Timeline {
         val queries = mutableListOf(params.query)
 
         if (!params.includeRetweets) {

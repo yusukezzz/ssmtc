@@ -109,7 +109,7 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideTimelineParameterRepository(@Named("filesDir") filesDir: File, gson: Gson): TimelineRepository = TimelineRepository(filesDir, gson)
+    fun provideTimelineRepository(@Named("filesDir") filesDir: File, gson: Gson): TimelineRepository = TimelineRepository(filesDir, gson)
 
     @Provides
     @Singleton

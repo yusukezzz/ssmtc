@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.TwList
 
 class ListsSelectDialog : BaseDialogFragment() {
@@ -25,7 +25,7 @@ class ListsSelectDialog : BaseDialogFragment() {
         return AlertDialog.Builder(activity).apply {
             setTitle(R.string.lists_selector_title)
             setItems(items) { _, which ->
-                twLists[which].let { listener.onTimelineSelect(TimelineParameter.list(it.id, it.fullName)) }
+                twLists[which].let { listener.onTimelineSelect(Timeline.list(it.id, it.fullName)) }
             }
             setNegativeButton(R.string.lists_selector_cancel) { _, _ -> /* do nothing */ }
         }.create()

@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import net.yusukezzz.ssmtc.data.Credentials
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import nl.komponents.kovenant.Promise
@@ -19,10 +19,10 @@ class TimelinePresenter(private val view: TimelineContract.View,
     }
     private var ignoreIds: List<Long> = listOf()
     private var ignoreIdsLastUpdatedAt: OffsetDateTime = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
-    private lateinit var param: TimelineParameter
+    private lateinit var timeline: Timeline
 
-    override fun setTimelineParameter(param: TimelineParameter) {
-        this.param = param
+    override fun setTimeline(timeline: Timeline) {
+        this.timeline = timeline
     }
 
     override fun setTokens(credentials: Credentials): Unit = twitter.setTokens(credentials)
@@ -36,7 +36,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
         fetchTweetsAndUpdateIgnoreIds(maxId) doneUi { tweets ->
             // save last tweet id before filtering
             tweets.lastOrNull()?.let { tw -> view.setLastTweetId(tw.id) }
-            val filtered = tweets.filter { tw -> param.filter.match(tw) && ignoreIds.contains(tw.user.id).not() }
+            val filtered = tweets.filter { tw -> timeline.filter.match(tw) && ignoreIds.contains(tw.user.id).not() }
             if (maxId == null) {
                 view.setTweets(filtered)
             } else {
@@ -49,7 +49,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
 
     private fun fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
                                               now: OffsetDateTime = OffsetDateTime.now()): Promise<List<Tweet>, Exception> {
-        val fetchTweetsTask = task { twitter.timeline(param, maxId) }
+        val fetchTweetsTask = task { twitter.timeline(timeline, maxId) }
         return if (shouldIgnoreIdsUpdate(now)) {
             updateIgnoreIdsTask() and fetchTweetsTask then { it.second }
         } else {

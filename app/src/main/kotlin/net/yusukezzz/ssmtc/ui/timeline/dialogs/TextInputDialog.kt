@@ -7,7 +7,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.util.resolveAttributeId
 
 class TextInputDialog : BaseDialogFragment() {
@@ -40,8 +40,8 @@ class TextInputDialog : BaseDialogFragment() {
             setPositiveButton(R.string.input_dialog_ok, { _, _ ->
                 val input = edit.text.toString().trim()
                 val timeline = when (type) {
-                    TimelineParameter.TYPE_SEARCH -> TimelineParameter.search(input)
-                    TimelineParameter.TYPE_USER -> TimelineParameter.user(input)
+                    Timeline.TYPE_SEARCH -> Timeline.search(input)
+                    Timeline.TYPE_USER -> Timeline.user(input)
                     else -> throw RuntimeException("unknown timeline type: $type")
                 }
                 listener.onTimelineSelect(timeline)

@@ -11,14 +11,14 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.FilterRule
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import javax.inject.Inject
 
 class TimelineSettingDialog: AppCompatDialogFragment() {
     companion object {
         val ARG_TIMELINE = "timeline"
 
-        fun newInstance(timeline: TimelineParameter): TimelineSettingDialog = TimelineSettingDialog().apply {
+        fun newInstance(timeline: Timeline): TimelineSettingDialog = TimelineSettingDialog().apply {
             arguments = Bundle().apply {
                 putParcelable(ARG_TIMELINE, timeline)
             }
@@ -26,7 +26,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
     }
 
     interface TimelineSettingListener {
-        fun onSaveTimeline(timeline: TimelineParameter)
+        fun onSaveTimeline(timeline: Timeline)
     }
 
     @Inject
@@ -46,10 +46,10 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val timeline: TimelineParameter = arguments.getParcelable(ARG_TIMELINE)
+        val timeline: Timeline = arguments.getParcelable(ARG_TIMELINE)
         val view = activity.layoutInflater.inflate(R.layout.timeline_setting, null, false)
 
-        if (timeline.type == TimelineParameter.TYPE_SEARCH) {
+        if (timeline.type == Timeline.TYPE_SEARCH) {
             view.timeline_query.visibility = View.VISIBLE
             view.timeline_query_edit.setText(timeline.query)
         }
@@ -71,7 +71,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         }.create()
     }
 
-    private fun save(oldTimeline: TimelineParameter, view: View) {
+    private fun save(oldTimeline: Timeline, view: View) {
         val newTitle = view.timeline_title_edit.text.toString().trim()
         val newQuery = view.timeline_query_edit.text.toString().trim()
         val includeRts = view.include_rts.isChecked

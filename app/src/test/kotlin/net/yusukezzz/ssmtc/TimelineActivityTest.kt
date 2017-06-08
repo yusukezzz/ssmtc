@@ -3,7 +3,7 @@ package net.yusukezzz.ssmtc
 import android.content.ComponentName
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.SsmtcAccount
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.Entity
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.User
@@ -35,7 +35,7 @@ class TimelineActivityTest {
     private fun mockUser(id: Long = 1): User =
         User(id, "name", "screenName", false, false, "profileImage", "profileImageHttps", 0, 0, 0, 0, 0)
 
-    private fun mockAccount(timelines: List<TimelineParameter>): SsmtcAccount =
+    private fun mockAccount(timelines: List<Timeline>): SsmtcAccount =
         SsmtcAccount(Credentials("dummyToken", "dummyTokenSecret"), mockUser(), timelines, timelines.first().uuid)
 
     private fun mockTweet(id: Long) =
@@ -59,7 +59,7 @@ class TimelineActivityTest {
 
     @Test
     fun shouldLoadInitialTweetsIfLoggedIn() {
-        val timelines = listOf(TimelineParameter.home())
+        val timelines = listOf(Timeline.home())
         val prefs = getModule().mockPrefs
         val accountRepo = getModule().mockAccountRepo
         Mockito.`when`(prefs.currentUserId).thenReturn(mockUser().id)
@@ -72,7 +72,7 @@ class TimelineActivityTest {
 
     @Test
     fun shouldPagingRequestIfLastTweetIdExists() {
-        val timelines = listOf(TimelineParameter.home())
+        val timelines = listOf(Timeline.home())
         val prefs = getModule().mockPrefs
         val accountRepo = getModule().mockAccountRepo
         Mockito.`when`(prefs.currentUserId).thenReturn(mockUser().id)

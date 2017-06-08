@@ -30,7 +30,7 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.SsmtcAccount
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -137,7 +137,7 @@ class TimelineActivity: AppCompatActivity(),
     private fun restoreTimeline(state: Bundle) {
         val current = currentAccount().currentTimeline()
         toolbar_title.text = current.title
-        presenter.setTimelineParameter(current)
+        presenter.setTimeline(current)
         updateTimelineMenu()
 
         // load tweets from file
@@ -345,17 +345,17 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     fun timelineIcon(type: Int): Int = when (type) {
-        TimelineParameter.TYPE_HOME -> R.drawable.ic_timeline_home
-        TimelineParameter.TYPE_MENTIONS -> R.drawable.ic_timeline_mention
-        TimelineParameter.TYPE_LISTS -> R.drawable.ic_timeline_list
-        TimelineParameter.TYPE_SEARCH -> R.drawable.ic_timeline_search
-        TimelineParameter.TYPE_USER -> R.drawable.ic_timeline_user
+        Timeline.TYPE_HOME -> R.drawable.ic_timeline_home
+        Timeline.TYPE_MENTIONS -> R.drawable.ic_timeline_mention
+        Timeline.TYPE_LISTS -> R.drawable.ic_timeline_list
+        Timeline.TYPE_SEARCH -> R.drawable.ic_timeline_search
+        Timeline.TYPE_USER -> R.drawable.ic_timeline_user
         else -> R.drawable.ic_timeline_home
     }
 
-    fun switchTimeline(timeline: TimelineParameter) {
+    fun switchTimeline(timeline: Timeline) {
         toolbar_title.text = timeline.title
-        presenter.setTimelineParameter(timeline)
+        presenter.setTimeline(timeline)
         updateTimelineMenu()
         initializeTimeline()
     }
@@ -372,7 +372,7 @@ class TimelineActivity: AppCompatActivity(),
             .show(supportFragmentManager, "ListsSelectDialog")
     }
 
-    override fun onTimelineSelect(timeline: TimelineParameter) {
+    override fun onTimelineSelect(timeline: Timeline) {
         val account = currentAccount()
         accountRepo.update(account.copy(timelines = account.timelines + timeline, currentTimelineUuid = timeline.uuid))
         switchTimeline(timeline)
@@ -393,13 +393,13 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     override fun onSearchInputOpen() {
-        TextInputDialog.newInstance(TimelineParameter.TYPE_SEARCH, R.string.input_dialog_search)
+        TextInputDialog.newInstance(Timeline.TYPE_SEARCH, R.string.input_dialog_search)
             .setTimelineSelectListener(this)
             .show(supportFragmentManager, "TextInputDialog")
     }
 
     override fun onScreenNameInputOpen() {
-        TextInputDialog.newInstance(TimelineParameter.TYPE_USER, R.string.input_dialog_user)
+        TextInputDialog.newInstance(Timeline.TYPE_USER, R.string.input_dialog_user)
             .setTimelineSelectListener(this)
             .show(supportFragmentManager, "TextInputDialog")
     }
@@ -410,7 +410,7 @@ class TimelineActivity: AppCompatActivity(),
             .show(supportFragmentManager, "TimelineSettingDialog")
     }
 
-    override fun onSaveTimeline(timeline: TimelineParameter) {
+    override fun onSaveTimeline(timeline: Timeline) {
         val account = currentAccount()
         accountRepo.update(account.copy(
             timelines = account.timelines.filterNot { it.uuid == timeline.uuid } + timeline,
@@ -489,9 +489,9 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun onRetweetClick(tweet: Tweet) = presenter.retweet(tweet)
 
-    override fun onScreenNameClick(screenName: String) = onTimelineSelect(TimelineParameter.user(screenName))
+    override fun onScreenNameClick(screenName: String) = onTimelineSelect(Timeline.user(screenName))
 
-    override fun onHashTagClick(hashTag: String) = onTimelineSelect(TimelineParameter.search(hashTag))
+    override fun onHashTagClick(hashTag: String) = onTimelineSelect(Timeline.search(hashTag))
 
     override fun onShareClick(tweet: Tweet) {
         val i = Intent(Intent.ACTION_SEND)

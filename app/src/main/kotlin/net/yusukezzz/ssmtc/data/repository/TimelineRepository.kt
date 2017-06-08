@@ -2,7 +2,7 @@ package net.yusukezzz.ssmtc.data.repository
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import net.yusukezzz.ssmtc.data.api.TimelineParameter
+import net.yusukezzz.ssmtc.data.api.Timeline
 import java.io.File
 
 class TimelineRepository(filesDir: File, private val gson: Gson) {
@@ -11,15 +11,15 @@ class TimelineRepository(filesDir: File, private val gson: Gson) {
     }
 
     private val repoDir = File(filesDir, REPOSITORY_DIR_NAME)
-    private val paramsType = object : TypeToken<List<TimelineParameter>>() {}.type
+    private val paramsType = object : TypeToken<List<Timeline>>() {}.type
 
     init {
         repoDir.mkdirs()
     }
 
-    fun initialize(userId: Long): List<TimelineParameter> = findAll(userId).let {
+    fun initialize(userId: Long): List<Timeline> = findAll(userId).let {
         if (it.isEmpty()) {
-            val params = listOf(TimelineParameter.home())
+            val params = listOf(Timeline.home())
             save(userId, params)
             params
         } else {
@@ -27,21 +27,21 @@ class TimelineRepository(filesDir: File, private val gson: Gson) {
         }
     }
 
-    fun findAll(userId: Long): List<TimelineParameter> = jsonFile(userId).let {
+    fun findAll(userId: Long): List<Timeline> = jsonFile(userId).let {
         if (it.exists()) {
-            gson.fromJson<List<TimelineParameter>>(it.readText(), paramsType)
+            gson.fromJson<List<Timeline>>(it.readText(), paramsType)
         } else {
-            listOf<TimelineParameter>()
+            listOf<Timeline>()
         }
     }
 
-    fun add(userId: Long, timeline: TimelineParameter): Unit = save(userId, findAll(userId) + timeline)
+    fun add(userId: Long, timeline: Timeline): Unit = save(userId, findAll(userId) + timeline)
 
-    fun delete(userId: Long, timeline: TimelineParameter): Unit = save(userId, findAll(userId).filterNot { it.uuid == timeline.uuid })
+    fun delete(userId: Long, timeline: Timeline): Unit = save(userId, findAll(userId).filterNot { it.uuid == timeline.uuid })
 
     fun deleteAll(userId: Long): Boolean = jsonFile(userId).delete()
 
-    fun save(userId: Long, timelines: List<TimelineParameter>): Unit = jsonFile(userId).writeText(gson.toJson(timelines.sorted()))
+    fun save(userId: Long, timelines: List<Timeline>): Unit = jsonFile(userId).writeText(gson.toJson(timelines.sorted()))
 
     private fun jsonFile(userId: Long): File = File(repoDir, "$userId.json")
 }
