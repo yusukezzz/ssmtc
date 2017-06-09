@@ -67,7 +67,7 @@ class TimelineActivityTest {
 
         Robolectric.buildActivity(TimelineActivity::class.java).create().get()
 
-        verify(getModule().mockTwitter).timeline(timelines.first(), null)
+        verify(getModule().mockTwitter).tweets(timelines.first(), null)
     }
 
     @Test
@@ -83,6 +83,6 @@ class TimelineActivityTest {
         act.setLastTweetId(lastTweetId)
         act.onLoadMore()
 
-        verify(getModule().mockTwitter).timeline(timelines.first(), lastTweetId)
+        verify(getModule().mockTwitter).tweets(timelines.first(), lastTweetId)
     }
 }

@@ -27,7 +27,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())
 
-    fun timeline(params: Timeline, maxId: Long? = null): List<Tweet> = params.let {
+    fun tweets(params: Timeline, maxId: Long? = null): List<Tweet> = params.let {
         val max = maxId?.dec()
         when (it.type) {
             Timeline.TYPE_HOME -> homeTimeline(it, max)

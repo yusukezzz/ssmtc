@@ -236,6 +236,9 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
+    /**
+     * Switch account to selected one from drawer navigation
+     */
     fun handleAccountNavigation(item: MenuItem): Boolean {
         val account = (accountRepo.findAll() - currentAccount())[item.order]
         prefs.currentUserId = account.user.id
@@ -245,6 +248,9 @@ class TimelineActivity: AppCompatActivity(),
         return false
     }
 
+    /**
+     * Switch timeline to selected one from drawer navigation
+     */
     fun handleTimelineNavigation(item: MenuItem): Boolean {
         val account = currentAccount()
         val timeline = account.timelines[item.order]
