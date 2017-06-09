@@ -14,6 +14,7 @@ interface TimelineContract {
         fun loadLists(userId: Long)
         fun like(tweet: Tweet)
         fun retweet(tweet: Tweet)
+        fun resetIgnoreIds()
     }
 
     interface View {

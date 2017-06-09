@@ -243,7 +243,6 @@ class TimelineActivity: AppCompatActivity(),
         val account = (accountRepo.findAll() - currentAccount())[item.order]
         prefs.currentUserId = account.user.id
         loadAccount()
-        showTimelineNavigation()
 
         return false
     }
@@ -275,6 +274,7 @@ class TimelineActivity: AppCompatActivity(),
 
     fun loadAccount(init: Boolean = true) {
         val account = currentAccount()
+        presenter.resetIgnoreIds()
         presenter.setTokens(account.credentials)
 
         val headerView = nav_view.getHeaderView(0)

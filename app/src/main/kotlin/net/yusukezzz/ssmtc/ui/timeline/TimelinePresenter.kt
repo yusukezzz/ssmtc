@@ -25,6 +25,11 @@ class TimelinePresenter(private val view: TimelineContract.View,
         this.timeline = timeline
     }
 
+    override fun resetIgnoreIds() {
+        ignoreIds = listOf()
+        ignoreIdsLastUpdatedAt = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
+    }
+
     override fun setTokens(credentials: Credentials): Unit = twitter.setTokens(credentials)
 
     /**
