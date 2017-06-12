@@ -105,16 +105,16 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         val i = Intent(ACTION_FAILURE)
         sendBroadcast(i)
     }
-}
 
-fun Compressor.compressImage(path: String): File {
-    val ext = path.split(".").lastOrNull() ?: ""
-    val format = when (ext.toLowerCase()) {
-        "jpg" -> Bitmap.CompressFormat.JPEG
-        "jpeg" -> Bitmap.CompressFormat.JPEG
-        "png" -> Bitmap.CompressFormat.PNG
-        "webp" -> Bitmap.CompressFormat.WEBP
-        else -> Bitmap.CompressFormat.JPEG // try convert to jpeg
+    fun Compressor.compressImage(path: String): File {
+        val ext = path.split(".").lastOrNull() ?: ""
+        val format = when (ext.toLowerCase()) {
+            "jpg" -> Bitmap.CompressFormat.JPEG
+            "jpeg" -> Bitmap.CompressFormat.JPEG
+            "png" -> Bitmap.CompressFormat.PNG
+            "webp" -> Bitmap.CompressFormat.WEBP
+            else -> Bitmap.CompressFormat.JPEG // try convert to jpeg
+        }
+        return this.setCompressFormat(format).compressToFile(File(path))
     }
-    return this.setCompressFormat(format).compressToFile(File(path))
 }
