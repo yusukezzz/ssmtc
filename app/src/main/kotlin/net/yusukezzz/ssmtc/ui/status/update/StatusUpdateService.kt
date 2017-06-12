@@ -113,7 +113,8 @@ fun Compressor.compressImage(path: String): File {
         "jpg" -> Bitmap.CompressFormat.JPEG
         "jpeg" -> Bitmap.CompressFormat.JPEG
         "png" -> Bitmap.CompressFormat.PNG
-        else -> throw RuntimeException("unknown image extension: $ext")
+        "webp" -> Bitmap.CompressFormat.WEBP
+        else -> Bitmap.CompressFormat.JPEG // try convert to jpeg
     }
     return this.setCompressFormat(format).compressToFile(File(path))
 }
