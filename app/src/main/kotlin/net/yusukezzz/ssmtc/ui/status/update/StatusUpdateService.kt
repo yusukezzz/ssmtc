@@ -26,7 +26,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
 
         const val PHOTO_MAX_WIDTH = 2048
         const val PHOTO_MAX_HEIGHT = 1536
-        const val PHOTO_QUALITY: Int = 85
+        const val PHOTO_QUALITY = 85
 
         fun newIntent(context: Context,
                       status: String,
@@ -96,15 +96,9 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         }
     }
 
-    fun sendSuccessBroadcast() {
-        val i = Intent(ACTION_SUCCESS)
-        sendBroadcast(i)
-    }
+    fun sendSuccessBroadcast() = sendBroadcast(Intent(ACTION_SUCCESS))
 
-    fun sendFailureBroadcast() {
-        val i = Intent(ACTION_FAILURE)
-        sendBroadcast(i)
-    }
+    fun sendFailureBroadcast() = sendBroadcast(Intent(ACTION_FAILURE))
 
     fun Compressor.compressImage(path: String): File {
         val ext = path.split(".").lastOrNull() ?: ""
