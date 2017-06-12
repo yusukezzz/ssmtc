@@ -1,12 +1,10 @@
 package net.yusukezzz.ssmtc.di
 
 import android.accounts.AccountManager
-import android.graphics.Bitmap
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
-import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
@@ -33,12 +31,6 @@ import javax.inject.Singleton
 
 @Module
 class AppModule(private val app: Application) {
-    companion object {
-        const val PHOTO_MAX_WIDTH: Float = 2048.0f
-        const val PHOTO_MAX_HEIGHT: Float = 1536.0f
-        const val PHOTO_QUALITY: Int = 85
-    }
-
     @Provides
     @Singleton
     fun provideApplication(): Application = app
@@ -97,15 +89,6 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideOpenGraphClient(cache: OGDiskCache): OpenGraphClient = OpenGraphClient(cache, OkHttpClient.Builder().build())
-
-    @Provides
-    @Singleton
-    fun provideCompressor(): Compressor = Compressor.Builder(app.applicationContext)
-        .setMaxWidth(PHOTO_MAX_WIDTH)
-        .setMaxHeight(PHOTO_MAX_HEIGHT)
-        .setQuality(PHOTO_QUALITY)
-        .setCompressFormat(Bitmap.CompressFormat.JPEG) // should respect original?
-        .build()
 
     @Provides
     @Singleton

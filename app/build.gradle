@@ -80,7 +80,7 @@ dependencies {
         exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
     }
     compile 'se.akerfeldt:okhttp-signpost:1.1.0'
-    compile 'id.zelory:compressor:1.0.5'
+    compile 'id.zelory:compressor:2.0.0'
 
     // html entity decoding
     compile 'org.apache.commons:commons-lang3:3.5'

@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.ui.status.update
 import android.app.IntentService
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v7.app.NotificationCompat
 import id.zelory.compressor.Compressor
@@ -23,6 +24,10 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         const val ARG_IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id"
         const val ARG_PHOTOS = "images"
 
+        const val PHOTO_MAX_WIDTH = 2048
+        const val PHOTO_MAX_HEIGHT = 1536
+        const val PHOTO_QUALITY: Int = 85
+
         fun newIntent(context: Context,
                       status: String,
                       inReplyToStatusId: Long? = null,
@@ -35,14 +40,18 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         }
     }
 
+    private val compressor: Compressor by lazy {
+        Compressor(this)
+            .setMaxWidth(PHOTO_MAX_WIDTH)
+            .setMaxHeight(PHOTO_MAX_HEIGHT)
+            .setQuality(PHOTO_QUALITY)
+    }
+
     @Inject
     lateinit var prefs: Preferences
 
     @Inject
     lateinit var twitter: Twitter
-
-    @Inject
-    lateinit var compressor: Compressor
 
     @Inject
     lateinit var accountRepo: SsmtcAccountRepository
@@ -98,4 +107,13 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
     }
 }
 
-fun Compressor.compressImage(path: String): File = this.compressToFile(File(path))
+fun Compressor.compressImage(path: String): File {
+    val ext = path.split(".").lastOrNull() ?: ""
+    val format = when (ext.toLowerCase()) {
+        "jpg" -> Bitmap.CompressFormat.JPEG
+        "jpeg" -> Bitmap.CompressFormat.JPEG
+        "png" -> Bitmap.CompressFormat.PNG
+        else -> throw RuntimeException("unknown image extension: $ext")
+    }
+    return this.setCompressFormat(format).compressToFile(File(path))
+}
