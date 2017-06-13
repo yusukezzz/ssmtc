@@ -1,6 +1,6 @@
 package net.yusukezzz.ssmtc.data.og
 
-import org.apache.commons.lang3.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 import java.io.BufferedReader
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets

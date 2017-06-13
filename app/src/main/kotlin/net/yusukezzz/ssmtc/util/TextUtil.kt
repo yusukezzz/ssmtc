@@ -7,7 +7,7 @@ import android.view.View
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.Url
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
-import org.apache.commons.lang3.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 
 object TextUtil {
     val SCREEN_NAME_PATTERN = Regex("@[a-zA-Z0-9_]+")
