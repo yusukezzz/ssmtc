@@ -80,7 +80,10 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideTwitter(oauthConsumer: OkHttpOAuthConsumer, apiService: TwitterApi, uploadService: UploadApi): Twitter = Twitter(oauthConsumer, apiService, uploadService)
+    fun provideTwitter(oauthConsumer: OkHttpOAuthConsumer,
+                       apiService: TwitterApi,
+                       uploadService: UploadApi,
+                       gson: Gson): Twitter = Twitter(oauthConsumer, apiService, uploadService, gson)
 
     @Provides
     @Singleton

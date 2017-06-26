@@ -54,7 +54,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
 
     private fun fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
                                               now: OffsetDateTime = OffsetDateTime.now()): Promise<List<Tweet>, Exception> {
-        val fetchTweetsTask = task { twitter.tweets(timeline, maxId) }
+        val fetchTweetsTask = task { twitter.statuses(timeline, maxId) }
         return if (shouldIgnoreIdsUpdate(now)) {
             updateIgnoreIdsTask() and fetchTweetsTask then { it.second }
         } else {

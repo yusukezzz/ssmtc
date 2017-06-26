@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.data.api
 
+import com.google.gson.Gson
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.model.*
 import net.yusukezzz.ssmtc.util.toRequestBody
@@ -12,7 +13,8 @@ import java.io.File
 
 class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
               private val apiService: TwitterApi,
-              private val uploadService: UploadApi) {
+              private val uploadService: UploadApi,
+              private val gson: Gson) {
     companion object {
         const val API_BASE_URL = "https://api.twitter.com"
         const val UPLOAD_BASE_URL = "https://upload.twitter.com"
@@ -27,7 +29,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     fun verifyCredentials(): User = execute(apiService.verifyCredentials())
 
-    fun tweets(params: Timeline, maxId: Long? = null): List<Tweet> = params.let {
+    fun statuses(timeline: Timeline, maxId: Long? = null): List<Tweet> = timeline.let {
         val max = maxId?.dec()
         when (it.type) {
             Timeline.TYPE_HOME -> homeTimeline(it, max)
@@ -35,7 +37,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
             Timeline.TYPE_LISTS -> listTimeline(it, max)
             Timeline.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(it), max)
             Timeline.TYPE_USER -> userTimeline(it, max)
-            else -> throw RuntimeException("unknown parameter type: ${it.type::class.java}")
+            else -> throw RuntimeException("unknown timeline type: ${it.type::class.java}")
         }
     }
 
@@ -84,14 +86,15 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     private fun handleError(res: Response<*>) {
         val statusCode = res.code()
-        throw RuntimeException("twitter API error code=$statusCode")
+        val body = gson.fromJson(res.errorBody()!!.string(), TwitterErrorResponse::class.java)
+        throw TwitterApiException("twitter API error code=$statusCode", statusCode, body.errors)
     }
 
     data class TwitterErrorResponse(val errors: List<TwitterErrorDetail>)
     data class TwitterErrorDetail(val code: Int, val message: String)
 }
 
-class TwitterApiException(message: String, val statusCode: Int, val errors: List<Twitter.TwitterErrorDetail>): Exception(message) {
+class TwitterApiException(message: String, val statusCode: Int, val errors: List<Twitter.TwitterErrorDetail>) : RuntimeException(message) {
     override fun toString(): String {
         val details = errors.map { "code=${it.code}, message=${it.message}" }.joinToString("\n")
         val str = """
