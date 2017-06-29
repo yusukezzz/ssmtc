@@ -44,7 +44,6 @@ android {
 
 dependencies {
     ext {
-        kotlin_coroutine_version = '0.16'
         support_version = '25.3.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
