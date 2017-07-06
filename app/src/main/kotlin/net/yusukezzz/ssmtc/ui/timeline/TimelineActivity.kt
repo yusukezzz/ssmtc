@@ -462,7 +462,7 @@ class TimelineActivity: AppCompatActivity(),
     override fun addTweets(tweets: List<Tweet>) = timelineAdapter.add(tweets)
 
     override fun timelineEdgeReached() {
-        pagingScrollListener.endOfPageReached()
+        pagingScrollListener.disable()
         toast(resources.getString(R.string.end_of_timeline_reached))
     }
 

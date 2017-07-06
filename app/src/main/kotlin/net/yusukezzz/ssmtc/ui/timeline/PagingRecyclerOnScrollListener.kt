@@ -15,7 +15,7 @@ class PagingRecyclerOnScrollListener(private val context: Context,
         fun onLoadMore()
     }
 
-    private var endOfPage = false // True if we reached the end of pages
+    private var disable = false // True if we can not paging any further
     private var loading = true // True if we are still waiting for the last set of data to load.
     private val visibleThreshold = 5 // The minimum amount of items to have below your current scroll position before loading more.
 
@@ -29,7 +29,7 @@ class PagingRecyclerOnScrollListener(private val context: Context,
     }
 
     fun reset() {
-        endOfPage = false
+        disable = false
         loading = true
     }
 
@@ -37,8 +37,8 @@ class PagingRecyclerOnScrollListener(private val context: Context,
         loading = false
     }
 
-    fun endOfPageReached() {
-        endOfPage = true
+    fun disable() {
+        disable = true
         loading = false
     }
 
@@ -57,7 +57,7 @@ class PagingRecyclerOnScrollListener(private val context: Context,
         val visibleItemCount = recyclerView.childCount
         val firstVisibleItemPos = mLinearLayoutManager.findFirstVisibleItemPosition()
 
-        if (!endOfPage && !loading && totalItemCount - visibleItemCount <= firstVisibleItemPos + visibleThreshold) {
+        if (!disable && !loading && totalItemCount - visibleItemCount <= firstVisibleItemPos + visibleThreshold) {
             // End has been reached
 
             // Do something
