@@ -3,6 +3,7 @@ package net.yusukezzz.ssmtc.ui.timeline
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.api.TwitterApiException
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.and
@@ -145,7 +146,11 @@ class TimelinePresenter(private val view: TimelineContract.View,
     }
 
     override fun handleError(error: Throwable) {
-        view.handleError(error)
+        if (error is TwitterApiException && error.isRateLimitExceeded()) {
+            view.rateLimitExceeded()
+        } else {
+            view.handleError(error)
+        }
     }
 
 }

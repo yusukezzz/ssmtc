@@ -51,6 +51,7 @@
     <string name="photo_download_start">画像のダウンロードを開始しました</string>
 
     <string name="end_of_timeline_reached">これ以上タイムラインを遡ることは出来ません</string>
+    <string name="rate_limit_exceeded">APIリクエスト数制限：時間を置いてから再実行して下さい</string>
 
     <string-array name="filter_media">
         <item>制限しない</item>

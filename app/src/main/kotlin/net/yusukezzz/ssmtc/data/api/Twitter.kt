@@ -96,6 +96,11 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 }
 
 class TwitterApiException(message: String, val statusCode: Int, val errors: List<Twitter.TwitterErrorDetail>) : RuntimeException(message) {
+    companion object {
+        const val STATUS_CODE_RATE_LIMIT = 429
+    }
+
+    fun isRateLimitExceeded(): Boolean = (statusCode == STATUS_CODE_RATE_LIMIT)
     override fun toString(): String {
         val details = errors.map { "code=${it.code}, message=${it.message}" }.joinToString("\n")
         val str = """

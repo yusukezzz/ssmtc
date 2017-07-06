@@ -26,6 +26,7 @@ interface TimelineContract {
         fun dismissListsLoading()
         fun timelineEdgeReached()
         fun stopLoading()
+        fun rateLimitExceeded()
         fun updateReactedTweet()
         fun handleError(error: Throwable)
     }

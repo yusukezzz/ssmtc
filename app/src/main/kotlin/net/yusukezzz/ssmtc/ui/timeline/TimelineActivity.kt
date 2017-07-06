@@ -466,6 +466,11 @@ class TimelineActivity: AppCompatActivity(),
         toast(resources.getString(R.string.end_of_timeline_reached))
     }
 
+    override fun rateLimitExceeded() {
+        pagingScrollListener.disable()
+        toast(resources.getString(R.string.rate_limit_exceeded))
+    }
+
     override fun stopLoading() = pagingScrollListener.stopLoading()
 
     fun initializeTimeline() {
