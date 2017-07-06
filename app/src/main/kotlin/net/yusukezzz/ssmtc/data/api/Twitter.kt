@@ -21,6 +21,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
         const val LANG = "ja"
         const val LOCALE = "ja"
         const val SEARCH_RESULT_TYPE = "recent"
+        const val MAX_RETRIEVE_COUNT = 200
     }
 
     fun setTokens(credentials: Credentials) {
@@ -32,11 +33,11 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
     fun statuses(timeline: Timeline, maxId: Long? = null): List<Tweet> = timeline.let {
         val max = maxId?.dec()
         when (it.type) {
-            Timeline.TYPE_HOME -> homeTimeline(it, max)
-            Timeline.TYPE_MENTIONS -> mentionsTimeline(it, max)
-            Timeline.TYPE_LISTS -> listTimeline(it, max)
+            Timeline.TYPE_HOME -> homeTimeline(max)
+            Timeline.TYPE_MENTIONS -> mentionsTimeline(max)
+            Timeline.TYPE_LISTS -> listTimeline(it.listId, max)
             Timeline.TYPE_SEARCH -> searchTimeline(SearchQueryBuilder.build(it), max)
-            Timeline.TYPE_USER -> userTimeline(it, max)
+            Timeline.TYPE_USER -> userTimeline(it.screenName, max)
             else -> throw RuntimeException("unknown timeline type: ${it.type::class.java}")
         }
     }
@@ -60,20 +61,20 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
 
     fun upload(media: File): UploadResult = execute(uploadService.upload(media.toRequestBody()))
 
-    private fun homeTimeline(params: Timeline, maxId: Long?): List<Tweet> =
-        execute(apiService.homeTimeline(params.count, maxId))
+    private fun homeTimeline(maxId: Long?): List<Tweet> =
+        execute(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
 
-    private fun mentionsTimeline(params: Timeline, maxId: Long?): List<Tweet> =
-        execute(apiService.mentionsTimeline(params.count, maxId))
+    private fun mentionsTimeline(maxId: Long?): List<Tweet> =
+        execute(apiService.mentionsTimeline(MAX_RETRIEVE_COUNT, maxId))
 
-    private fun listTimeline(params: Timeline, maxId: Long?): List<Tweet> =
-        execute(apiService.listStatuses(params.listId, params.count, maxId))
+    private fun listTimeline(listId: Long?, maxId: Long?): List<Tweet> =
+        execute(apiService.listStatuses(listId, MAX_RETRIEVE_COUNT, maxId))
 
-    private fun searchTimeline(params: Timeline, maxId: Long?): List<Tweet> =
-        execute(apiService.search(params.count, LANG, LOCALE, SEARCH_RESULT_TYPE, params.query, maxId)).statuses
+    private fun searchTimeline(query: String?, maxId: Long?): List<Tweet> =
+        execute(apiService.search(MAX_RETRIEVE_COUNT, LANG, LOCALE, SEARCH_RESULT_TYPE, query, maxId)).statuses
 
-    private fun userTimeline(params: Timeline, maxId: Long?): List<Tweet> =
-        execute(apiService.userTimeline(params.count, params.screenName, maxId))
+    private fun userTimeline(screenName: String?, maxId: Long?): List<Tweet> =
+        execute(apiService.userTimeline(MAX_RETRIEVE_COUNT, screenName, maxId))
 
     private fun <T> execute(req: Call<T>): T {
         val res = req.execute()

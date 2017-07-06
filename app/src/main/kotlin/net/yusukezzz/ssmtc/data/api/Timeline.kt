@@ -9,7 +9,6 @@ data class Timeline(
     val uuid: UUID,
     val type: Int,
     val title: String,
-    val count: Int = Timeline.MAX_RETRIEVE_COUNT,
     val filter: FilterRule = FilterRule.default(),
     val screenName: String? = null,
     val query: String? = null,
@@ -20,9 +19,6 @@ data class Timeline(
 
     companion object {
         @JvmField val CREATOR = PaperParcelTimeline.CREATOR
-
-        val MAX_RETRIEVE_COUNT = 50
-
         val TYPE_HOME = 0
         val TYPE_MENTIONS = 1
         val TYPE_LISTS = 2

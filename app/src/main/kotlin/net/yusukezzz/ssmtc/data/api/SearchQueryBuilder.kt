@@ -3,9 +3,9 @@ package net.yusukezzz.ssmtc.data.api
 import org.apache.commons.codec.net.URLCodec
 
 object SearchQueryBuilder {
-    val urlencoder = URLCodec("UTF-8")
+    private val urlencoder = URLCodec("UTF-8")
 
-    fun build(params: Timeline): Timeline {
+    fun build(params: Timeline): String {
         val queries = mutableListOf(params.query)
 
         if (!params.includeRetweets) {
@@ -21,6 +21,6 @@ object SearchQueryBuilder {
             }
         }
 
-        return params.copy(query = urlencoder.encode(queries.joinToString(" ")))
+        return urlencoder.encode(queries.joinToString(" "))
     }
 }
