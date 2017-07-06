@@ -9,12 +9,13 @@ import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 
 // https://gist.github.com/ssinss/e06f12ef66c51252563e
-class EndlessRecyclerOnScrollListener(private val context: Context,
-                                      private val mLinearLayoutManager: LinearLayoutManager): RecyclerView.OnScrollListener() {
+class PagingRecyclerOnScrollListener(private val context: Context,
+                                     private val mLinearLayoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
     interface ScrollListener {
         fun onLoadMore()
     }
 
+    private var endOfPage = false // True if we reached the end of pages
     private var loading = true // True if we are still waiting for the last set of data to load.
     private val visibleThreshold = 5 // The minimum amount of items to have below your current scroll position before loading more.
 
@@ -28,10 +29,16 @@ class EndlessRecyclerOnScrollListener(private val context: Context,
     }
 
     fun reset() {
+        endOfPage = false
         loading = true
     }
 
     fun stopLoading() {
+        loading = false
+    }
+
+    fun endOfPageReached() {
+        endOfPage = true
         loading = false
     }
 
@@ -50,7 +57,7 @@ class EndlessRecyclerOnScrollListener(private val context: Context,
         val visibleItemCount = recyclerView.childCount
         val firstVisibleItemPos = mLinearLayoutManager.findFirstVisibleItemPosition()
 
-        if (!loading && totalItemCount - visibleItemCount <= firstVisibleItemPos + visibleThreshold) {
+        if (!endOfPage && !loading && totalItemCount - visibleItemCount <= firstVisibleItemPos + visibleThreshold) {
             // End has been reached
 
             // Do something

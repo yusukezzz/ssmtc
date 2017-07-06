@@ -50,6 +50,8 @@
     <string name="gallery_load_fail">画像の読み込みに失敗しました</string>
     <string name="photo_download_start">画像のダウンロードを開始しました</string>
 
+    <string name="end_of_timeline_reached">これ以上タイムラインを遡ることは出来ません</string>
+
     <string-array name="filter_media">
         <item>制限しない</item>
         <item>画像又は動画を含む</item>

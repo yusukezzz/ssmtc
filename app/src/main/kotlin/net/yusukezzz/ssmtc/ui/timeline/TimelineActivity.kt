@@ -50,7 +50,7 @@ import javax.inject.Inject
 class TimelineActivity: AppCompatActivity(),
     TimelineContract.View,
     SwipeRefreshLayout.OnRefreshListener,
-    EndlessRecyclerOnScrollListener.ScrollListener,
+    PagingRecyclerOnScrollListener.ScrollListener,
     TweetItemView.TweetItemListener,
     NavigationView.OnNavigationItemSelectedListener,
     TimelineSettingDialog.TimelineSettingListener,
@@ -61,7 +61,7 @@ class TimelineActivity: AppCompatActivity(),
         const val STATE_RECYCLER_VIEW = "state_recycler_view"
     }
 
-    private lateinit var endlessScrollListener: EndlessRecyclerOnScrollListener
+    private lateinit var pagingScrollListener: PagingRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
     private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
     private val lastTimelineFile by lazy { File(applicationContext.cacheDir, "last_timeline.json") }
@@ -178,9 +178,9 @@ class TimelineActivity: AppCompatActivity(),
         decoration.setDrawable(getCompatDrawable(R.drawable.timeline_divider))
         timeline_list.addItemDecoration(decoration)
 
-        endlessScrollListener = EndlessRecyclerOnScrollListener(this, layoutManager)
-        endlessScrollListener.setLoadMoreListener(this)
-        timeline_list.addOnScrollListener(endlessScrollListener)
+        pagingScrollListener = PagingRecyclerOnScrollListener(this, layoutManager)
+        pagingScrollListener.setLoadMoreListener(this)
+        timeline_list.addOnScrollListener(pagingScrollListener)
 
         swipe_refresh.setOnRefreshListener(this)
         swipe_refresh.setColorSchemeResources(R.color.green, R.color.red, R.color.blue, R.color.yellow)
@@ -461,10 +461,15 @@ class TimelineActivity: AppCompatActivity(),
      */
     override fun addTweets(tweets: List<Tweet>) = timelineAdapter.add(tweets)
 
-    override fun stopLoading() = endlessScrollListener.stopLoading()
+    override fun timelineEdgeReached() {
+        pagingScrollListener.endOfPageReached()
+        toast(resources.getString(R.string.end_of_timeline_reached))
+    }
+
+    override fun stopLoading() = pagingScrollListener.stopLoading()
 
     fun initializeTimeline() {
-        endlessScrollListener.reset()
+        pagingScrollListener.reset()
         timelineAdapter.clear()
         timeline_list.scrollToPosition(0)
         swipe_refresh.post({
@@ -511,7 +516,7 @@ class TimelineActivity: AppCompatActivity(),
     override fun handleError(error: Throwable) {
         toast(error)
         swipe_refresh.isRefreshing = false
-        endlessScrollListener.stopLoading()
+        pagingScrollListener.stopLoading()
     }
 }
 

@@ -24,6 +24,7 @@ interface TimelineContract {
         fun showListsSelector(lists: List<TwList>)
         fun showListsLoading()
         fun dismissListsLoading()
+        fun timelineEdgeReached()
         fun stopLoading()
         fun updateReactedTweet()
         fun handleError(error: Throwable)

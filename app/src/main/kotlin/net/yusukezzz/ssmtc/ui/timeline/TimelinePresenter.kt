@@ -39,18 +39,24 @@ class TimelinePresenter(private val view: TimelineContract.View,
      */
     override fun loadTweets(maxId: Long?) {
         fetchTweetsAndUpdateIgnoreIds(maxId) doneUi { tweets ->
-            // save last tweet id before filtering
-            tweets.lastOrNull()?.let { tw -> view.setLastTweetId(tw.id) }
-            val filtered = tweets.filter { tw -> timeline.filter.match(tw) && ignoreIds.contains(tw.user.id).not() }
-            if (maxId == null) {
-                view.setTweets(filtered)
+            if (tweets.isEmpty()) {
+                view.timelineEdgeReached()
             } else {
-                view.addTweets(filtered)
+                // save last tweet id before filtering
+                tweets.lastOrNull()?.let { tw -> view.setLastTweetId(tw.id) }
+                val filtered = tweets.filter(this::isVisible)
+                if (maxId == null) {
+                    view.setTweets(filtered)
+                } else {
+                    view.addTweets(filtered)
+                }
             }
         } alwaysUi {
             view.stopLoading()
         }
     }
+
+    private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && ignoreIds.contains(tw.user.id).not()
 
     private fun fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
                                               now: OffsetDateTime = OffsetDateTime.now()): Promise<List<Tweet>, Exception> {
