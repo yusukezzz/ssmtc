@@ -2,6 +2,8 @@ package net.yusukezzz.ssmtc.data.og
 
 import org.apache.commons.text.StringEscapeUtils
 import java.io.BufferedReader
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
@@ -20,11 +22,12 @@ object OpenGraphParser {
     // parse from decoded HTML
     fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
-    // guess charset encoding from HTML meta tag
-    fun parse(url: String, bytes: ByteArray): OpenGraph {
-        val head = parseHead(bytes.inputStream().bufferedReader(StandardCharsets.US_ASCII))
-        val headCharset = parseCharset(head)
-        return parse(url, bytes.inputStream().bufferedReader(headCharset))
+    // guess charset from raw binary HTML
+    // TODO: test www.itmedia.co.jp
+    fun parse(url: String, bytes: InputStream): OpenGraph {
+        val headBytes = parseHeadBytes(bytes)
+        val charset = detectCharset(headBytes.toString(StandardCharsets.US_ASCII))
+        return parseMeta(url, headBytes.toString(charset))
     }
 
     private fun parseHead(bufferedReader: BufferedReader): CharSequence {
@@ -43,7 +46,30 @@ object OpenGraphParser {
         return head
     }
 
-    private fun parseCharset(head: CharSequence): Charset {
+    private fun parseHeadBytes(bytes: InputStream): ByteArray {
+        val out = ByteArrayOutputStream()
+        val buf = ByteArray(256)
+        var prev = ByteArray(0)
+        bytes.use {
+            while (true) {
+                val len = it.read(buf)
+                if (len < 0) {
+                    break
+                }
+                out.write(buf, 0, len)
+
+                val tmp = (prev + buf).toString(StandardCharsets.US_ASCII)
+                if (tmp.contains(HEAD_END_TAG)) {
+                    break
+                }
+                prev = buf
+            }
+        }
+
+        return out.use { it.toByteArray() }
+    }
+
+    private fun detectCharset(head: CharSequence): Charset {
         val matched = META_CHARSET_TAG.find(head)
         return if (matched != null) {
             val charsetName = matched.groupValues[1].replace("\"", "").replace("'", "")

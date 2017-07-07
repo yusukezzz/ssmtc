@@ -102,7 +102,7 @@ class OpenGraphTask(private val url: String,
             if (body.contentType()!!.hasCharset()) {
                 OpenGraphParser.parse(resolvedUrl, body.charStream().buffered())
             } else {
-                OpenGraphParser.parse(resolvedUrl, body.bytes())
+                OpenGraphParser.parse(resolvedUrl, body.byteStream())
             }
         } catch (e: Exception) {
             e.printStackTrace()
