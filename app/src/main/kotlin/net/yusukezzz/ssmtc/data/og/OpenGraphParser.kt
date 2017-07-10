@@ -22,8 +22,7 @@ object OpenGraphParser {
     // parse from decoded HTML
     fun parse(url: String, bufferedReader: BufferedReader): OpenGraph = parseMeta(url, parseHead(bufferedReader))
 
-    // guess charset from raw binary HTML
-    // TODO: test www.itmedia.co.jp
+    // guess charset from raw string HTML
     fun parse(url: String, bytes: InputStream): OpenGraph {
         val headBytes = parseHeadBytes(bytes)
         val charset = detectCharset(headBytes.toString(StandardCharsets.US_ASCII))
@@ -48,7 +47,7 @@ object OpenGraphParser {
 
     private fun parseHeadBytes(bytes: InputStream): ByteArray {
         val out = ByteArrayOutputStream()
-        val buf = ByteArray(256)
+        val buf = ByteArray(1024)
         var prev = ByteArray(0)
         bytes.use {
             while (true) {
