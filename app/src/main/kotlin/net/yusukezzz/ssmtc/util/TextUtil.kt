@@ -10,8 +10,8 @@ import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import org.apache.commons.text.StringEscapeUtils
 
 object TextUtil {
-    val SCREEN_NAME_PATTERN = Regex("@[a-zA-Z0-9_]+")
-    val HASH_TAG_PATTERN = Regex("(?<!c)#\\w+", RegexOption.IGNORE_CASE)
+    private val SCREEN_NAME_PATTERN = Regex("@[a-zA-Z0-9_]+")
+    private val HASH_TAG_PATTERN = Regex("(?<!c)#\\w+", RegexOption.IGNORE_CASE)
 
     fun milliSecToTime(millis: Int): String {
         val sec = millis / 1000

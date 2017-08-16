@@ -31,7 +31,7 @@ class SsmtcAccountRepository(private val am: AccountManager,
 
     fun find(id: Long): SsmtcAccount? = findAll().find { it.user.id == id }
 
-    fun add(ssmtcAccount: SsmtcAccount): Unit {
+    fun add(ssmtcAccount: SsmtcAccount) {
         val account = Account(ssmtcAccount.user.screenName, ACCOUNT_TYPE)
         // Don't add UserData in this method, see http://stackoverflow.com/a/29776224/859190
         am.addAccountExplicitly(account, null, null)
@@ -45,7 +45,7 @@ class SsmtcAccountRepository(private val am: AccountManager,
         save(account, ssmtcAccount)
     }
 
-    fun delete(ssmtcAccount: SsmtcAccount): Unit {
+    fun delete(ssmtcAccount: SsmtcAccount) {
         val account = Account(ssmtcAccount.user.screenName, ACCOUNT_TYPE)
         am.removeAccountExplicitly(account)
         timelineRepository.deleteAll(ssmtcAccount.user.id)

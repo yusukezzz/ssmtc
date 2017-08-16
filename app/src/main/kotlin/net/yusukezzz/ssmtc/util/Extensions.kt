@@ -22,8 +22,8 @@ import okhttp3.RequestBody
 import java.io.File
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
-fun ViewGroup.setView(resId: Int): Unit = this.addView(inflate(resId), 0)
-fun ViewGroup.children(func: (View) -> Unit): Unit {
+fun ViewGroup.setView(resId: Int) = this.addView(inflate(resId), 0)
+fun ViewGroup.children(func: (View) -> Unit) {
     val max = this.childCount - 1
     (0..max).forEach {
         val child = this.getChildAt(it)
@@ -91,12 +91,10 @@ fun VectorDrawable.toBitmap(): Bitmap {
 fun ContentResolver.getImagePath(content: Uri): String {
     val column = MediaStore.Images.Media.DATA
     val cursor = this.query(content, arrayOf(column), null, null, null) ?: return content.path
-    val realpath = cursor.use {
+    return cursor.use {
         it.moveToFirst()
         cursor.getString(cursor.getColumnIndex(column))
     }
-
-    return realpath
 }
 
 fun File.mimeType(): String {

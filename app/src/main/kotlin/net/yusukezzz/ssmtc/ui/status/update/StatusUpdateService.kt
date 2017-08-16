@@ -24,8 +24,8 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         const val ARG_IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id"
         const val ARG_PHOTOS = "images"
 
-        const val PHOTO_MAX_WIDTH = 2048
-        const val PHOTO_MAX_HEIGHT = 1536
+        const val PHOTO_MAX_WIDTH = 1280
+        const val PHOTO_MAX_HEIGHT = 960
         const val PHOTO_QUALITY = 85
 
         fun newIntent(context: Context,
@@ -96,19 +96,19 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         }
     }
 
-    fun sendSuccessBroadcast() = sendBroadcast(Intent(ACTION_SUCCESS))
+    private fun sendSuccessBroadcast() = sendBroadcast(Intent(ACTION_SUCCESS))
 
-    fun sendFailureBroadcast() = sendBroadcast(Intent(ACTION_FAILURE))
+    private fun sendFailureBroadcast() = sendBroadcast(Intent(ACTION_FAILURE))
 
-    fun Compressor.compressImage(path: String): File {
-        val ext = path.split(".").lastOrNull() ?: ""
-        val format = when (ext.toLowerCase()) {
+    private fun Compressor.compressImage(path: String): File {
+        val file = File(path)
+        val format = when (file.extension.toLowerCase()) {
             "jpg" -> Bitmap.CompressFormat.JPEG
             "jpeg" -> Bitmap.CompressFormat.JPEG
             "png" -> Bitmap.CompressFormat.PNG
             "webp" -> Bitmap.CompressFormat.WEBP
             else -> Bitmap.CompressFormat.JPEG // try convert to jpeg
         }
-        return this.setCompressFormat(format).compressToFile(File(path))
+        return this.setCompressFormat(format).compressToFile(file)
     }
 }

@@ -239,7 +239,7 @@ class TimelineActivity: AppCompatActivity(),
     /**
      * Switch account to selected one from drawer navigation
      */
-    fun handleAccountNavigation(item: MenuItem): Boolean {
+    private fun handleAccountNavigation(item: MenuItem): Boolean {
         val account = (accountRepo.findAll() - currentAccount())[item.order]
         prefs.currentUserId = account.user.id
         loadAccount()
@@ -250,7 +250,7 @@ class TimelineActivity: AppCompatActivity(),
     /**
      * Switch timeline to selected one from drawer navigation
      */
-    fun handleTimelineNavigation(item: MenuItem): Boolean {
+    private fun handleTimelineNavigation(item: MenuItem): Boolean {
         val account = currentAccount()
         val timeline = account.timelines[item.order]
         accountRepo.update(account.copy(currentTimelineUuid = timeline.uuid))
@@ -259,7 +259,7 @@ class TimelineActivity: AppCompatActivity(),
         return true
     }
 
-    fun handleManageNavigation(item: MenuItem): Boolean {
+    private fun handleManageNavigation(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_account_add -> launchAuthorizeActivity()
             R.id.nav_account_remove -> confirmRemoveAccount()
@@ -270,9 +270,9 @@ class TimelineActivity: AppCompatActivity(),
         return false
     }
 
-    fun launchAuthorizeActivity() = startActivity(Intent(this, AuthorizeActivity::class.java))
+    private fun launchAuthorizeActivity() = startActivity(Intent(this, AuthorizeActivity::class.java))
 
-    fun loadAccount(init: Boolean = true) {
+    private fun loadAccount(init: Boolean = true) {
         val account = currentAccount()
         presenter.resetIgnoreIds()
         presenter.setTokens(account.credentials)
@@ -296,7 +296,7 @@ class TimelineActivity: AppCompatActivity(),
     /**
      * toggle timeline and account navigation menu
      */
-    fun toggleNavigationContents() {
+    private fun toggleNavigationContents() {
         val isAccountNav = (nav_view.menu.findItem(R.id.nav_account_add) != null)
         if (isAccountNav) {
             showTimelineNavigation()
@@ -312,7 +312,7 @@ class TimelineActivity: AppCompatActivity(),
         updateTimelineMenu()
     }
 
-    fun showAccountNavigation() {
+    private fun showAccountNavigation() {
         nav_view.menu.clear()
         btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_up)
         nav_view.inflateMenu(R.menu.menu_drawer_account)
@@ -321,7 +321,7 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
-    fun confirmRemoveAccount() {
+    private fun confirmRemoveAccount() {
         AlertDialog.Builder(this)
             .setMessage(R.string.confirm_account_remove_message)
             .setPositiveButton(R.string.confirm_account_remove_ok, { _, _ -> removeAccount() })
@@ -329,7 +329,7 @@ class TimelineActivity: AppCompatActivity(),
             .show()
     }
 
-    fun removeAccount() {
+    private fun removeAccount() {
         accountRepo.delete(currentAccount())
         if (accountRepo.findAll().isEmpty()) {
             launchAuthorizeActivity()
@@ -339,7 +339,7 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
-    fun updateTimelineMenu() {
+    private fun updateTimelineMenu() {
         nav_view.menu.removeGroup(R.id.menu_timeline)
         val account = currentAccount()
         account.timelines.forEachIndexed { index, timeline ->
@@ -350,7 +350,7 @@ class TimelineActivity: AppCompatActivity(),
         }
     }
 
-    fun timelineIcon(type: Int): Int = when (type) {
+    private fun timelineIcon(type: Int): Int = when (type) {
         Timeline.TYPE_HOME -> R.drawable.ic_timeline_home
         Timeline.TYPE_MENTIONS -> R.drawable.ic_timeline_mention
         Timeline.TYPE_LISTS -> R.drawable.ic_timeline_list
@@ -359,14 +359,14 @@ class TimelineActivity: AppCompatActivity(),
         else -> R.drawable.ic_timeline_home
     }
 
-    fun switchTimeline(timeline: Timeline) {
+    private fun switchTimeline(timeline: Timeline) {
         toolbar_title.text = timeline.title
         presenter.setTimeline(timeline)
         updateTimelineMenu()
         initializeTimeline()
     }
 
-    fun showTimelineSelector() {
+    private fun showTimelineSelector() {
         TimelineSelectDialog.newInstance()
             .setTimelineSelectListener(this)
             .show(supportFragmentManager, "TimelineSelectDialog")
@@ -410,7 +410,7 @@ class TimelineActivity: AppCompatActivity(),
             .show(supportFragmentManager, "TextInputDialog")
     }
 
-    fun showTimelineSettingDialog() {
+    private fun showTimelineSettingDialog() {
         TimelineSettingDialog.newInstance(currentAccount().currentTimeline())
             .setTimelineSettingListener(this)
             .show(supportFragmentManager, "TimelineSettingDialog")
@@ -473,7 +473,7 @@ class TimelineActivity: AppCompatActivity(),
 
     override fun stopLoading() = pagingScrollListener.stopLoading()
 
-    fun initializeTimeline() {
+    private fun initializeTimeline() {
         pagingScrollListener.reset()
         timelineAdapter.clear()
         timeline_list.scrollToPosition(0)

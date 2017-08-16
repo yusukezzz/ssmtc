@@ -102,8 +102,9 @@ class TwitterApiException(message: String, val statusCode: Int, val errors: List
 
     fun isRateLimitExceeded(): Boolean = (statusCode == STATUS_CODE_RATE_LIMIT)
     override fun toString(): String {
-        val details = errors.map { "code=${it.code}, message=${it.message}" }.joinToString("\n")
-        val str = """
+        val details = errors.joinToString("\n") { "code=${it.code}, message=${it.message}" }
+
+        return """
         |[message]
         |$message
         |
@@ -117,8 +118,6 @@ class TwitterApiException(message: String, val statusCode: Int, val errors: List
         |${stackTrace.joinToString("\n")}
         |
         """.trimMargin()
-
-        return str
     }
 }
 

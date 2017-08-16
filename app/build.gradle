@@ -47,10 +47,10 @@ dependencies {
         support_version = '25.3.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
-        paperparcel_version = '2.0.1'
+        paperparcel_version = '2.0.2'
         permission_dispatcher_version = '2.4.0'
         dagger_version = '2.11'
-        leakcanary_version = '1.5.1'
+        leakcanary_version = '1.5.2'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -96,7 +96,7 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:latest.release"
-    testCompile "org.robolectric:robolectric:3.3.2"
+    testCompile "org.robolectric:robolectric:3.4.2"
 }
 repositories {
     mavenCentral()

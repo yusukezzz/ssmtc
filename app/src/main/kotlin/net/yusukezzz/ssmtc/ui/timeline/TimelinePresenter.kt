@@ -31,7 +31,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
         ignoreIdsLastUpdatedAt = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
     }
 
-    override fun setTokens(credentials: Credentials): Unit = twitter.setTokens(credentials)
+    override fun setTokens(credentials: Credentials) = twitter.setTokens(credentials)
 
     /**
      * Load tweet from timeline API

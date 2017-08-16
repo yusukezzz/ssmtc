@@ -5,8 +5,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 class RetryWithDelayInterceptor(
-    val maxRetryCount: Int = 3,
-    val retryDelayMillis: Long = 1000L
+    private val maxRetryCount: Int = 3,
+    private val retryDelayMillis: Long = 1000L
 ): Interceptor {
     companion object {
         val TAG: String = RetryWithDelayInterceptor::class.java.simpleName

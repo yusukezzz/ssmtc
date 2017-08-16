@@ -2,9 +2,8 @@ package net.yusukezzz.ssmtc
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.google.gson.Gson
 
-class Preferences(private val context: Context, private val gson: Gson) {
+class Preferences(context: Context) {
     companion object {
         const val KEY_CURRENT_USER_ID = "current_user_id"
     }

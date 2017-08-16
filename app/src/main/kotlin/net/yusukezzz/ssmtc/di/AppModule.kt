@@ -51,7 +51,7 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun providePreferences(gson: Gson): Preferences = Preferences(app.applicationContext, gson)
+    fun providePreferences(): Preferences = Preferences(app.applicationContext)
 
     @Provides
     @Singleton
