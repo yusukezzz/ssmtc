@@ -8,8 +8,8 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
 object OpenGraphParser {
-    private val OG_TITLE = Regex("og:title")
-    private val OG_IMAGE = Regex("(\"og:image\"|'og:image')")
+    private val OG_TITLE = Regex("(og:title|twitter:title)")
+    private val OG_IMAGE = Regex("(\"og:image\"|'og:image'|\"twitter:image(:src)?\"|'twitter:image(:src)?')")
     private val OG_URL = Regex("og:url")
 
     private val REGEX_OPTS = setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)
