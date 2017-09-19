@@ -23,7 +23,7 @@ class PhotoSelectorActivity: MediaBaseActivity(),
         initView()
     }
 
-    fun initView() {
+    private fun initView() {
         val photos = findPhotosFromGallery()
         val spanCount = 3
         val space = 3
@@ -37,7 +37,7 @@ class PhotoSelectorActivity: MediaBaseActivity(),
         photo_selector_complete.setOnClickListener { onSelectCompleted() }
     }
 
-    fun findPhotosFromGallery(): List<String> {
+    private fun findPhotosFromGallery(): List<String> {
         val photos = arrayListOf<Uri>()
         val column = MediaStore.Images.Media.DATA
         val orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC"

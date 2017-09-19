@@ -12,6 +12,7 @@ import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import java.io.File
 import javax.inject.Inject
 
@@ -63,11 +64,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
 
     override fun onHandleIntent(intent: Intent) {
         val status = intent.getStringExtra(ARG_STATUS_TEXT)
-        val inReplyToStatusId = if (intent.hasExtra(ARG_IN_REPLY_TO_STATUS_ID)) {
-            intent.getLongExtra(ARG_IN_REPLY_TO_STATUS_ID, 0)
-        } else {
-            null
-        }
+        val inReplyToStatusId = intent.getLongExtraOrNull(ARG_IN_REPLY_TO_STATUS_ID)
         val photos = intent.getStringArrayExtra(ARG_PHOTOS)
 
         val manager = NotificationManagerCompat.from(this)
