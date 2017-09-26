@@ -76,7 +76,6 @@ fun Intent.getStringExtraOrNull(key: String): String? {
         null
     }
 }
-
 fun Intent.getExtraStreamOrNull(): Any? = this.extras?.get(Intent.EXTRA_STREAM)
 
 fun VectorDrawable.toBitmap(): Bitmap {

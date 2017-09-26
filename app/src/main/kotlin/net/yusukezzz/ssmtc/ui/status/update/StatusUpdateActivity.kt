@@ -60,7 +60,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         status_input.requestFocus()
         select_photos.setOnClickListener {
-            StatusUpdateActivityPermissionsDispatcher.startPhotoSelectorWithCheck(this)
+            startPhotoSelectorWithPermissionCheck()
         }
 
         send_tweet.setOnClickListener {
@@ -90,7 +90,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        StatusUpdateActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+        onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

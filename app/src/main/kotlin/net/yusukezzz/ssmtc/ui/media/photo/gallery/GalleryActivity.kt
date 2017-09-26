@@ -31,7 +31,7 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
             }
     }
 
-    val images: List<Media> by lazy { intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as Media) } }
+    private val images: List<Media> by lazy { intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as Media) } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
         gallery.currentItem = startPos
 
         photo_gallery_download.setOnClickListener {
-            GalleryActivityPermissionsDispatcher.downloadImageWithCheck(this)
+            downloadImageWithPermissionCheck()
         }
 
         photo_gallery_share.setOnClickListener {
@@ -101,6 +101,6 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        GalleryActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults)
+        onRequestPermissionsResult(requestCode, grantResults)
     }
 }

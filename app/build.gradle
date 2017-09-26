@@ -48,7 +48,7 @@ dependencies {
         kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
         paperparcel_version = '2.0.4'
-        permission_dispatcher_version = '2.4.0'
+        permission_dispatcher_version = '3.0.1'
         dagger_version = '2.11'
         leakcanary_version = '1.5.4'
     }
