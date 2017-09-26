@@ -47,10 +47,10 @@ dependencies {
         support_version = '25.3.1'
         kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
-        paperparcel_version = '2.0.2'
+        paperparcel_version = '2.0.4'
         permission_dispatcher_version = '2.4.0'
         dagger_version = '2.11'
-        leakcanary_version = '1.5.2'
+        leakcanary_version = '1.5.4'
     }
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -72,7 +72,7 @@ dependencies {
 
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     testCompile('org.threeten:threetenbp:latest.release') {
