@@ -278,9 +278,9 @@ class TimelineActivity: AppCompatActivity(),
         presenter.setTokens(account.credentials)
 
         val headerView = nav_view.getHeaderView(0)
-        val profileImage = headerView.findViewById(R.id.profile_image) as ImageView
-        val screenName = headerView.findViewById(R.id.screen_name) as TextView
-        val accountSelectBtn = headerView.findViewById(R.id.btn_account_selector) as ImageView
+        val profileImage: ImageView = headerView.findViewById(R.id.profile_image)
+        val screenName: TextView = headerView.findViewById(R.id.screen_name)
+        val accountSelectBtn: ImageView = headerView.findViewById(R.id.btn_account_selector)
         PicassoUtil.userIcon(account.user, profileImage)
         screenName.text = account.user.screenName
 

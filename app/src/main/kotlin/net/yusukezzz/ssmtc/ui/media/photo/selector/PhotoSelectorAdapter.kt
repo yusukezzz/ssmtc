@@ -11,7 +11,7 @@ import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.util.*
 
 class PhotoSelectorAdapter(
-    val photoPaths: List<String>,
+    private val photoPaths: List<String>,
     val listener: PhotoSelectorListener
 ): RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder>() {
     companion object {
@@ -47,11 +47,11 @@ class PhotoSelectorAdapter(
         }
     }
 
-    fun isSelected(path: String): Boolean = selected.indexOf(path) > -1
+    private fun isSelected(path: String): Boolean = selected.indexOf(path) > -1
 
-    class ViewHolder(val view: View, val adapter: PhotoSelectorAdapter): RecyclerView.ViewHolder(view) {
-        val thumbnail: ImageView = view.findViewById(R.id.thumbnail) as ImageView
-        val selectedIcon: ImageView = view.findViewById(R.id.iv_selected) as ImageView
+    class ViewHolder(val view: View, private val adapter: PhotoSelectorAdapter) : RecyclerView.ViewHolder(view) {
+        private val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
+        private val selectedIcon: ImageView = view.findViewById(R.id.iv_selected)
 
         fun bindPhoto(path: String, selected: Boolean) {
             PicassoUtil.thumbnail(path, thumbnail)
