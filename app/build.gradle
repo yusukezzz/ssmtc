@@ -44,7 +44,7 @@ android {
 
 dependencies {
     ext {
-        support_version = '25.3.1'
+        support_version = '26.1.0'
         kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
         paperparcel_version = '2.0.4'

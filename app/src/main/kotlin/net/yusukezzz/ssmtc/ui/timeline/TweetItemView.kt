@@ -5,6 +5,7 @@ import android.net.Uri
 import android.text.format.DateUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.open_graph.view.*
@@ -26,6 +27,7 @@ class TweetItemView : LinearLayout {
     }
     private lateinit var listener: TweetItemListener
     private lateinit var ogClient: OpenGraphClient
+    private val mediaVideo: View by lazy { this.inflate(R.layout.media_video) }
 
     interface TweetItemListener {
         fun onImageClick(images: List<Media>, pos: Int)
@@ -73,7 +75,7 @@ class TweetItemView : LinearLayout {
         } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
             val urls = tweet.entities.urls
             // ignore host only url
-            urls.filter { Uri.parse(it.expanded_url).path.isNotEmpty() }.firstOrNull()?.let {
+            urls.firstOrNull { Uri.parse(it.expanded_url).path.isNotEmpty() }?.let {
                 removeUrl = it.url // use open graph view instead of link text
                 handleOpenGraph(it.expanded_url)
             }
@@ -173,14 +175,13 @@ class TweetItemView : LinearLayout {
     private fun handleVideo(video: Media, tile: ThumbnailTileLayout) {
         if (video.video_info == null) return
 
-        val container = tile.inflate(R.layout.media_video)
-        container.ic_play_circle.setImageResource(R.drawable.ic_play_video)
-        container.media_video_time.text = if (video.isGif) {
+        mediaVideo.ic_play_circle.setImageResource(R.drawable.ic_play_video)
+        mediaVideo.media_video_time.text = if (video.isGif) {
             "GIF"
         } else {
             TextUtil.milliSecToTime(video.video_info.duration_millis)
         }
-        tile.addView(container)
+        tile.addView(mediaVideo)
         val imgView = media_video_thumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
         PicassoUtil.thumbnail(video.small_url, imgView)
