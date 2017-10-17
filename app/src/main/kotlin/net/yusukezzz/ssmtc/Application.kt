@@ -11,6 +11,7 @@ import net.yusukezzz.ssmtc.di.AppModule
 import net.yusukezzz.ssmtc.di.DaggerAppComponent
 import nl.komponents.kovenant.android.startKovenant
 import nl.komponents.kovenant.android.stopKovenant
+import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 
 open class Application : android.app.Application() {
     companion object {
@@ -33,6 +34,8 @@ open class Application : android.app.Application() {
         startKovenant()
         initPicasso()
         initComponent()
+
+        registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
     }
 
     override fun onTerminate() {

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.customtabs.CustomTabsClient
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
@@ -44,6 +43,8 @@ import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
+import saschpe.android.customtabs.CustomTabsHelper
+import saschpe.android.customtabs.WebViewFallback
 import java.io.File
 import javax.inject.Inject
 
@@ -113,13 +114,6 @@ class TimelineActivity: AppCompatActivity(),
         }
 
         ogClient.cleanup()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        // warmup chrome custom tabs
-        CustomTabsClient.connectAndInitialize(this, CustomTabsClient.getPackageName(this, null))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -492,7 +486,8 @@ class TimelineActivity: AppCompatActivity(),
             .addDefaultShareMenuItem()
             .build()
 
-        chromeIntent.launchUrl(this, Uri.parse(url))
+        CustomTabsHelper.addKeepAliveExtra(this, chromeIntent.intent)
+        CustomTabsHelper.openCustomTab(this, chromeIntent, Uri.parse(url), WebViewFallback())
     }
 
     override fun onImageClick(images: List<Media>, pos: Int) = startActivity(GalleryActivity.newIntent(this, images, pos))

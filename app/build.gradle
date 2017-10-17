@@ -84,6 +84,8 @@ dependencies {
     // html entity decoding
     compile 'org.apache.commons:commons-text:1.1'
 
+    compile 'saschpe.android:customtabs:1.0.7'
+
     compile "nz.bradcampbell:paperparcel:$paperparcel_version"
     compile "nz.bradcampbell:paperparcel-kotlin:$paperparcel_version"
     kapt "nz.bradcampbell:paperparcel-compiler:$paperparcel_version"
