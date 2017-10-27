@@ -4,8 +4,6 @@ import android.content.ComponentName
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.Timeline
-import net.yusukezzz.ssmtc.data.api.model.Entity
-import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.User
 import net.yusukezzz.ssmtc.di.TestAppModule
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
@@ -23,23 +21,15 @@ import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows
-import org.robolectric.annotation.Config
-import org.threeten.bp.OffsetDateTime
 
 @RunWith(RobolectricTestRunner::class)
-@Config(constants = BuildConfig::class, application = TestApplication::class)
 class TimelineActivityTest {
-    private val nowDateTime: OffsetDateTime = OffsetDateTime.now()
-
     private fun getModule(): TestAppModule = (RuntimeEnvironment.application as TestApplication).module
     private fun mockUser(id: Long = 1): User =
         User(id, "name", "screenName", false, false, "profileImage", "profileImageHttps", 0, 0, 0, 0, 0)
 
     private fun mockAccount(timelines: List<Timeline>): SsmtcAccount =
         SsmtcAccount(Credentials("dummyToken", "dummyTokenSecret"), mockUser(), timelines, timelines.first().uuid)
-
-    private fun mockTweet(id: Long) =
-        Tweet(id, "tweet $id", mockUser(), Entity(), Entity(), nowDateTime, null, null, 0, 0, false, false)
 
     @Before
     fun setup() {
