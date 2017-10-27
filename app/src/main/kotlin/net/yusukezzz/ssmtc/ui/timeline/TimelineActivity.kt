@@ -177,7 +177,10 @@ class TimelineActivity: AppCompatActivity(),
         timeline_list.addOnScrollListener(pagingScrollListener)
 
         swipe_refresh.setOnRefreshListener(this)
-        swipe_refresh.setColorSchemeResources(R.color.green, R.color.red, R.color.blue, R.color.yellow)
+        swipe_refresh.setColorSchemeResources(R.color.green,
+            R.color.red,
+            R.color.blue,
+            R.color.yellow)
 
         toolbar_title.setOnClickListener {
             timeline_list.scrollToPosition(0)
@@ -431,7 +434,10 @@ class TimelineActivity: AppCompatActivity(),
     /**
      * Load initial tweets from api
      */
-    override fun onRefresh() = presenter.loadTweets()
+    override fun onRefresh() {
+        pagingScrollListener.reset()
+        presenter.loadTweets()
+    }
 
     /**
      * Load paginated tweets from api
@@ -468,7 +474,6 @@ class TimelineActivity: AppCompatActivity(),
     override fun stopLoading() = pagingScrollListener.stopLoading()
 
     private fun initializeTimeline() {
-        pagingScrollListener.reset()
         timelineAdapter.clear()
         timeline_list.scrollToPosition(0)
         swipe_refresh.post({
