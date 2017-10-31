@@ -103,7 +103,7 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:latest.release"
-    testImplementation "org.robolectric:robolectric:3.5"
+    testImplementation "org.robolectric:robolectric:3.5.1"
 }
 repositories {
     mavenCentral()

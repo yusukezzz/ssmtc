@@ -10,6 +10,8 @@ import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateService
 import net.yusukezzz.ssmtc.ui.timeline.TimelineComponent
 import net.yusukezzz.ssmtc.ui.timeline.TimelineModule
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
+import nl.komponents.kovenant.android.startKovenant
+import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 import javax.inject.Singleton
 
 class TestApplication : Application() {
@@ -17,6 +19,14 @@ class TestApplication : Application() {
         private var picassoInitialized = false
     }
     val module: TestAppModule = TestAppModule(this)
+
+    override fun onCreate() {
+        startKovenant()
+        initPicasso()
+        initComponent()
+
+        registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
+    }
 
     override fun initPicasso() {
         if (!picassoInitialized) {
