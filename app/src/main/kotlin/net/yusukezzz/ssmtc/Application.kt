@@ -1,6 +1,5 @@
 package net.yusukezzz.ssmtc
 
-import android.content.Context
 import android.graphics.Bitmap.Config.RGB_565
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
@@ -16,20 +15,12 @@ import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 open class Application : android.app.Application() {
     companion object {
         lateinit var component: AppComponent
-        fun getRefWatcher(context: Context): RefWatcher = (context.applicationContext as Application).refWatcher
     }
-
-    private lateinit var refWatcher: RefWatcher
 
     override fun onCreate() {
         super.onCreate()
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-        installLeakCanary()
+        setupLeakCanary()
 
         startKovenant()
         initPicasso()
@@ -43,16 +34,23 @@ open class Application : android.app.Application() {
         super.onTerminate()
     }
 
-    open fun initPicasso() {
+    open protected fun setupLeakCanary(): RefWatcher {
+        if (LeakCanary.isInAnalyzerProcess(this) || !BuildConfig.DEBUG) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return RefWatcher.DISABLED
+        }
+        return LeakCanary.install(this)
+    }
+
+    open protected fun initPicasso() {
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
     }
 
-    open fun initComponent() {
+    open protected fun initComponent() {
         AndroidThreeTen.init(this)
         component = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()
     }
-
-    open protected fun installLeakCanary(): RefWatcher = RefWatcher.DISABLED
 }

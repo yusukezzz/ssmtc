@@ -10,8 +10,6 @@ import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateService
 import net.yusukezzz.ssmtc.ui.timeline.TimelineComponent
 import net.yusukezzz.ssmtc.ui.timeline.TimelineModule
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
-import nl.komponents.kovenant.android.startKovenant
-import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 import javax.inject.Singleton
 
 class TestApplication : Application() {
@@ -20,12 +18,9 @@ class TestApplication : Application() {
     }
     val module: TestAppModule = TestAppModule(this)
 
-    override fun onCreate() {
-        startKovenant()
-        initPicasso()
-        initComponent()
-
-        registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
+    override fun setupLeakCanary(): RefWatcher {
+        // No leakcanary in unit tests
+        return RefWatcher.DISABLED
     }
 
     override fun initPicasso() {
@@ -43,8 +38,6 @@ class TestApplication : Application() {
             .testAppModule(module)
             .build()
     }
-
-    override fun installLeakCanary(): RefWatcher = RefWatcher.DISABLED
 }
 
 @Singleton
