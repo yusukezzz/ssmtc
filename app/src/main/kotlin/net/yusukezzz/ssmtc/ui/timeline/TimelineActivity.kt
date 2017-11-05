@@ -34,7 +34,7 @@ import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
-import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
@@ -83,7 +83,7 @@ class TimelineActivity: AppCompatActivity(),
     lateinit var presenter: TimelineContract.Presenter
 
     @Inject
-    lateinit var ogClient: OpenGraphClient
+    lateinit var og: OpenGraphService
 
     private fun currentAccount(): SsmtcAccount = accountRepo.find(prefs.currentUserId)!!
 
@@ -113,7 +113,7 @@ class TimelineActivity: AppCompatActivity(),
             loadAccount()
         }
 
-        ogClient.cleanup()
+        og.cleanup()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -163,7 +163,7 @@ class TimelineActivity: AppCompatActivity(),
     }
 
     private fun setupTimelineView() {
-        timeline_list.adapter = TimelineAdapter(this, ogClient).apply { setHasStableIds(true) }
+        timeline_list.adapter = TimelineAdapter(this, og).apply { setHasStableIds(true) }
         timeline_list.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(this)
@@ -435,7 +435,6 @@ class TimelineActivity: AppCompatActivity(),
      * Load initial tweets from api
      */
     override fun onRefresh() {
-        pagingScrollListener.reset()
         presenter.loadTweets()
     }
 
@@ -452,6 +451,7 @@ class TimelineActivity: AppCompatActivity(),
      * Set initial tweets
      */
     override fun setTweets(tweets: List<Tweet>) {
+        pagingScrollListener.reset()
         timelineAdapter.set(tweets)
         swipe_refresh.isRefreshing = false
     }

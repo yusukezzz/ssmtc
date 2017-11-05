@@ -11,10 +11,10 @@ import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import java.io.File
 
-class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
-              private val apiService: TwitterApi,
-              private val uploadService: UploadApi,
-              private val gson: Gson) {
+class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
+                     private val apiService: TwitterApi,
+                     private val uploadService: UploadApi,
+                     private val gson: Gson) {
     companion object {
         const val API_BASE_URL = "https://api.twitter.com"
         const val UPLOAD_BASE_URL = "https://upload.twitter.com"
@@ -95,7 +95,7 @@ class Twitter(private val oauthConsumer: OkHttpOAuthConsumer,
     data class TwitterErrorDetail(val code: Int, val message: String)
 }
 
-class TwitterApiException(message: String, val statusCode: Int, val errors: List<Twitter.TwitterErrorDetail>) : RuntimeException(message) {
+class TwitterApiException(message: String, val statusCode: Int, val errors: List<TwitterService.TwitterErrorDetail>) : RuntimeException(message) {
     companion object {
         const val STATUS_CODE_RATE_LIMIT = 429
     }

@@ -14,7 +14,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
-import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
 import net.yusukezzz.ssmtc.util.*
@@ -26,7 +26,7 @@ class TweetItemView : LinearLayout {
         private val numberFormatter = DecimalFormat("#,###,###")
     }
     private lateinit var listener: TweetItemListener
-    private lateinit var ogClient: OpenGraphClient
+    private lateinit var ogClient: OpenGraphService
     private val mediaVideo: View by lazy { this.inflate(R.layout.media_video) }
 
     interface TweetItemListener {
@@ -50,7 +50,7 @@ class TweetItemView : LinearLayout {
         this.listener = listener
     }
 
-    fun setOpenGraphClient(client: OpenGraphClient) {
+    fun setOpenGraphClient(client: OpenGraphService) {
         this.ogClient = client
     }
 

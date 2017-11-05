@@ -25,6 +25,7 @@ android {
         versionName "1.0"
         buildConfigField "String", "CONSUMER_KEY", "\"${props.getProperty("twitterConsumerKey")}\""
         buildConfigField "String", "CONSUMER_SECRET", "\"${props.getProperty("twitterConsumerSecret")}\""
+        buildConfigField "String", "OPENGRAPH_API_BASE_URL", "\"${props.getProperty("ogApiBaseUrl")}\""
     }
     buildTypes {
         release {

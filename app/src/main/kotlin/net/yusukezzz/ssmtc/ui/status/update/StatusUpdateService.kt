@@ -10,7 +10,7 @@ import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import java.io.File
@@ -52,7 +52,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
     lateinit var prefs: Preferences
 
     @Inject
-    lateinit var twitter: Twitter
+    lateinit var twitter: TwitterService
 
     @Inject
     lateinit var accountRepo: SsmtcAccountRepository

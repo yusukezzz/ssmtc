@@ -2,8 +2,8 @@ package net.yusukezzz.ssmtc.ui.timeline
 
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
-import net.yusukezzz.ssmtc.data.api.Twitter
 import net.yusukezzz.ssmtc.data.api.TwitterApiException
+import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.and
@@ -13,7 +13,7 @@ import nl.komponents.kovenant.ui.alwaysUi
 import org.threeten.bp.OffsetDateTime
 
 class TimelinePresenter(private val view: TimelineContract.View,
-                        private val twitter: Twitter) : TimelineContract.Presenter {
+                        private val twitter: TwitterService) : TimelineContract.Presenter {
     companion object {
         // block & mute ids API rate limit is 15req/15min
         const val IGNORE_IDS_CACHE_SECONDS: Long = 60L

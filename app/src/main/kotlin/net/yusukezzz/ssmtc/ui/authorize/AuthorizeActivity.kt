@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.base_layout.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import net.yusukezzz.ssmtc.util.setView
@@ -21,7 +21,7 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     lateinit var prefs: Preferences
 
     @Inject
-    lateinit var twitter: Twitter
+    lateinit var twitter: TwitterService
 
     @Inject
     lateinit var accountRepo: SsmtcAccountRepository

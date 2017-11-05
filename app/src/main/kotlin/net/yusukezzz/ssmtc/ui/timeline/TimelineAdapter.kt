@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView.ViewHolder
 import android.view.ViewGroup
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Tweet
-import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
 import net.yusukezzz.ssmtc.util.inflate
 
 class TimelineAdapter(val listener: TweetItemListener,
-                      private val ogClient: OpenGraphClient) : RecyclerView.Adapter<ViewHolder>() {
+                      private val ogClient: OpenGraphService) : RecyclerView.Adapter<ViewHolder>() {
     companion object {
         private class TweetViewHolder(val view: TweetItemView) : ViewHolder(view) {
             fun bind(tweet: Tweet) = view.bind(tweet)

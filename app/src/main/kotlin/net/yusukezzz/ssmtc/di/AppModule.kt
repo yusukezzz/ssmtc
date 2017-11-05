@@ -8,13 +8,14 @@ import dagger.Provides
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
-import net.yusukezzz.ssmtc.data.api.Twitter
-import net.yusukezzz.ssmtc.data.api.Twitter.Companion.API_BASE_URL
-import net.yusukezzz.ssmtc.data.api.Twitter.Companion.UPLOAD_BASE_URL
 import net.yusukezzz.ssmtc.data.api.TwitterApi
+import net.yusukezzz.ssmtc.data.api.TwitterService
+import net.yusukezzz.ssmtc.data.api.TwitterService.Companion.API_BASE_URL
+import net.yusukezzz.ssmtc.data.api.TwitterService.Companion.UPLOAD_BASE_URL
 import net.yusukezzz.ssmtc.data.api.UploadApi
 import net.yusukezzz.ssmtc.data.og.OGDiskCache
-import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.og.OpenGraphApi
+import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import net.yusukezzz.ssmtc.util.gson.DateTimeTypeConverter
@@ -72,18 +73,18 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideApiService(builder: Retrofit.Builder): TwitterApi = builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
+    fun provideTwitterApi(builder: Retrofit.Builder): TwitterApi = builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
 
     @Provides
     @Singleton
-    fun provideUploadService(builder: Retrofit.Builder): UploadApi = builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
+    fun provideTwitterUploadApi(builder: Retrofit.Builder): UploadApi = builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
 
     @Provides
     @Singleton
-    fun provideTwitter(oauthConsumer: OkHttpOAuthConsumer,
-                       apiService: TwitterApi,
-                       uploadService: UploadApi,
-                       gson: Gson): Twitter = Twitter(oauthConsumer, apiService, uploadService, gson)
+    fun provideTwitterService(oauthConsumer: OkHttpOAuthConsumer,
+                              apiService: TwitterApi,
+                              uploadService: UploadApi,
+                              gson: Gson): TwitterService = TwitterService(oauthConsumer, apiService, uploadService, gson)
 
     @Provides
     @Singleton
@@ -91,7 +92,11 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideOpenGraphClient(cache: OGDiskCache): OpenGraphClient = OpenGraphClient(cache, OkHttpClient.Builder().build())
+    fun provideOpenGraphApi(builder: Retrofit.Builder): OpenGraphApi = builder.baseUrl(BuildConfig.OPENGRAPH_API_BASE_URL).build().create(OpenGraphApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideOpenGraphService(cache: OGDiskCache, ogApi: OpenGraphApi): OpenGraphService = OpenGraphService(cache, ogApi)
 
     @Provides
     @Singleton

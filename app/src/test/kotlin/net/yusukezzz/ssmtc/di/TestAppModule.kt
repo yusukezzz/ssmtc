@@ -6,8 +6,8 @@ import dagger.Provides
 import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
-import net.yusukezzz.ssmtc.data.api.Twitter
-import net.yusukezzz.ssmtc.data.og.OpenGraphClient
+import net.yusukezzz.ssmtc.data.api.TwitterService
+import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import org.mockito.Mockito
@@ -29,15 +29,15 @@ class TestAppModule(private val app: Application) {
     @Singleton
     fun providePreferences(): Preferences = mockPrefs
 
-    val mockTwitter: Twitter = Mockito.mock(Twitter::class.java)
+    val mockTwitter: TwitterService = Mockito.mock(TwitterService::class.java)
     @Provides
     @Singleton
-    fun provideTwitter(): Twitter = mockTwitter
+    fun provideTwitter(): TwitterService = mockTwitter
 
-    val mockOGClient: OpenGraphClient = Mockito.mock(OpenGraphClient::class.java)
+    val mockOGClient: OpenGraphService = Mockito.mock(OpenGraphService::class.java)
     @Provides
     @Singleton
-    fun provideOpenGraphClient(): OpenGraphClient = mockOGClient
+    fun provideOpenGraphClient(): OpenGraphService = mockOGClient
 
     val mockCompressor: Compressor = Mockito.mock(Compressor::class.java)
     @Provides

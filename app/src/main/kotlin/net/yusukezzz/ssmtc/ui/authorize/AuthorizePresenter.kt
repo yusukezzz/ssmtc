@@ -4,7 +4,7 @@ import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.SsmtcAccount
-import net.yusukezzz.ssmtc.data.api.Twitter
+import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import nl.komponents.kovenant.task
@@ -15,7 +15,7 @@ import oauth.signpost.basic.DefaultOAuthProvider
 
 class AuthorizePresenter(val view: AuthorizeContract.View,
                          val prefs: Preferences,
-                         val twitter: Twitter,
+                         val twitter: TwitterService,
                          val timelineRepo: TimelineRepository,
                          val accountRepo: SsmtcAccountRepository) : AuthorizeContract.Presenter {
 

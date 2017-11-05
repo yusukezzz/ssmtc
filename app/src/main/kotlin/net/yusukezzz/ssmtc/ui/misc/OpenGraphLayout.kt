@@ -12,9 +12,7 @@ import net.yusukezzz.ssmtc.util.gone
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.visible
 
-class OpenGraphLayout : FrameLayout, OpenGraphLoadable {
-    @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
+class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : FrameLayout(context, attrs, defStyle), OpenGraphLoadable {
 
     private lateinit var listener: TweetItemView.TweetItemListener
 
@@ -29,12 +27,8 @@ class OpenGraphLayout : FrameLayout, OpenGraphLoadable {
 
     override fun onStart() {
         og_contents.gone()
-        og_loading.gone()
-        this.visible()
-    }
-
-    override fun onLoading() {
         og_loading.visible()
+        this.visible()
     }
 
     override fun onComplete(og: OpenGraph) {
