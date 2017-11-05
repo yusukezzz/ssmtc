@@ -4,8 +4,8 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
-import android.support.v7.app.NotificationCompat
 import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
@@ -68,7 +68,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         val photos = intent.getStringArrayExtra(ARG_PHOTOS)
 
         val manager = NotificationManagerCompat.from(this)
-        val builder = NotificationCompat.Builder(this)
+        val builder = NotificationCompat.Builder(this, "ch-tweet")
             .setSmallIcon(R.drawable.ic_menu_send)
             .setContentTitle("Tweet sending...")
         manager.notify(0, builder.build())

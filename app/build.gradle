@@ -58,24 +58,18 @@ dependencies {
         dagger_version = '2.11'
         leakcanary_version = '1.5.4'
     }
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:customtabs:$support_version"
     implementation "com.android.support:design:$support_version"
-
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-
     implementation "com.github.hotchemi:permissionsdispatcher:$permission_dispatcher_version"
     kapt "com.github.hotchemi:permissionsdispatcher-processor:$permission_dispatcher_version"
-
     implementation "nl.komponents.kovenant:kovenant:$kovenant_version"
     implementation "nl.komponents.kovenant:kovenant-combine:$kovenant_version"
     implementation "nl.komponents.kovenant:kovenant-android:$kovenant_version"
-
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.google.code.gson:gson:2.8.2'
@@ -89,22 +83,18 @@ dependencies {
 
     // html entity decoding
     implementation 'org.apache.commons:commons-text:1.1'
-
     implementation 'saschpe.android:customtabs:1.0.7'
-
     implementation "nz.bradcampbell:paperparcel:$paperparcel_version"
     implementation "nz.bradcampbell:paperparcel-kotlin:$paperparcel_version"
     kapt "nz.bradcampbell:paperparcel-compiler:$paperparcel_version"
-
     implementation 'com.deploygate:sdk:4.0.0'
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
-
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.mockito:mockito-core:latest.release"
-    testImplementation "org.robolectric:robolectric:3.5.1"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:latest.release'
+    testImplementation 'org.robolectric:robolectric:3.5.1'
 }
 repositories {
     mavenCentral()
