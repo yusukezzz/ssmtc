@@ -474,6 +474,7 @@ class TimelineActivity: AppCompatActivity(),
     override fun stopLoading() = pagingScrollListener.stopLoading()
 
     private fun initializeTimeline() {
+        pagingScrollListener.reset()
         timelineAdapter.clear()
         timeline_list.scrollToPosition(0)
         swipe_refresh.post({
