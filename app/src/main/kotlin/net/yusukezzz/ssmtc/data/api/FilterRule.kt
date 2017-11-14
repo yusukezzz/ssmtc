@@ -1,20 +1,19 @@
 package net.yusukezzz.ssmtc.data.api
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import net.yusukezzz.ssmtc.data.api.FilterRule.Showing.ALL
 import net.yusukezzz.ssmtc.data.api.model.Tweet
-import paperparcel.PaperParcel
-import paperparcel.PaperParcelable
 import java.util.regex.Pattern
 
-@PaperParcel
+@Parcelize
 data class FilterRule(
     val showing: FilterRule.Showing,
     val includeWords: List<String>,
     val excludeWords: List<String>
-) : PaperParcelable {
+) : Parcelable {
     companion object {
         fun default(): FilterRule = FilterRule(ALL, listOf(), listOf())
-        @JvmField val CREATOR = PaperParcelFilterRule.CREATOR
     }
 
     enum class Showing {

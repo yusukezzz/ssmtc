@@ -1,29 +1,21 @@
 package net.yusukezzz.ssmtc.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.User
-import paperparcel.PaperParcel
-import paperparcel.PaperParcelable
 import java.util.*
 
-@PaperParcel
-data class Credentials(val token: String, val tokenSecret: String) : PaperParcelable {
-    companion object {
-        @JvmField val CREATOR = PaperParcelCredentials.CREATOR
-    }
-}
+@Parcelize
+data class Credentials(val token: String, val tokenSecret: String) : Parcelable
 
-@PaperParcel
+@Parcelize
 data class SsmtcAccount(
     val credentials: Credentials,
     val user: User,
     var timelines: List<Timeline>,
     var currentTimelineUuid: UUID
-): PaperParcelable {
-    companion object {
-        @JvmField val CREATOR = PaperParcelSsmtcAccount.CREATOR
-    }
-
+) : Parcelable {
     fun currentTimeline(): Timeline = timelines.find { it.uuid == currentTimelineUuid }!!
     fun withoutCurrentTimeline(): SsmtcAccount {
         val newTimelines = timelines.filterNot { it.uuid == currentTimelineUuid }

@@ -1,10 +1,10 @@
 package net.yusukezzz.ssmtc.data.api
 
-import paperparcel.PaperParcel
-import paperparcel.PaperParcelable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-@PaperParcel
+@Parcelize
 data class Timeline(
     val uuid: UUID,
     val type: Int,
@@ -14,11 +14,10 @@ data class Timeline(
     val query: String? = null,
     val listId: Long? = null,
     val includeRetweets: Boolean = true
-) : PaperParcelable, Comparable<Timeline> {
+) : Parcelable, Comparable<Timeline> {
     override fun compareTo(other: Timeline): Int = compareValuesBy(this, other, { it.type }, { it.title.toLowerCase() })
 
     companion object {
-        @JvmField val CREATOR = PaperParcelTimeline.CREATOR
         val TYPE_HOME = 0
         val TYPE_MENTIONS = 1
         val TYPE_LISTS = 2

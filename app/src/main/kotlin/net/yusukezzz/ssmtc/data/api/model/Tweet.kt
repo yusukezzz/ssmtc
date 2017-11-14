@@ -1,10 +1,10 @@
 package net.yusukezzz.ssmtc.data.api.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import org.threeten.bp.OffsetDateTime
-import paperparcel.PaperParcel
-import paperparcel.PaperParcelable
 
-@PaperParcel
+@Parcelize
 data class Tweet(
     val id: Long,
     val full_text: String,
@@ -18,11 +18,7 @@ data class Tweet(
     var favorite_count: Int,
     var retweeted: Boolean,
     var favorited: Boolean
-) : PaperParcelable {
-    companion object {
-        @JvmField val CREATOR = PaperParcelTweet.CREATOR
-    }
-
+) : Parcelable {
     val permalinkUrl: String
         get() = "https://twitter.com/${user.screenName}/status/$id"
 
