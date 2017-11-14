@@ -8,7 +8,7 @@ import java.util.regex.Pattern
 
 @Parcelize
 data class FilterRule(
-    val showing: FilterRule.Showing,
+    val showing: Showing,
     val includeWords: List<String>,
     val excludeWords: List<String>
 ) : Parcelable {
@@ -20,7 +20,13 @@ data class FilterRule(
         ALL, ANY_MEDIA, PHOTO, VIDEO
     }
 
-    fun match(tweet: Tweet): Boolean = matchMedia(tweet) && matchText(tweet)
+    fun match(tweet: Tweet): Boolean {
+        val tweetMatched = matchMedia(tweet) && matchText(tweet)
+        val retweetMatched = tweet.retweeted_status?.let { matchMedia(it) && matchText(it) } == true
+        val quotedMatched = tweet.quoted_status?.let { matchMedia(it) && matchText(it) } == true
+
+        return tweetMatched || retweetMatched || quotedMatched
+    }
 
     private fun matchMedia(tweet: Tweet): Boolean = when (showing) {
         Showing.ALL -> true // include those without media
