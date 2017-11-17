@@ -1,10 +1,8 @@
 package net.yusukezzz.ssmtc.data.og
 
-import nl.komponents.kovenant.Kovenant
-import nl.komponents.kovenant.Promise
-import nl.komponents.kovenant.task
-import nl.komponents.kovenant.ui.failUi
-import nl.komponents.kovenant.ui.successUi
+import kotlinx.coroutines.experimental.Job
+import net.yusukezzz.ssmtc.util.async
+import net.yusukezzz.ssmtc.util.ui
 import retrofit2.Call
 import java.lang.ref.WeakReference
 
@@ -22,22 +20,23 @@ class OpenGraphTask(private val url: String,
     private class OGCancelException : Exception()
 
     private var httpCall: Call<OpenGraph>? = null
-    private var realTask: Promise<OpenGraph, Exception>? = null
+    private var realTask: Job? = null
 
     fun execute(done: () -> Unit): OpenGraphTask {
-        realTask = task {
-            resolve()
-        } successUi {
-            target.get()?.onComplete(it)
-        } failUi {
-            println("OpenGraphTask failed: $it")
-            if (it !is OGCancelException) {
-                println(url)
-                it.printStackTrace()
-                target.get()?.onComplete(fallback(url))
+        realTask = ui {
+            try {
+                val og = async { resolve() }.await()
+                target.get()?.onComplete(og)
+            } catch (e: Exception) {
+                println("OpenGraphTask failed: $e")
+                if (e !is OGCancelException) {
+                    println(url)
+                    e.printStackTrace()
+                    target.get()?.onComplete(fallback(url))
+                }
+            } finally {
+                done()
             }
-        } always {
-            done()
         }
 
         return this
@@ -66,7 +65,7 @@ class OpenGraphTask(private val url: String,
 
     fun cancel() {
         httpCall?.cancel()
-        realTask?.let { Kovenant.cancel(it, OGCancelException()) }
+        realTask?.cancel(OGCancelException())
     }
 
     private fun fallback(resolvedUrl: String): OpenGraph {
