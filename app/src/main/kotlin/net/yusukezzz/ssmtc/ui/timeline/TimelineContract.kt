@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
+import kotlinx.coroutines.experimental.Job
 import net.yusukezzz.ssmtc.BasePresenter
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
@@ -11,7 +12,7 @@ interface TimelineContract {
         fun setTimeline(timeline: Timeline)
         fun setTokens(credentials: Credentials)
         fun loadTweets(maxId: Long? = null)
-        fun loadLists(userId: Long)
+        fun loadLists(userId: Long): Job
         fun like(tweet: Tweet)
         fun retweet(tweet: Tweet)
         fun resetIgnoreIds()

@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.data.og
 
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.CancellationException
+import kotlinx.coroutines.experimental.Deferred
 import net.yusukezzz.ssmtc.util.async
 import net.yusukezzz.ssmtc.util.ui
 import retrofit2.Call
@@ -20,21 +21,21 @@ class OpenGraphTask(private val url: String,
     private class OGCancelException : Exception()
 
     private var httpCall: Call<OpenGraph>? = null
-    private var realTask: Job? = null
+    private var realTask: Deferred<OpenGraph>? = null
 
     fun execute(done: () -> Unit): OpenGraphTask {
-        realTask = ui {
+        ui {
+            var og: OpenGraph? = null
             try {
-                val og = async { resolve() }.await()
-                target.get()?.onComplete(og)
+                realTask = async { resolve() }
+                og = realTask?.await()
+            } catch (e: CancellationException) {
+                println("async canceled: $e")
             } catch (e: Exception) {
                 println("OpenGraphTask failed: $e")
-                if (e !is OGCancelException) {
-                    println(url)
-                    e.printStackTrace()
-                    target.get()?.onComplete(fallback(url))
-                }
             } finally {
+                if (og == null) og = fallback(url)
+                target.get()?.onComplete(og)
                 done()
             }
         }

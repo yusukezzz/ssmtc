@@ -19,10 +19,10 @@ class ListsSelectDialog : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val twLists = arguments.getParcelableArray(ARG_TW_LISTS).map { it as TwList }
+        val twLists = arguments!!.getParcelableArray(ARG_TW_LISTS).map { it as TwList }
         val items = twLists.map { it.fullName }.toTypedArray()
 
-        return AlertDialog.Builder(activity).apply {
+        return AlertDialog.Builder(context!!).apply {
             setTitle(R.string.lists_selector_title)
             setItems(items) { _, which ->
                 twLists[which].let { listener.onTimelineSelect(Timeline.list(it.id, it.fullName)) }

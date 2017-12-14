@@ -1,10 +1,13 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
+import kotlinx.coroutines.experimental.Job
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.TwitterApiException
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.model.Tweet
+import net.yusukezzz.ssmtc.util.async
+import net.yusukezzz.ssmtc.util.ui
 import nl.komponents.kovenant.Promise
 import nl.komponents.kovenant.combine.and
 import nl.komponents.kovenant.task
@@ -83,16 +86,15 @@ class TimelinePresenter(private val view: TimelineContract.View,
         ignoreIds = (it.first + it.second).distinct()
     }
 
-    override fun loadLists(userId: Long) {
-        view.showListsLoading()
-
-        task {
-            twitter.ownedLists(userId)
-        } and task {
-            twitter.subscribedLists(userId)
-        } doneUi {
-            view.showListsSelector(it.first + it.second)
-        } alwaysUi {
+    override fun loadLists(userId: Long): Job = ui {
+        try {
+            view.showListsLoading()
+            val owned = async { twitter.ownedLists(userId) }
+            val subscribed = async { twitter.subscribedLists(userId) }
+            view.showListsSelector(owned.await() + subscribed.await())
+        } catch (e: Exception) {
+            handleError(e)
+        } finally {
             view.dismissListsLoading()
         }
     }

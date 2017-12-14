@@ -62,21 +62,6 @@
         </service>
 
         <service android:name=".ui.status.update.StatusUpdateService" />
-
-        <receiver
-            android:exported="false"
-            android:name=".ui.status.update.SuccessReceiver">
-            <intent-filter>
-                <action android:name="net.yusukezzz.ssmtc.screens.status.update.TWEET_SUCCESS"/>
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:exported="false"
-            android:name=".ui.status.update.FailureReceiver">
-            <intent-filter>
-                <action android:name="net.yusukezzz.ssmtc.screens.status.update.TWEET_FAILURE"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

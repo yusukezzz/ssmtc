@@ -7,8 +7,8 @@ import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
-import nl.komponents.kovenant.task
-import nl.komponents.kovenant.then
+import net.yusukezzz.ssmtc.util.async
+import net.yusukezzz.ssmtc.util.ui
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthConsumer
 import oauth.signpost.basic.DefaultOAuthProvider
@@ -27,26 +27,24 @@ class AuthorizePresenter(val view: AuthorizeContract.View,
     )
 
     override fun authorizeRequest() {
-        task {
-            provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND)
-        } doneUi {
-            view.showAuthorizeWeb(it)
+        ui {
+            val url = async { provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND) }.await()
+            view.showAuthorizeWeb(url)
         }
     }
 
     override fun authorize(pin: String) {
-        task {
-            provider.retrieveAccessToken(consumer, pin)
-            consumer
-        } then {
-            val cred = Credentials(it.token, it.tokenSecret)
-            twitter.setTokens(cred)
-            val user = twitter.verifyCredentials()
-            prefs.currentUserId = user.id
-            val timelines = timelineRepo.initialize(user.id)
-            val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
-            accountRepo.add(ssmtcAccount)
-        } doneUi {
+        ui {
+            async {
+                provider.retrieveAccessToken(consumer, pin)
+                val cred = Credentials(consumer.token, consumer.tokenSecret)
+                twitter.setTokens(cred)
+                val user = twitter.verifyCredentials()
+                prefs.currentUserId = user.id
+                val timelines = timelineRepo.initialize(user.id)
+                val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
+                accountRepo.add(ssmtcAccount)
+            }.await()
             view.authorized()
         }
     }

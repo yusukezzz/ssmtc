@@ -1,12 +1,15 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.customtabs.CustomTabsIntent
 import android.support.design.widget.NavigationView
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.ActionBarDrawerToggle
@@ -39,7 +42,10 @@ import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
+import net.yusukezzz.ssmtc.ui.status.update.FailureReceiver
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
+import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateService
+import net.yusukezzz.ssmtc.ui.status.update.SuccessReceiver
 import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
@@ -84,6 +90,9 @@ class TimelineActivity: AppCompatActivity(),
 
     @Inject
     lateinit var og: OpenGraphService
+
+    private val successReceiver: BroadcastReceiver = SuccessReceiver()
+    private val failureReceiver: BroadcastReceiver = FailureReceiver()
 
     private fun currentAccount(): SsmtcAccount = accountRepo.find(prefs.currentUserId)!!
 
@@ -195,6 +204,14 @@ class TimelineActivity: AppCompatActivity(),
         super.onResume()
         // update relative tweet time
         timelineAdapter.notifyDataSetChanged()
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(successReceiver, IntentFilter(StatusUpdateService.ACTION_SUCCESS))
+        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(failureReceiver, IntentFilter(StatusUpdateService.ACTION_FAILURE))
+    }
+
+    override fun onPause() {
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(successReceiver)
+        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(failureReceiver)
+        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -381,7 +398,9 @@ class TimelineActivity: AppCompatActivity(),
         switchTimeline(timeline)
     }
 
-    override fun onListsSelectorOpen() = presenter.loadLists(prefs.currentUserId)
+    override fun onListsSelectorOpen() {
+        presenter.loadLists(prefs.currentUserId)
+    }
 
     override fun showListsLoading() {
         listsLoading = AlertDialog.Builder(this)

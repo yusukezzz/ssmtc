@@ -24,17 +24,17 @@ class TextInputDialog : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val title = arguments.getInt(ARG_TITLE)
-        val type = arguments.getInt(ARG_TIMELINE_TYPE)
+        val title = arguments!!.getInt(ARG_TITLE)
+        val type = arguments!!.getInt(ARG_TIMELINE_TYPE)
 
         val edit = EditText(context)
-        val padding = resources.getDimensionPixelSize(context.resolveAttributeId(android.R.attr.dialogPreferredPadding))
+        val padding = resources.getDimensionPixelSize(context!!.resolveAttributeId(android.R.attr.dialogPreferredPadding))
         val linear = LinearLayout(context)
         linear.setPadding(padding, padding, padding, padding)
         linear.orientation = LinearLayout.VERTICAL
         linear.addView(edit)
 
-        val dialog = AlertDialog.Builder(context).apply {
+        val dialog = AlertDialog.Builder(context!!).apply {
             setTitle(title)
             setView(linear)
             setPositiveButton(R.string.input_dialog_ok, { _, _ ->

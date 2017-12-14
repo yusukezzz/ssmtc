@@ -46,8 +46,8 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val timeline: Timeline = arguments.getParcelable(ARG_TIMELINE)
-        val view = activity.layoutInflater.inflate(R.layout.timeline_setting, null, false)
+        val timeline: Timeline = arguments!!.getParcelable(ARG_TIMELINE)
+        val view = activity!!.layoutInflater.inflate(R.layout.timeline_setting, null, false)
 
         if (timeline.type == Timeline.TYPE_SEARCH) {
             view.timeline_query.visibility = View.VISIBLE
@@ -63,7 +63,7 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         view.timeline_include.setText(timeline.filter.includeWords.joinToString("\n"))
         view.timeline_exclude.setText(timeline.filter.excludeWords.joinToString("\n"))
 
-        return AlertDialog.Builder(context).apply {
+        return AlertDialog.Builder(context!!).apply {
             setTitle(R.string.setting_dialog_title)
             setView(view)
             setPositiveButton(R.string.setting_dialog_ok, { _, _ -> save(timeline, view) })

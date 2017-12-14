@@ -15,7 +15,7 @@ class TimelineSelectDialog : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(activity).apply {
+        return AlertDialog.Builder(context!!).apply {
             setTitle(R.string.timeline_selector_title)
             setItems(TIMELINE_TYPES) { _, which ->
                 when (which) {

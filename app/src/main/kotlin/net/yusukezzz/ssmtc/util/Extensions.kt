@@ -17,11 +17,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlinx.coroutines.experimental.CoroutineStart
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -53,7 +50,7 @@ fun Context.toast(error: Throwable) {
 }
 
 fun Context.getCompatColor(id: Int): Int = ContextCompat.getColor(this, id)
-fun Context.getCompatDrawable(id: Int): Drawable = ContextCompat.getDrawable(this, id)
+fun Context.getCompatDrawable(id: Int): Drawable = ContextCompat.getDrawable(this, id)!!
 fun Context.getVectorDrawable(id: Int, tint: Int? = null): VectorDrawable {
     val drawable = getDrawable(id) as VectorDrawable
     tint?.let { drawable.setTint(this.getCompatColor(it)) }
@@ -112,8 +109,12 @@ fun File.mimeType(): String {
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
 
+private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineExceptionHandler({ _, e ->
+    Log.i("ssmtc", "coroutine canceled.", e)
+})
+
 fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
-    = launch(UI, start, block)
+    = launch(UI + coroutineExceptionHandler(), start, null, block)
 
 fun <T> CoroutineScope.async(context: CoroutineContext = CommonPool, start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> T)
-    = kotlinx.coroutines.experimental.async(this.coroutineContext + context, start, block)
+    = kotlinx.coroutines.experimental.async(this.coroutineContext + context, start, null, block)

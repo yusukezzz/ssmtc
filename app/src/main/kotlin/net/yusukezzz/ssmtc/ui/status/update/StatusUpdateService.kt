@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
+import android.support.v4.content.LocalBroadcastManager
 import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
@@ -18,8 +19,8 @@ import javax.inject.Inject
 
 class StatusUpdateService: IntentService("StatusUpdateService") {
     companion object {
-        const val ACTION_SUCCESS = "net.yusukezzz.ssmtc.screens.status.update.TWEET_SUCCESS"
-        const val ACTION_FAILURE = "net.yusukezzz.ssmtc.screens.status.update.TWEET_FAILURE"
+        const val ACTION_SUCCESS = "net.yusukezzz.ssmtc.ui.status.update.TWEET_SUCCESS"
+        const val ACTION_FAILURE = "net.yusukezzz.ssmtc.ui.status.update.TWEET_FAILURE"
 
         const val ARG_STATUS_TEXT = "status_text"
         const val ARG_IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id"
@@ -47,6 +48,8 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
             .setMaxHeight(PHOTO_MAX_HEIGHT)
             .setQuality(PHOTO_QUALITY)
     }
+
+    private val bcastManager: LocalBroadcastManager by lazy { LocalBroadcastManager.getInstance(applicationContext) }
 
     @Inject
     lateinit var prefs: Preferences
@@ -93,9 +96,9 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         }
     }
 
-    private fun sendSuccessBroadcast() = sendBroadcast(Intent(ACTION_SUCCESS))
+    private fun sendSuccessBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_SUCCESS))
 
-    private fun sendFailureBroadcast() = sendBroadcast(Intent(ACTION_FAILURE))
+    private fun sendFailureBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_FAILURE))
 
     private fun Compressor.compressImage(path: String): File {
         val file = File(path)

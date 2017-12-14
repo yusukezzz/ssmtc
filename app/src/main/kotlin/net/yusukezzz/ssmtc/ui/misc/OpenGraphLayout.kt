@@ -26,6 +26,8 @@ class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun onStart() {
+        this.isClickable = false
+        this.setOnClickListener { /* unregister listener */ }
         og_contents.gone()
         og_loading.visible()
         this.visible()
@@ -40,5 +42,6 @@ class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: Attribu
         }
         og_loading.gone()
         og_contents.visible()
+        this.isClickable = true
     }
 }
