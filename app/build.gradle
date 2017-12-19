@@ -63,8 +63,8 @@ dependencies {
         support_version = '27.0.2'
         kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
-        permission_dispatcher_version = '3.0.1'
-        dagger_version = '2.11'
+        permission_dispatcher_version = '3.1.0'
+        dagger_version = '2.13'
         leakcanary_version = '1.5.4'
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -94,8 +94,8 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.0'
 
     // html entity decoding
-    implementation 'org.apache.commons:commons-text:1.1'
-    implementation 'saschpe.android:customtabs:1.0.8'
+    implementation 'org.apache.commons:commons-text:1.2'
+    implementation 'saschpe.android:customtabs:1.1.0'
     implementation 'com.deploygate:sdk:4.0.0'
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"

@@ -110,7 +110,7 @@ fun File.mimeType(): String {
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
 
 private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineExceptionHandler({ _, e ->
-    Log.i("ssmtc", "coroutine canceled.", e)
+    Log.e("ssmtc", "coroutine error", e)
 })
 
 fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)

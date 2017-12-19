@@ -11,7 +11,7 @@ interface TimelineContract {
     interface Presenter: BasePresenter {
         fun setTimeline(timeline: Timeline)
         fun setTokens(credentials: Credentials)
-        fun loadTweets(maxId: Long? = null)
+        fun loadTweets(maxId: Long? = null): Job
         fun loadLists(userId: Long): Job
         fun like(tweet: Tweet)
         fun retweet(tweet: Tweet)

@@ -460,7 +460,9 @@ class TimelineActivity: AppCompatActivity(),
     /**
      * Load paginated tweets from api
      */
-    override fun onLoadMore() = presenter.loadTweets(lastTweetId)
+    override fun onLoadMore() {
+        presenter.loadTweets(lastTweetId)
+    }
 
     override fun setLastTweetId(id: Long?) {
         this.lastTweetId = id
