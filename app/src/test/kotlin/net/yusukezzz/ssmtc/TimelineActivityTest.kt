@@ -8,11 +8,8 @@ import net.yusukezzz.ssmtc.data.api.model.User
 import net.yusukezzz.ssmtc.di.TestAppModule
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.timeline.TimelineActivity
-import nl.komponents.kovenant.Kovenant
-import nl.komponents.kovenant.testMode
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -30,11 +27,6 @@ class TimelineActivityTest {
 
     private fun mockAccount(timelines: List<Timeline>): SsmtcAccount =
         SsmtcAccount(Credentials("dummyToken", "dummyTokenSecret"), mockUser(), timelines, timelines.first().uuid)
-
-    @Before
-    fun setup() {
-        Kovenant.testMode() // all dispatchers are synchronous mode
-    }
 
     @Test
     fun shouldStartAuthorizeIfNotLoggedIn() {

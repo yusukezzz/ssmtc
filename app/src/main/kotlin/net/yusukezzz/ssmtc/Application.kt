@@ -8,8 +8,6 @@ import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
 import net.yusukezzz.ssmtc.di.DaggerAppComponent
-import nl.komponents.kovenant.android.startKovenant
-import nl.komponents.kovenant.android.stopKovenant
 import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 
 open class Application : android.app.Application() {
@@ -22,16 +20,10 @@ open class Application : android.app.Application() {
 
         setupLeakCanary()
 
-        startKovenant()
         initPicasso()
         initComponent()
 
         registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
-    }
-
-    override fun onTerminate() {
-        stopKovenant()
-        super.onTerminate()
     }
 
     open protected fun setupLeakCanary(): RefWatcher {

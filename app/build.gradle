@@ -61,7 +61,6 @@ dependencies {
     ext {
         kotlin_coroutines_version = '0.20'
         support_version = '27.0.2'
-        kovenant_version = '3.3.0'
         retrofit_version = '2.3.0'
         permission_dispatcher_version = '3.1.0'
         dagger_version = '2.13'
@@ -79,9 +78,6 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.github.hotchemi:permissionsdispatcher:$permission_dispatcher_version"
     kapt "com.github.hotchemi:permissionsdispatcher-processor:$permission_dispatcher_version"
-    implementation "nl.komponents.kovenant:kovenant:$kovenant_version"
-    implementation "nl.komponents.kovenant:kovenant-combine:$kovenant_version"
-    implementation "nl.komponents.kovenant:kovenant-android:$kovenant_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.google.code.gson:gson:2.8.2'

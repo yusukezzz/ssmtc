@@ -1,6 +1,7 @@
 package net.yusukezzz.ssmtc.data.og
 
-import nl.komponents.kovenant.task
+import net.yusukezzz.ssmtc.util.async
+import net.yusukezzz.ssmtc.util.ui
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -24,8 +25,8 @@ class OpenGraphService(private val cache: OGDiskCache, private val ogApi: OpenGr
         }
     }
 
-    fun cleanup() {
-        task { cache.removeOldCaches() }
+    fun cleanup() = ui {
+        async { cache.removeOldCaches() }.await()
     }
 }
 
