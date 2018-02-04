@@ -13,20 +13,20 @@ import net.yusukezzz.ssmtc.util.getVectorDrawable
 import java.io.File
 
 object PicassoUtil {
-    const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
+    private const val THUMBNAIL_IMAGE_TAG = "thumbnail_image_tag"
     private const val ROUNDED_CORNER_RADIUS = 8
 
     private val rounded: Transformation = RoundedTransformation(ROUNDED_CORNER_RADIUS)
 
     fun cancel(view: View) {
         if (view is ImageView) {
-            Picasso.with(view.context).cancelRequest(view)
+            Picasso.get().cancelRequest(view)
             view.setImageDrawable(null)
         }
     }
 
     fun userIcon(user: User, imgView: ImageView) {
-        Picasso.with(imgView.context)
+        Picasso.get()
             .load(user.profileImageUrl)
             .priority(Picasso.Priority.HIGH)
             .fit().centerCrop()
@@ -35,7 +35,7 @@ object PicassoUtil {
     }
 
     fun thumbnail(path: String, imgView: ImageView) {
-        Picasso.with(imgView.context).loadFrom(path)
+        Picasso.get().loadFrom(path)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
             .into(imgView)
     }
@@ -44,12 +44,15 @@ object PicassoUtil {
         val ph = imgView.context.getVectorDrawable(R.drawable.og_placeholder, R.color.light_grey)
         // use zimage.io resized url
         val url = if (path.startsWith("http")) Zimage.url(path) else ""
-        Picasso.with(imgView.context).loadFrom(url)
+        Picasso.get().loadFrom(url)
             .priority(Picasso.Priority.LOW)
             .placeholder(ph)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
             .into(imgView)
     }
+
+    fun resumeThumbnail() = Picasso.get().resumeTag(THUMBNAIL_IMAGE_TAG)
+    fun pauseThumbnail() = Picasso.get().pauseTag(THUMBNAIL_IMAGE_TAG)
 
     private fun Picasso.loadFrom(from: String): RequestCreator = if (from.startsWith("http")) {
         this.load(Uri.parse(from))

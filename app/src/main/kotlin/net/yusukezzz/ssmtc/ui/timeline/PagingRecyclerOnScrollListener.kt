@@ -1,16 +1,13 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
-import com.squareup.picasso.Picasso
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 
 // https://gist.github.com/ssinss/e06f12ef66c51252563e
-class PagingRecyclerOnScrollListener(private val context: Context,
-                                     private val mLinearLayoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
+class PagingRecyclerOnScrollListener(private val mLinearLayoutManager: LinearLayoutManager) : RecyclerView.OnScrollListener() {
     interface ScrollListener {
         fun onLoadMore()
     }
@@ -43,11 +40,10 @@ class PagingRecyclerOnScrollListener(private val context: Context,
     }
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        val picasso = Picasso.with(context)
         if (newState == SCROLL_STATE_IDLE || newState == SCROLL_STATE_TOUCH_SCROLL) {
-            picasso.resumeTag(PicassoUtil.THUMBNAIL_IMAGE_TAG)
+            PicassoUtil.resumeThumbnail()
         } else {
-            picasso.pauseTag(PicassoUtil.THUMBNAIL_IMAGE_TAG)
+            PicassoUtil.pauseThumbnail()
         }
     }
 

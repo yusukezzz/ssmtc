@@ -36,14 +36,15 @@ data class FilterRule(
     }
 
     private fun matchText(tweet: Tweet): Boolean {
-        if (excludeWords.isNotEmpty() && excludeWords.toRegex().containsMatchIn(tweet.full_text)) return false
+        val text = tweet.user.name + tweet.user.screenName + tweet.full_text
+        if (excludeWords.isNotEmpty() && excludeWords.toRegex().containsMatchIn(text)) return false
 
         if (includeWords.isEmpty()) return true
 
-        if (includeWords.toRegex().containsMatchIn(tweet.full_text)) return true
+        if (includeWords.toRegex().containsMatchIn(text)) return true
 
         return false
     }
 
-    private fun List<String>.toRegex(): Regex = Regex(this.map(Pattern::quote).joinToString("|"), RegexOption.IGNORE_CASE)
+    private fun List<String>.toRegex(): Regex = Regex(this.joinToString("|", transform = Pattern::quote), RegexOption.IGNORE_CASE)
 }

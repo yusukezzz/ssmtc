@@ -22,6 +22,10 @@ import kotlinx.coroutines.experimental.android.UI
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
+import java.nio.ByteBuffer
+import java.nio.CharBuffer
+import java.nio.charset.CodingErrorAction
+import java.nio.charset.StandardCharsets
 import kotlin.coroutines.experimental.CoroutineContext
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
@@ -108,6 +112,39 @@ fun File.mimeType(): String {
 }
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
+
+// https://qiita.com/nukka123/items/205c93c72a35a17a5c3b
+fun String.truncateBytes(bytes: Int): String {
+    val charset = StandardCharsets.UTF_8
+    val encoder = charset.newEncoder()
+        .onMalformedInput(CodingErrorAction.IGNORE)
+        .onUnmappableCharacter(CodingErrorAction.IGNORE)
+        .reset()
+
+    val estimate = this.length * (Math.ceil(encoder.maxBytesPerChar().toDouble()).toInt())
+    if (estimate <= bytes) {
+        return this
+    }
+
+    val srcBuffer = ByteBuffer.allocate(bytes)
+    val res = encoder.encode(CharBuffer.wrap(this), srcBuffer, true)
+    encoder.flush(srcBuffer)
+    srcBuffer.flip()
+    if (res.isUnderflow) {
+        return this
+    }
+
+    val dstBuffer = CharBuffer.allocate(this.length)
+    val decoder = charset.newDecoder()
+        .onMalformedInput(CodingErrorAction.IGNORE)
+        .onUnmappableCharacter(CodingErrorAction.IGNORE)
+        .reset()
+    decoder.decode(srcBuffer, dstBuffer, true)
+    decoder.flush(dstBuffer)
+    dstBuffer.flip()
+
+    return dstBuffer.toString()
+}
 
 private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineExceptionHandler({ _, e ->
     Log.e("ssmtc", "coroutine error", e)

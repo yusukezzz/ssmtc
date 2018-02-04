@@ -9,8 +9,10 @@ import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.LocalBroadcastManager
 import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
+import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
@@ -60,6 +62,9 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
     @Inject
     lateinit var accountRepo: SsmtcAccountRepository
 
+    @Inject
+    lateinit var slack: SlackService
+
     override fun onCreate() {
         super.onCreate()
         Application.component.inject(this)
@@ -87,8 +92,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
             twitter.tweet(status, inReplyToStatusId, mediaIds)
             sendSuccessBroadcast()
         } catch (e: Throwable) {
-            println(e.message)
-            e.printStackTrace()
+            slack.sendMessage(e, BuildConfig.SLACK_CHANNEL)
             sendFailureBroadcast()
         } finally {
             manager.cancel(0)

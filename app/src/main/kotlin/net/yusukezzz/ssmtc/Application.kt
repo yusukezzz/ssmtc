@@ -26,7 +26,7 @@ open class Application : android.app.Application() {
         registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
     }
 
-    open protected fun setupLeakCanary(): RefWatcher {
+    protected open fun setupLeakCanary(): RefWatcher {
         if (LeakCanary.isInAnalyzerProcess(this) || !BuildConfig.DEBUG) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
@@ -35,11 +35,11 @@ open class Application : android.app.Application() {
         return LeakCanary.install(this)
     }
 
-    open protected fun initPicasso() {
+    protected open fun initPicasso() {
         Picasso.setSingletonInstance(Picasso.Builder(this).defaultBitmapConfig(RGB_565).build())
     }
 
-    open protected fun initComponent() {
+    protected open fun initComponent() {
         AndroidThreeTen.init(this)
         component = DaggerAppComponent.builder()
             .appModule(AppModule(this))

@@ -23,7 +23,7 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
         val view = inflater.inflate(R.layout.photo_gallery_page, container, false)
         val media = images[position]
 
-        Picasso.with(context).load(media.large_url)
+        Picasso.get().load(media.large_url)
             .config(android.graphics.Bitmap.Config.ARGB_8888)
             .fit().centerInside()
             .into(view.page_image, object : Callback {
@@ -31,7 +31,7 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
                     view.loading_bar.visibility = View.GONE
                 }
 
-                override fun onError() {
+                override fun onError(e: Exception) {
                     view.loading_bar.visibility = View.GONE
                     context.toast(R.string.gallery_load_fail)
                 }

@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.Media
@@ -90,6 +91,9 @@ class TimelineActivity: AppCompatActivity(),
 
     @Inject
     lateinit var og: OpenGraphService
+
+    @Inject
+    lateinit var slack: SlackService
 
     private val successReceiver: BroadcastReceiver = SuccessReceiver()
     private val failureReceiver: BroadcastReceiver = FailureReceiver()
@@ -181,7 +185,7 @@ class TimelineActivity: AppCompatActivity(),
         decoration.setDrawable(getCompatDrawable(R.drawable.timeline_divider))
         timeline_list.addItemDecoration(decoration)
 
-        pagingScrollListener = PagingRecyclerOnScrollListener(this, layoutManager)
+        pagingScrollListener = PagingRecyclerOnScrollListener(layoutManager)
         pagingScrollListener.setLoadMoreListener(this)
         timeline_list.addOnScrollListener(pagingScrollListener)
 

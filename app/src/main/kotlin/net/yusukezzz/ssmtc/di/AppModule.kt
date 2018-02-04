@@ -8,6 +8,9 @@ import dagger.Provides
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
+import net.yusukezzz.ssmtc.data.SlackApi
+import net.yusukezzz.ssmtc.data.SlackService
+import net.yusukezzz.ssmtc.data.SlackService.Companion.SLACK_BASE_URL
 import net.yusukezzz.ssmtc.data.api.TwitterApi
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.TwitterService.Companion.API_BASE_URL
@@ -37,10 +40,12 @@ class AppModule(private val app: Application) {
     fun provideApplication(): Application = app
 
     @Provides
+    @Singleton
     @Named("cacheDir")
     fun provideCacheDir(app: Application): File = app.cacheDir
 
     @Provides
+    @Singleton
     @Named("filesDir")
     fun provideFilesDir(app: Application): File = app.filesDir
 
@@ -60,6 +65,14 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
+    @Named("okHttp")
+    fun provideOkHttp(): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(RetryWithDelayInterceptor())
+        .build()
+
+    @Provides
+    @Singleton
+    @Named("twitterOkHttp")
     fun provideTwitterOkhttp(oauthConsumer: OkHttpOAuthConsumer): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(SigningInterceptor(oauthConsumer))
         .addInterceptor(RetryWithDelayInterceptor())
@@ -67,17 +80,27 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideRetrofitBuilder(gson: Gson, okhttp: OkHttpClient): Retrofit.Builder = Retrofit.Builder()
+    @Named("retrofitBuilder")
+    fun provideRetrofitBuilder(gson: Gson, @Named("okHttp") okhttp: OkHttpClient): Retrofit.Builder = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create(gson))
         .client(okhttp)
 
     @Provides
     @Singleton
-    fun provideTwitterApi(builder: Retrofit.Builder): TwitterApi = builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
+    @Named("twitterRetrofitBuilder")
+    fun provideTwitterRetrofitBuilder(gson: Gson, @Named("twitterOkHttp") okhttp: OkHttpClient): Retrofit.Builder = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create(gson))
+        .client(okhttp)
 
     @Provides
     @Singleton
-    fun provideTwitterUploadApi(builder: Retrofit.Builder): UploadApi = builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
+    fun provideTwitterApi(@Named("twitterRetrofitBuilder") builder: Retrofit.Builder): TwitterApi =
+        builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideTwitterUploadApi(@Named("twitterRetrofitBuilder") builder: Retrofit.Builder): UploadApi =
+        builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
 
     @Provides
     @Singleton
@@ -92,11 +115,17 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideOpenGraphApi(builder: Retrofit.Builder): OpenGraphApi = builder.baseUrl(BuildConfig.OPENGRAPH_API_BASE_URL).build().create(OpenGraphApi::class.java)
+    fun provideOpenGraphApi(@Named("retrofitBuilder") builder: Retrofit.Builder): OpenGraphApi =
+        builder.baseUrl(BuildConfig.OPENGRAPH_API_BASE_URL).build().create(OpenGraphApi::class.java)
 
     @Provides
     @Singleton
     fun provideOpenGraphService(cache: OGDiskCache, ogApi: OpenGraphApi): OpenGraphService = OpenGraphService(cache, ogApi)
+
+    @Provides
+    @Singleton
+    fun provideSlackService(@Named("retrofitBuilder") builder: Retrofit.Builder): SlackService =
+        SlackService(BuildConfig.SLACK_TOKEN, builder.baseUrl(SLACK_BASE_URL).build().create(SlackApi::class.java))
 
     @Provides
     @Singleton
