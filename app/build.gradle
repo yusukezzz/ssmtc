@@ -61,7 +61,7 @@ kotlin {
 
 dependencies {
     ext {
-        kotlin_coroutines_version = '0.22.1'
+        kotlin_coroutines_version = '0.22.2'
         support_version = '27.0.2'
         retrofit_version = '2.3.0'
         permission_dispatcher_version = '3.1.0'
