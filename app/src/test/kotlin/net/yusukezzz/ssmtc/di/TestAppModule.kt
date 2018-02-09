@@ -6,6 +6,7 @@ import dagger.Provides
 import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
+import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
@@ -53,4 +54,9 @@ class TestAppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideTimelineRepository(): TimelineRepository = mockTimelineRepo
+
+    val mockSlackService: SlackService = Mockito.mock(SlackService::class.java)
+    @Provides
+    @Singleton
+    fun provideSlackService(): SlackService = mockSlackService
 }
