@@ -61,11 +61,11 @@ kotlin {
 
 dependencies {
     ext {
-        kotlin_coroutines_version = '0.22.3'
-        support_version = '27.0.2'
+        kotlin_coroutines_version = '0.22.5'
+        support_version = '27.1.0'
         retrofit_version = '2.3.0'
         permission_dispatcher_version = '3.1.0'
-        dagger_version = '2.14.1'
+        dagger_version = '2.15'
         leakcanary_version = '1.5.4'
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
@@ -83,7 +83,7 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.google.code.gson:gson:2.8.2'
-    implementation 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     testImplementation('org.threeten:threetenbp:latest.release') {
         exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
@@ -101,7 +101,7 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:latest.release'
-    testImplementation 'org.robolectric:robolectric:3.7'
+    testImplementation 'org.robolectric:robolectric:3.7.1'
 }
 repositories {
     mavenCentral()

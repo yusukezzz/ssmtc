@@ -65,6 +65,9 @@ class TimelineActivityTest {
         act.setLastTweetId(lastTweetId)
         act.onLoadMore()
 
+        // wait async task
+        Thread.sleep(100)
+
         verify(getModule().mockTwitter).statuses(timelines.first(), lastTweetId)
     }
 }
