@@ -53,7 +53,15 @@ class TimelinePresenter(private val view: TimelineContract.View,
         }
     }, view::stopLoading)
 
-    private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && ignoreIds.contains(tw.user.id).not()
+    private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && isIgnoreUser(tw)
+    private fun isIgnoreUser(tw: Tweet): Boolean {
+        fun containsIgnoreUser(tweet: Tweet): Boolean = ignoreIds.contains(tweet.user.id)
+        val shouldTweetIgnore = containsIgnoreUser(tw)
+        val shouldRetweetIgnore = tw.retweeted_status?.let{ containsIgnoreUser(it) } ?: false
+        val shouldQuotedIgnore = tw.quoted_status?.let { containsIgnoreUser(it) } ?: false
+
+        return shouldTweetIgnore || shouldRetweetIgnore || shouldQuotedIgnore
+    }
 
     private fun CoroutineScope.fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
                                                              now: OffsetDateTime = OffsetDateTime.now()): Deferred<List<Tweet>> {
