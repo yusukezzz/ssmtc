@@ -96,7 +96,6 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
             sendFailureBroadcast()
         } finally {
             manager.cancel(0)
-            stopSelf()
         }
     }
 

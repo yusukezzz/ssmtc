@@ -17,7 +17,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
         // block & mute ids API rate limit is 15req/15min
         const val IGNORE_IDS_CACHE_SECONDS: Long = 60L
     }
-    private var ignoreIds: List<Long> = listOf()
+    private var ignoreUserIds: List<Long> = listOf()
     private var ignoreIdsLastUpdatedAt: OffsetDateTime = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
     private lateinit var timeline: Timeline
 
@@ -26,7 +26,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
     }
 
     override fun resetIgnoreIds() {
-        ignoreIds = listOf()
+        ignoreUserIds = listOf()
         ignoreIdsLastUpdatedAt = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
     }
 
@@ -53,9 +53,9 @@ class TimelinePresenter(private val view: TimelineContract.View,
         }
     }, view::stopLoading)
 
-    private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && isIgnoreUser(tw)
+    private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && !isIgnoreUser(tw)
     private fun isIgnoreUser(tw: Tweet): Boolean {
-        fun containsIgnoreUser(tweet: Tweet): Boolean = ignoreIds.contains(tweet.user.id)
+        fun containsIgnoreUser(tweet: Tweet): Boolean = ignoreUserIds.contains(tweet.user.id)
         val shouldTweetIgnore = containsIgnoreUser(tw)
         val shouldRetweetIgnore = tw.retweeted_status?.let{ containsIgnoreUser(it) } ?: false
         val shouldQuotedIgnore = tw.quoted_status?.let { containsIgnoreUser(it) } ?: false
@@ -71,7 +71,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
                 updateIgnoreIdsTask().await()
                 fetchTweetsTask.await()
             } else {
-                // use cached ignoreIds
+                // use cached ignoreUserIds
                 fetchTweetsTask.await()
             }
         }
@@ -85,7 +85,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
         val muteIds = async { twitter.mutedIds().ids }
         // save blocked and muted user ids
         ignoreIdsLastUpdatedAt = OffsetDateTime.now()
-        ignoreIds = (blockIds.await() + muteIds.await()).distinct()
+        ignoreUserIds = (blockIds.await() + muteIds.await()).distinct()
     }
 
     override fun loadLists(userId: Long): Job = execOnUi({

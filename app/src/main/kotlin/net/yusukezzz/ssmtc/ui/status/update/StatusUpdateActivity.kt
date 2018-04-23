@@ -26,9 +26,9 @@ import javax.inject.Inject
 @RuntimePermissions
 class StatusUpdateActivity: AppCompatActivity() {
     companion object {
-        val REQUEST_PHOTO_SELECT = 0
-        val ARG_REPLY_STATUS_ID = "reply_status_id"
-        val ARG_REPLY_SCREEN_NAME = "reply_screen_name"
+        const val REQUEST_PHOTO_SELECT = 0
+        const val ARG_REPLY_STATUS_ID = "reply_status_id"
+        const val ARG_REPLY_SCREEN_NAME = "reply_screen_name"
 
         fun newIntent(context: Context, replyStatusId: Long? = null, replyScreenName: String? = null): Intent =
             Intent(context, StatusUpdateActivity::class.java).apply {
@@ -56,7 +56,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         val replyStatusId = intent.getLongExtraOrNull(ARG_REPLY_STATUS_ID)
         val replyScreenName = intent.getStringExtraOrNull(ARG_REPLY_SCREEN_NAME)
-        replyScreenName?.let { status_input.setText("@$it ") }
+        replyScreenName?.let { status_input.setText(it) }
 
         status_input.requestFocus()
         select_photos.setOnClickListener {
@@ -65,7 +65,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         send_tweet.setOnClickListener {
             val tweet = status_input.text.toString()
-            val i = StatusUpdateService.newIntent(this, tweet, replyStatusId, photos)
+            val i = StatusUpdateService.newIntent(applicationContext, tweet, replyStatusId, photos)
             this.startService(i)
             finish()
         }

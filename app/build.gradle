@@ -62,9 +62,9 @@ kotlin {
 dependencies {
     ext {
         kotlin_coroutines_version = '0.22.5'
-        support_version = '27.1.0'
+        support_version = '27.1.1'
         retrofit_version = '2.4.0'
-        permission_dispatcher_version = '3.1.0'
+        permission_dispatcher_version = '3.2.0'
         dagger_version = '2.15'
         leakcanary_version = '1.5.4'
     }
@@ -84,7 +84,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
     testImplementation('org.threeten:threetenbp:latest.release') {
         exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
     }
@@ -92,8 +92,8 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.0'
 
     // html entity decoding
-    implementation 'org.apache.commons:commons-text:1.2'
-    implementation 'saschpe.android:customtabs:1.1.1'
+    implementation 'org.apache.commons:commons-text:1.3'
+    implementation 'saschpe.android:customtabs:1.1.2'
     implementation 'com.deploygate:sdk:4.0.0'
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
@@ -101,7 +101,7 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:latest.release'
-    testImplementation 'org.robolectric:robolectric:3.7.1'
+    testImplementation 'org.robolectric:robolectric:3.8'
 }
 repositories {
     mavenCentral()

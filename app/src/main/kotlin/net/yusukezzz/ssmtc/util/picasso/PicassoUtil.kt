@@ -8,7 +8,7 @@ import com.squareup.picasso.RequestCreator
 import com.squareup.picasso.Transformation
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.User
-import net.yusukezzz.ssmtc.util.Zimage
+import net.yusukezzz.ssmtc.util.Rszio
 import net.yusukezzz.ssmtc.util.getVectorDrawable
 import java.io.File
 
@@ -43,7 +43,7 @@ object PicassoUtil {
     fun opengraph(path: String, imgView: ImageView) {
         val ph = imgView.context.getVectorDrawable(R.drawable.og_placeholder, R.color.light_grey)
         // use zimage.io resized url
-        val url = if (path.startsWith("http")) Zimage.url(path) else ""
+        val url = if (path.startsWith("http")) Rszio.url(path) else ""
         Picasso.get().loadFrom(url)
             .priority(Picasso.Priority.LOW)
             .placeholder(ph)

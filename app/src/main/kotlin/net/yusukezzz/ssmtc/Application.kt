@@ -18,7 +18,7 @@ open class Application : android.app.Application() {
     override fun onCreate() {
         super.onCreate()
 
-        setupLeakCanary()
+        //setupLeakCanary()
 
         initPicasso()
         initComponent()
