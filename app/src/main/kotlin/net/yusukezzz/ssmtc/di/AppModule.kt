@@ -116,7 +116,7 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideOpenGraphApi(@Named("retrofitBuilder") builder: Retrofit.Builder): OpenGraphApi =
-        builder.baseUrl(BuildConfig.OPENGRAPH_API_BASE_URL).build().create(OpenGraphApi::class.java)
+        builder.baseUrl(BuildConfig.MY_API_BASE_URL).build().create(OpenGraphApi::class.java)
 
     @Provides
     @Singleton
