@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.data
 
+import net.yusukezzz.ssmtc.util.prettyMarkdown
 import net.yusukezzz.ssmtc.util.truncateBytes
-import org.threeten.bp.OffsetDateTime
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,17 +12,8 @@ class SlackService(private val token: String, private val api: SlackApi) {
         private const val MAX_MESSAGE_LENGTH = 4000
     }
 
-    fun sendMessage(e: Throwable, channel: String): SlackUploadResult {
-        val cause = e.cause?.let { "\n[cause] ${it.message}\n${it.stackTrace.joinToString("\n")}" } ?: ""
-        val mes = """|```[error] ${OffsetDateTime.now()}
-            |${e.message}
-            |${e.stackTrace.joinToString("\n")}
-            |$cause```
-        """.trimMargin()
-        return sendMessage(mes, channel)
-    }
-
     fun sendMessage(mes: String, channel: String): SlackUploadResult = api.postMessage(token, channel, mes.truncateBytes(MAX_MESSAGE_LENGTH)).execute().body()!!
+    fun sendMessage(e: Throwable, channel: String): SlackUploadResult = sendMessage(e.prettyMarkdown(), channel)
 }
 
 data class SlackUploadResult(val ok: Boolean, val error: String)

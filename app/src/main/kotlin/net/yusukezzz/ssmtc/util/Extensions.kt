@@ -21,6 +21,7 @@ import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.threeten.bp.OffsetDateTime
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.CharBuffer
@@ -113,6 +114,19 @@ fun File.mimeType(): String {
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
 
+fun Throwable.prettyMarkdown(): String {
+    val c = cause?.let { "\n[cause] ${it.message}\n${it.stackTrace.joinToString("\n")}" } ?: ""
+    return """|```[error] ${OffsetDateTime.now()}
+            |Message:
+            |$message
+            |
+            |Stacktrace:
+            |${stackTrace.joinToString("\n")}
+            |
+            |Cause:
+            |$c```
+        """.trimMargin()
+}
 // https://qiita.com/nukka123/items/205c93c72a35a17a5c3b
 fun String.truncateBytes(bytes: Int): String {
     val charset = StandardCharsets.UTF_8

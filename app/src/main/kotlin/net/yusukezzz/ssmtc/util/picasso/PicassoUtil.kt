@@ -43,15 +43,14 @@ object PicassoUtil {
 
     fun opengraph(path: String, imgView: ImageView) {
         val ph = imgView.context.getVectorDrawable(R.drawable.og_placeholder, R.color.light_grey)
-        // use zimage.io resized ogpThumbnail
-        val url = if (path.startsWith("http")) ogpThumbnail(path) else ""
+        val url = if (path.startsWith("http")) resizedUrl(path) else ""
         Picasso.get().loadFrom(url)
             .priority(Picasso.Priority.LOW)
             .placeholder(ph)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
             .into(imgView)
     }
-    private fun ogpThumbnail(imageUrl: String, width: Int = 200): String = BuildConfig.MY_API_BASE_URL + "/thumbnail/" +
+    private fun resizedUrl(imageUrl: String, width: Int = 200): String = BuildConfig.MY_API_BASE_URL + "/thumbnail/" +
             URLEncoder.encode(imageUrl,"UTF-8") + "?w=$width"
 
     fun resumeThumbnail() = Picasso.get().resumeTag(THUMBNAIL_IMAGE_TAG)
