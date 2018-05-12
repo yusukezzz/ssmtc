@@ -36,7 +36,8 @@ object PicassoUtil {
     }
 
     fun thumbnail(path: String, imgView: ImageView) {
-        Picasso.get().loadFrom(path)
+        val url = if (path.startsWith("http")) resizedUrl(path, 300) else ""
+        Picasso.get().loadFrom(url)
             .fit().centerCrop().tag(THUMBNAIL_IMAGE_TAG)
             .into(imgView)
     }
