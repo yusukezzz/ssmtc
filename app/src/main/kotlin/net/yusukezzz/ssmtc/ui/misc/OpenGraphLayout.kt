@@ -15,25 +15,32 @@ import net.yusukezzz.ssmtc.util.visible
 class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : FrameLayout(context, attrs, defStyle), OpenGraphLoadable {
 
     private lateinit var listener: TweetItemView.TweetItemListener
+    private var loaded: Boolean = false
 
     fun setListener(listener: TweetItemView.TweetItemListener) {
         this.listener = listener
     }
 
+    fun isLoaded(): Boolean = loaded
+
     fun reset() {
         PicassoUtil.cancel(og_image)
         this.gone()
+        loaded = false
     }
 
     override fun onStart() {
-        this.isClickable = false
-        this.setOnClickListener { /* unregister listener */ }
-        og_contents.gone()
-        og_loading.visible()
-        this.visible()
+        if (!loaded) {
+            this.isClickable = false
+            this.setOnClickListener { /* unregister listener */ }
+            og_contents.gone()
+            og_loading.visible()
+            this.visible()
+        }
     }
 
     override fun onComplete(og: OpenGraph) {
+        loaded = true
         og_title.text = og.title
         og_host.text = Uri.parse(og.url).host
         PicassoUtil.opengraph(og.image, og_image)
