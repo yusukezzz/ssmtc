@@ -164,8 +164,6 @@ private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineEx
     Log.e("ssmtc", "coroutine error", e)
 })
 
-fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit)
-    = launch(UI + coroutineExceptionHandler(), start, null, block)
+fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit) = launch(UI + coroutineExceptionHandler(), start, null, null, block)
 
-fun <T> CoroutineScope.async(context: CoroutineContext = CommonPool, start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> T)
-    = kotlinx.coroutines.experimental.async(this.coroutineContext + context, start, null, block)
+fun <T> CoroutineScope.async(context: CoroutineContext = CommonPool, start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.experimental.async(this.coroutineContext + context, start, null, null, block)
