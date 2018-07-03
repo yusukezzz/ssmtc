@@ -64,10 +64,10 @@ configurations.all {
 }
 dependencies {
     ext {
-        kotlin_coroutines_version = '0.23.3'
+        kotlin_coroutines_version = '0.23.4'
         support_version = '27.1.1'
         retrofit_version = '2.4.0'
-        permission_dispatcher_version = '3.2.0'
+        permission_dispatcher_version = '3.3.1'
         dagger_version = '2.16'
         leakcanary_version = '1.5.4'
     }
@@ -118,7 +118,7 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.19.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
     }
 }
 
