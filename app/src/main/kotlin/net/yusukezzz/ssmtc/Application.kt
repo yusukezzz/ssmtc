@@ -77,7 +77,8 @@ open class Application : android.app.Application() {
         if (log.exists()) {
             ui {
                 try {
-                    async { slack.sendMessage(log.readText(), BuildConfig.SLACK_CHANNEL) }.await()
+                    val text = log.readText()
+                    async { slack.sendMessage(text, BuildConfig.SLACK_CHANNEL) }.await()
                     log.delete()
                 } catch (e: Throwable) {
                     // do nothing
