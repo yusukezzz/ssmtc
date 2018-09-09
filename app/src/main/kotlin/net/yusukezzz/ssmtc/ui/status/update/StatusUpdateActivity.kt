@@ -56,7 +56,7 @@ class StatusUpdateActivity: AppCompatActivity() {
 
         val replyStatusId = intent.getLongExtraOrNull(ARG_REPLY_STATUS_ID)
         val replyScreenName = intent.getStringExtraOrNull(ARG_REPLY_SCREEN_NAME)
-        replyScreenName?.let { status_input.setText(it) }
+        replyScreenName?.let { status_input.setText("@$it ") }
 
         status_input.requestFocus()
         select_photos.setOnClickListener {
