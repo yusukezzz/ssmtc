@@ -15,7 +15,7 @@ apply plugin: 'com.github.ben-manes.versions'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    buildToolsVersion "28.0.2"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
@@ -64,7 +64,7 @@ configurations.all {
 }
 dependencies {
     ext {
-        kotlin_coroutines_version = '0.24.0'
+        kotlin_coroutines_version = '0.26.0'
         support_version = '27.1.1'
         retrofit_version = '2.4.0'
         permission_dispatcher_version = '3.3.1'
@@ -75,6 +75,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
     implementation "com.android.support:appcompat-v7:$support_version"
+    implementation "com.android.support:exifinterface:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:customtabs:$support_version"
     implementation "com.android.support:design:$support_version"
