@@ -8,6 +8,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
+import android.provider.Contacts
 import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -17,6 +18,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
 import okhttp3.MediaType
@@ -164,6 +168,6 @@ private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineEx
     Log.e("ssmtc", "coroutine error", e)
 })
 
-fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit) = launch(UI + coroutineExceptionHandler(), start, null, null, block)
+fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit) = launch(Contacts.Intents.UI + coroutineExceptionHandler(), start, null, null, block)
 
 fun <T> CoroutineScope.async(context: CoroutineContext = CommonPool, start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.experimental.async(this.coroutineContext + context, start, null, null, block)
