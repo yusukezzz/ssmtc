@@ -8,7 +8,6 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
-import android.provider.Contacts
 import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -21,8 +20,7 @@ import android.widget.Toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.experimental.*
-import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.threeten.bp.OffsetDateTime
@@ -31,7 +29,7 @@ import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.CoroutineContext
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
 fun ViewGroup.setView(resId: Int) = this.addView(inflate(resId), 0)
@@ -164,10 +162,21 @@ fun String.truncateBytes(bytes: Int): String {
     return dstBuffer.toString()
 }
 
-private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineExceptionHandler({ _, e ->
+private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
     Log.e("ssmtc", "coroutine error", e)
-})
+}
 
-fun ui(start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> Unit) = launch(Contacts.Intents.UI + coroutineExceptionHandler(), start, null, null, block)
+fun CoroutineScope.ui(
+        context: CoroutineContext = this.coroutineContext + coroutineExceptionHandler(),
+        start: CoroutineStart = CoroutineStart.LAZY,
+        block: suspend CoroutineScope.() -> Unit
+): Job = this.launch(context, start, block)
 
-fun <T> CoroutineScope.async(context: CoroutineContext = CommonPool, start: CoroutineStart = CoroutineStart.DEFAULT, block: suspend CoroutineScope.() -> T) = kotlinx.coroutines.experimental.async(this.coroutineContext + context, start, null, null, block)
+fun <T> CoroutineScope.bgAsync(
+        context: CoroutineContext = Dispatchers.IO,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        block: suspend CoroutineScope.() -> T
+): Deferred<T> = async(this.coroutineContext + context, start, block)
+
+suspend fun <T> bg(block: suspend CoroutineScope.() -> T): T =
+        coroutineScope { bgAsync(coroutineContext, CoroutineStart.DEFAULT, block).await() }

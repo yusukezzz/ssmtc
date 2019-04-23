@@ -58,11 +58,11 @@ configurations.all {
 }
 dependencies {
     ext {
-        kotlin_coroutines_version = '1.1.1'
+        kotlin_coroutines_version = '1.2.0'
         support_version = '28.0.0'
-        retrofit_version = '2.4.0'
-        permission_dispatcher_version = '3.3.1'
-        dagger_version = '2.21'
+        retrofit_version = '2.5.0'
+        permission_dispatcher_version = '4.3.1'
+        dagger_version = '2.22.1'
         leakcanary_version = '1.6.3'
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -76,13 +76,13 @@ dependencies {
     implementation "com.android.support:support-v4:$support_version"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.github.hotchemi:permissionsdispatcher:$permission_dispatcher_version"
-    kapt "com.github.hotchemi:permissionsdispatcher-processor:$permission_dispatcher_version"
+    implementation "org.permissionsdispatcher:permissionsdispatcher:$permission_dispatcher_version"
+    kapt "org.permissionsdispatcher:permissionsdispatcher-processor:$permission_dispatcher_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'
     testImplementation('org.threeten:threetenbp:latest.release') {
         exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
     }
@@ -103,7 +103,7 @@ dependencies {
 }
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.bg' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
@@ -113,7 +113,7 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
     }
 }
 

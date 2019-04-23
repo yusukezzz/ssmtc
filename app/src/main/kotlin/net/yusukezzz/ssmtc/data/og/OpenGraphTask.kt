@@ -1,7 +1,7 @@
 package net.yusukezzz.ssmtc.data.og
 
-import kotlinx.coroutines.experimental.CancellationException
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Deferred
 import net.yusukezzz.ssmtc.util.async
 import net.yusukezzz.ssmtc.util.ui
 import retrofit2.Call

@@ -1,6 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.Job
 import net.yusukezzz.ssmtc.BasePresenter
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
