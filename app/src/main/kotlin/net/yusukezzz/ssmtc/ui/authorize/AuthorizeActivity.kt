@@ -3,10 +3,11 @@ package net.yusukezzz.ssmtc.ui.authorize
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.authorize.*
 import kotlinx.android.synthetic.main.base_layout.*
 import net.yusukezzz.ssmtc.Application
+import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TwitterService
@@ -17,6 +18,8 @@ import net.yusukezzz.ssmtc.util.toast
 import javax.inject.Inject
 
 class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
+    override val scope: LifecycleScope = LifecycleScope(this)
+
     @Inject
     lateinit var prefs: Preferences
 

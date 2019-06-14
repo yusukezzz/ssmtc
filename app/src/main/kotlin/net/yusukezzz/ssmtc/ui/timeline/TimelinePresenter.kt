@@ -9,10 +9,9 @@ import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.TwitterApiException
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.model.Tweet
-import net.yusukezzz.ssmtc.util.async
 import org.threeten.bp.OffsetDateTime
 
-class TimelinePresenter(private val view: TimelineContract.View,
+class TimelinePresenter(override val view: TimelineContract.View,
                         private val twitter: TwitterService) : TimelineContract.Presenter {
     companion object {
         // block & mute ids API rate limit is 15req/15min
@@ -38,7 +37,7 @@ class TimelinePresenter(private val view: TimelineContract.View,
      *
      * @param maxId
      */
-    override fun loadTweets(maxId: Long?): Job = execOnUi({
+    override fun loadTweets(maxId: Long?): Job = launch {
         val tweets = fetchTweetsAndUpdateIgnoreIds(maxId).await()
         if (tweets.isEmpty()) {
             view.timelineEdgeReached()
@@ -52,7 +51,8 @@ class TimelinePresenter(private val view: TimelineContract.View,
                 view.addTweets(filtered)
             }
         }
-    }, view::stopLoading)
+        view.stopLoading()
+    }
 
     private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && !isIgnoreUser(tw)
     private fun isIgnoreUser(tw: Tweet): Boolean {
@@ -89,54 +89,55 @@ class TimelinePresenter(private val view: TimelineContract.View,
         ignoreUserIds = (blockIds.await() + muteIds.await()).distinct()
     }
 
-    override fun loadLists(userId: Long): Job = execOnUi({
+    override fun loadLists(userId: Long): Job = launch{
         view.showListsLoading()
         val owned = async { twitter.ownedLists(userId) }
         val subscribed = async { twitter.subscribedLists(userId) }
         view.showListsSelector(owned.await() + subscribed.await())
-    }, view::dismissListsLoading)
+        view.dismissListsLoading()
+    }
 
     override fun like(tweet: Tweet) {
         if (tweet.favorited) {
             unlike(tweet)
         } else {
-            execOnUi({
-                async { twitter.like(tweet.id) }.await()
+            launch {
+                twitter.like(tweet.id)
                 tweet.favorite_count++
                 tweet.favorited = true
                 view.updateReactedTweet()
-            })
+            }
         }
     }
 
-    private fun unlike(tweet: Tweet) = execOnUi({
-        async { twitter.unlike(tweet.id) }.await()
+    private fun unlike(tweet: Tweet) = launch {
+        twitter.unlike(tweet.id)
         tweet.favorite_count--
         tweet.favorited = false
         view.updateReactedTweet()
-    })
+    }
 
     override fun retweet(tweet: Tweet) {
         if (tweet.retweeted) {
             unretweet(tweet)
         } else {
-            execOnUi({
-                async { twitter.retweet(tweet.id) }.await()
+            launch {
+                twitter.retweet(tweet.id)
                 tweet.retweet_count++
                 tweet.retweeted = true
                 view.updateReactedTweet()
-            })
+            }
         }
     }
 
-    private fun unretweet(tweet: Tweet) = execOnUi({
-        async { twitter.unretweet(tweet.id) }.await()
+    private fun unretweet(tweet: Tweet) = launch {
+        twitter.unretweet(tweet.id)
         tweet.retweet_count--
         tweet.retweeted = false
         view.updateReactedTweet()
-    })
+    }
 
-    override fun handleError(error: Throwable) {
+    fun handleError(error: Throwable) {
         if (error is TwitterApiException && error.isRateLimitExceeded()) {
             view.rateLimitExceeded()
         } else {

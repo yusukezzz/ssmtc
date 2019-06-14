@@ -1,6 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline.dialogs
 
-import android.support.v7.app.AppCompatDialogFragment
+import androidx.appcompat.app.AppCompatDialogFragment
 import net.yusukezzz.ssmtc.data.api.Timeline
 
 open class BaseDialogFragment : AppCompatDialogFragment() {

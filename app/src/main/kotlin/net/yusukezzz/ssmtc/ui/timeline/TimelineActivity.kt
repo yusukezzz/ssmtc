@@ -6,22 +6,22 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.customtabs.CustomTabsIntent
-import android.support.design.widget.NavigationView
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.LocalBroadcastManager
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.base_layout.*
@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.timeline_layout.*
 import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
+import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.SlackService
@@ -68,6 +69,8 @@ class TimelineActivity: AppCompatActivity(),
         const val STATE_OLDEST_TWEET_ID = "state_oldest_tweet_id"
         const val STATE_RECYCLER_VIEW = "state_recycler_view"
     }
+
+    override val scope: LifecycleScope = LifecycleScope(this)
 
     private lateinit var pagingScrollListener: PagingRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
@@ -136,7 +139,7 @@ class TimelineActivity: AppCompatActivity(),
         val json = gson.toJson(timelineAdapter.getAll())
         lastTimelineFile.writeText(json)
         // save last scroll position
-        outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager.onSaveInstanceState())
+        outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager!!.onSaveInstanceState())
         // save oldest tweet id
         lastTweetId?.let { outState.putLong(STATE_OLDEST_TWEET_ID, it) }
     }
@@ -152,7 +155,7 @@ class TimelineActivity: AppCompatActivity(),
         val tweets: List<Tweet> = gson.fromJson(json, object : TypeToken<List<Tweet>>() {}.type)
         val timelineState = state.getParcelable<Parcelable>(STATE_RECYCLER_VIEW)
         timelineAdapter.set(tweets)
-        timeline_list.layoutManager.onRestoreInstanceState(timelineState)
+        timeline_list.layoutManager!!.onRestoreInstanceState(timelineState)
         val oldestTweetId = state.getLong(STATE_OLDEST_TWEET_ID)
         if (oldestTweetId != 0L) {
             lastTweetId = oldestTweetId
@@ -502,10 +505,10 @@ class TimelineActivity: AppCompatActivity(),
         pagingScrollListener.reset()
         timelineAdapter.clear()
         timeline_list.scrollToPosition(0)
-        swipe_refresh.post({
+        swipe_refresh.post {
             swipe_refresh.isRefreshing = true
             onRefresh()
-        })
+        }
     }
 
     override fun onUrlClick(url: String) {

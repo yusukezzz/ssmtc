@@ -5,16 +5,12 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
 import net.yusukezzz.ssmtc.di.DaggerAppComponent
-import net.yusukezzz.ssmtc.util.bg
 import net.yusukezzz.ssmtc.util.prettyMarkdown
-import net.yusukezzz.ssmtc.util.ui
 import saschpe.android.customtabs.CustomTabsActivityLifecycleCallbacks
 import java.io.File
 import javax.inject.Inject
@@ -83,11 +79,13 @@ open class Application : android.app.Application(), CoroutineScope {
     private fun sendErrorLog() {
         val log = File(applicationContext.filesDir, ERROR_LOG_FILENAME)
         if (log.exists()) {
-            ui {
+            GlobalScope.launch {
                 try {
-                    val text = log.readText()
-                    bg { slack.sendMessage(text, BuildConfig.SLACK_CHANNEL) }
-                    log.delete()
+                    withContext(Dispatchers.IO) {
+                        val text = log.readText()
+                        slack.sendMessage(text, BuildConfig.SLACK_CHANNEL)
+                        log.delete()
+                    }
                 } catch (e: Throwable) {
                     // do nothing
                     println(e)

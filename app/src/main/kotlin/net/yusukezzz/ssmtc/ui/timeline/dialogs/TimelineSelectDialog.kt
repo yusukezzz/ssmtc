@@ -2,7 +2,7 @@ package net.yusukezzz.ssmtc.ui.timeline.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.Timeline
 

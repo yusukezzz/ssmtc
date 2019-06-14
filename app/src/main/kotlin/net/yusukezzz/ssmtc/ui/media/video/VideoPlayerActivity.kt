@@ -19,7 +19,7 @@ class VideoPlayerActivity: MediaBaseActivity(),
     MediaPlayer.OnCompletionListener {
 
     companion object {
-        val ARG_VIDEO_INFO = "video_info"
+        const val ARG_VIDEO_INFO = "video_info"
 
         fun newIntent(context: Context, video: VideoInfo): Intent =
             Intent(context, VideoPlayerActivity::class.java).apply {

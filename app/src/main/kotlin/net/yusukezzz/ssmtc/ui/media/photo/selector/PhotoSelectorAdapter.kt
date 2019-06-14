@@ -1,10 +1,10 @@
 package net.yusukezzz.ssmtc.ui.media.photo.selector
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.beVisibleIf
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
@@ -15,7 +15,7 @@ class PhotoSelectorAdapter(
     val listener: PhotoSelectorListener
 ): RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder>() {
     companion object {
-        val MAX_PHOTO_COUNT = 4
+        const val MAX_PHOTO_COUNT = 4
     }
 
     interface PhotoSelectorListener {

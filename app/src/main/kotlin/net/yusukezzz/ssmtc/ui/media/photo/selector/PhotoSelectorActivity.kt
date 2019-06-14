@@ -4,8 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.photo_selector.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
@@ -13,7 +12,7 @@ import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 class PhotoSelectorActivity: MediaBaseActivity(),
     PhotoSelectorAdapter.PhotoSelectorListener {
     companion object {
-        val RESULT_SELECTED_PHOTOS = "result_selected_photos"
+        const val RESULT_SELECTED_PHOTOS = "result_selected_photos"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +59,7 @@ class PhotoSelectorActivity: MediaBaseActivity(),
         val i = Intent()
         val paths = (photo_selector_grid.adapter as PhotoSelectorAdapter).selectedPhotoPaths()
         i.putExtra(RESULT_SELECTED_PHOTOS, paths)
-        setResult(AppCompatActivity.RESULT_OK, i)
+        setResult(RESULT_OK, i)
         finish()
     }
 }

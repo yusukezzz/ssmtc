@@ -161,22 +161,3 @@ fun String.truncateBytes(bytes: Int): String {
 
     return dstBuffer.toString()
 }
-
-private fun coroutineExceptionHandler(): CoroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-    Log.e("ssmtc", "coroutine error", e)
-}
-
-fun CoroutineScope.ui(
-        context: CoroutineContext = this.coroutineContext + coroutineExceptionHandler(),
-        start: CoroutineStart = CoroutineStart.LAZY,
-        block: suspend CoroutineScope.() -> Unit
-): Job = this.launch(context, start, block)
-
-fun <T> CoroutineScope.bgAsync(
-        context: CoroutineContext = Dispatchers.IO,
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> T
-): Deferred<T> = async(this.coroutineContext + context, start, block)
-
-suspend fun <T> bg(block: suspend CoroutineScope.() -> T): T =
-        coroutineScope { bgAsync(coroutineContext, CoroutineStart.DEFAULT, block).await() }

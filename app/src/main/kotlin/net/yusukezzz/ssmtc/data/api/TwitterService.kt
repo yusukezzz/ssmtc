@@ -207,7 +207,7 @@ interface TwitterApi {
 interface UploadApi {
     @Multipart
     @POST("/1.1/media/upload.json")
-    suspend fun upload(
+    fun upload(
         @Part("media") file: RequestBody
     ): Response<UploadResult>
 }

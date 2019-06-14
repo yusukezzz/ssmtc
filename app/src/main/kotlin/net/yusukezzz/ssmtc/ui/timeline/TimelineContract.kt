@@ -2,6 +2,7 @@ package net.yusukezzz.ssmtc.ui.timeline
 
 import kotlinx.coroutines.Job
 import net.yusukezzz.ssmtc.BasePresenter
+import net.yusukezzz.ssmtc.BaseView
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.TwList
@@ -18,7 +19,7 @@ interface TimelineContract {
         fun resetIgnoreIds()
     }
 
-    interface View {
+    interface View: BaseView {
         fun setLastTweetId(id: Long?)
         fun setTweets(tweets: List<Tweet>)
         fun addTweets(tweets: List<Tweet>)

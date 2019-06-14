@@ -4,10 +4,12 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.content.LocalBroadcastManager
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import id.zelory.compressor.Compressor
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
@@ -85,12 +87,16 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
             val account = accountRepo.find(prefs.currentUserId)!!
             twitter.setTokens(account.credentials)
 
-            val mediaIds = photos?.map {
-                twitter.upload(compressor.compressImage(it)).media_id
-            }
+            val job = GlobalScope.launch {
+                val mediaIds = photos?.map {
+                    twitter.upload(compressor.compressImage(it)).media_id
+                }
 
-            twitter.tweet(status, inReplyToStatusId, mediaIds)
-            sendSuccessBroadcast()
+                twitter.tweet(status, inReplyToStatusId, mediaIds)
+            }
+            job.invokeOnCompletion {
+                sendSuccessBroadcast()
+            }
         } catch (e: Throwable) {
             slack.sendMessage(e, BuildConfig.SLACK_CHANNEL)
             sendFailureBroadcast()

@@ -1,9 +1,9 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 
 // https://gist.github.com/ssinss/e06f12ef66c51252563e

@@ -7,7 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.photo_gallery.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
@@ -21,8 +21,8 @@ import permissions.dispatcher.RuntimePermissions
 @RuntimePermissions
 class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
     companion object {
-        val ARG_IMAGES = "images"
-        val ARG_START_POSITION = "start_position"
+        const val ARG_IMAGES = "images"
+        const val ARG_START_POSITION = "start_position"
 
         fun newIntent(context: Context, images: List<Media>, pos: Int): Intent =
             Intent(context, GalleryActivity::class.java).apply {

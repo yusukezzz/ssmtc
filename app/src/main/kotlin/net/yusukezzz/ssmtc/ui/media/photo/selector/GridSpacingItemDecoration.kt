@@ -1,8 +1,8 @@
 package net.yusukezzz.ssmtc.ui.media.photo.selector
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 class GridSpacingItemDecoration(val spanCount: Int, val spacing: Int): RecyclerView.ItemDecoration() {
 

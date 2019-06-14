@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
@@ -94,7 +94,7 @@ class StatusUpdateActivity: AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_PHOTO_SELECT && resultCode == AppCompatActivity.RESULT_OK && data != null) {
+        if (requestCode == REQUEST_PHOTO_SELECT && resultCode == RESULT_OK && data != null) {
             val paths = data.getStringArrayExtra(PhotoSelectorActivity.RESULT_SELECTED_PHOTOS)
             showSelectedPhotos(paths)
         }

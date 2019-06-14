@@ -7,13 +7,11 @@ import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
-import net.yusukezzz.ssmtc.util.async
-import net.yusukezzz.ssmtc.util.ui
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthConsumer
 import oauth.signpost.basic.DefaultOAuthProvider
 
-class AuthorizePresenter(val view: AuthorizeContract.View,
+class AuthorizePresenter(override val view: AuthorizeContract.View,
                          val prefs: Preferences,
                          val twitter: TwitterService,
                          val timelineRepo: TimelineRepository,
@@ -27,30 +25,24 @@ class AuthorizePresenter(val view: AuthorizeContract.View,
     )
 
     override fun authorizeRequest() {
-        ui {
-            val url = async { provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND) }.await()
+        launch {
+            val url = provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND)
             view.showAuthorizeWeb(url)
         }
     }
 
     override fun authorize(pin: String) {
-        ui {
-            async {
-                provider.retrieveAccessToken(consumer, pin)
-                val cred = Credentials(consumer.token, consumer.tokenSecret)
-                twitter.setTokens(cred)
-                val user = twitter.verifyCredentials()
-                prefs.currentUserId = user.id
-                val timelines = timelineRepo.initialize(user.id)
-                val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
-                accountRepo.add(ssmtcAccount)
-            }.await()
+        launch {
+            provider.retrieveAccessToken(consumer, pin)
+            val cred = Credentials(consumer.token, consumer.tokenSecret)
+            twitter.setTokens(cred)
+            val user = twitter.verifyCredentials()
+            prefs.currentUserId = user.id
+            val timelines = timelineRepo.initialize(user.id)
+            val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
+            accountRepo.add(ssmtcAccount)
             view.authorized()
         }
-    }
-
-    override fun handleError(error: Throwable) {
-        view.handleError(error)
     }
 }
 
