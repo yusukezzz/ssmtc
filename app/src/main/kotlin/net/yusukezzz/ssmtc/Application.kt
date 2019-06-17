@@ -79,7 +79,7 @@ open class Application : android.app.Application(), CoroutineScope {
     private fun sendErrorLog() {
         val log = File(applicationContext.filesDir, ERROR_LOG_FILENAME)
         if (log.exists()) {
-            GlobalScope.launch {
+            launch {
                 try {
                     withContext(Dispatchers.IO) {
                         val text = log.readText()

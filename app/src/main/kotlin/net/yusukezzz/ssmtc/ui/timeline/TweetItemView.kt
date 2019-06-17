@@ -21,10 +21,12 @@ import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.text.DecimalFormat
 
-class TweetItemView : LinearLayout {
+class TweetItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+    LinearLayout(context, attrs, defStyle) {
     companion object {
         private val numberFormatter = DecimalFormat("#,###,###")
     }
+
     private lateinit var listener: TweetItemListener
     private lateinit var ogClient: OpenGraphService
     private val mediaVideo: View by lazy { this.inflate(R.layout.media_video) }
@@ -39,12 +41,10 @@ class TweetItemView : LinearLayout {
 
         // for TextUtil
         fun onUrlClick(url: String)
+
         fun onScreenNameClick(screenName: String)
         fun onHashTagClick(hashTag: String)
     }
-
-    @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
 
     fun setTweetListener(listener: TweetItemListener) {
         this.listener = listener

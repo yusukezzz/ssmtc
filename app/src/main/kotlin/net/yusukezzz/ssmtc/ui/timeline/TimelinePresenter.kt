@@ -3,7 +3,6 @@ package net.yusukezzz.ssmtc.ui.timeline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.TwitterApiException
@@ -11,12 +10,15 @@ import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import org.threeten.bp.OffsetDateTime
 
-class TimelinePresenter(override val view: TimelineContract.View,
-                        private val twitter: TwitterService) : TimelineContract.Presenter {
+class TimelinePresenter(
+    override val view: TimelineContract.View,
+    private val twitter: TwitterService
+) : TimelineContract.Presenter {
     companion object {
         // block & mute ids API rate limit is 15req/15min
         const val IGNORE_IDS_CACHE_SECONDS: Long = 60L
     }
+
     private var ignoreUserIds: List<Long> = listOf()
     private var ignoreIdsLastUpdatedAt: OffsetDateTime = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
     private lateinit var timeline: Timeline
@@ -37,7 +39,7 @@ class TimelinePresenter(override val view: TimelineContract.View,
      *
      * @param maxId
      */
-    override fun loadTweets(maxId: Long?): Job = launch {
+    override fun loadTweets(maxId: Long?): Job = task({
         val tweets = fetchTweetsAndUpdateIgnoreIds(maxId).await()
         if (tweets.isEmpty()) {
             view.timelineEdgeReached()
@@ -51,25 +53,26 @@ class TimelinePresenter(override val view: TimelineContract.View,
                 view.addTweets(filtered)
             }
         }
-        view.stopLoading()
-    }
+    }, view::stopLoading)
 
     private fun isVisible(tw: Tweet): Boolean = timeline.filter.match(tw) && !isIgnoreUser(tw)
     private fun isIgnoreUser(tw: Tweet): Boolean {
         fun containsIgnoreUser(tweet: Tweet): Boolean = ignoreUserIds.contains(tweet.user.id)
         val shouldTweetIgnore = containsIgnoreUser(tw)
-        val shouldRetweetIgnore = tw.retweeted_status?.let{ containsIgnoreUser(it) } ?: false
+        val shouldRetweetIgnore = tw.retweeted_status?.let { containsIgnoreUser(it) } ?: false
         val shouldQuotedIgnore = tw.quoted_status?.let { containsIgnoreUser(it) } ?: false
 
         return shouldTweetIgnore || shouldRetweetIgnore || shouldQuotedIgnore
     }
 
-    private fun CoroutineScope.fetchTweetsAndUpdateIgnoreIds(maxId: Long?,
-                                                             now: OffsetDateTime = OffsetDateTime.now()): Deferred<List<Tweet>> {
+    private suspend fun CoroutineScope.fetchTweetsAndUpdateIgnoreIds(
+        maxId: Long?,
+        now: OffsetDateTime = OffsetDateTime.now()
+    ): Deferred<List<Tweet>> {
         val fetchTweetsTask = async { twitter.statuses(timeline, maxId) }
         return async {
             if (shouldIgnoreIdsUpdate(now)) {
-                updateIgnoreIdsTask().await()
+                updateIgnoreIdsTask()
                 fetchTweetsTask.await()
             } else {
                 // use cached ignoreUserIds
@@ -81,7 +84,7 @@ class TimelinePresenter(override val view: TimelineContract.View,
     private fun shouldIgnoreIdsUpdate(now: OffsetDateTime): Boolean =
         now.isAfter(ignoreIdsLastUpdatedAt.plusSeconds(IGNORE_IDS_CACHE_SECONDS))
 
-    private fun CoroutineScope.updateIgnoreIdsTask(): Deferred<Unit> = async {
+    private suspend fun CoroutineScope.updateIgnoreIdsTask(): Unit = withIO {
         val blockIds = async { twitter.blockedIds().ids }
         val muteIds = async { twitter.mutedIds().ids }
         // save blocked and muted user ids
@@ -89,55 +92,54 @@ class TimelinePresenter(override val view: TimelineContract.View,
         ignoreUserIds = (blockIds.await() + muteIds.await()).distinct()
     }
 
-    override fun loadLists(userId: Long): Job = launch{
+    override fun loadLists(userId: Long): Job = task({
         view.showListsLoading()
         val owned = async { twitter.ownedLists(userId) }
         val subscribed = async { twitter.subscribedLists(userId) }
         view.showListsSelector(owned.await() + subscribed.await())
-        view.dismissListsLoading()
-    }
+    }, view::dismissListsLoading)
 
     override fun like(tweet: Tweet) {
         if (tweet.favorited) {
             unlike(tweet)
         } else {
-            launch {
+            task({
                 twitter.like(tweet.id)
                 tweet.favorite_count++
                 tweet.favorited = true
                 view.updateReactedTweet()
-            }
+            })
         }
     }
 
-    private fun unlike(tweet: Tweet) = launch {
+    private fun unlike(tweet: Tweet) = task({
         twitter.unlike(tweet.id)
         tweet.favorite_count--
         tweet.favorited = false
         view.updateReactedTweet()
-    }
+    })
 
     override fun retweet(tweet: Tweet) {
         if (tweet.retweeted) {
             unretweet(tweet)
         } else {
-            launch {
+            task({
                 twitter.retweet(tweet.id)
                 tweet.retweet_count++
                 tweet.retweeted = true
                 view.updateReactedTweet()
-            }
+            })
         }
     }
 
-    private fun unretweet(tweet: Tweet) = launch {
+    private fun unretweet(tweet: Tweet) = task({
         twitter.unretweet(tweet.id)
         tweet.retweet_count--
         tweet.retweeted = false
         view.updateReactedTweet()
-    }
+    })
 
-    fun handleError(error: Throwable) {
+    override fun handleError(error: Throwable) {
         if (error is TwitterApiException && error.isRateLimitExceeded()) {
             view.rateLimitExceeded()
         } else {

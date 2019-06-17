@@ -32,7 +32,6 @@ import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
-import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.Media
@@ -56,7 +55,7 @@ import saschpe.android.customtabs.WebViewFallback
 import java.io.File
 import javax.inject.Inject
 
-class TimelineActivity: AppCompatActivity(),
+class TimelineActivity : AppCompatActivity(),
     TimelineContract.View,
     SwipeRefreshLayout.OnRefreshListener,
     PagingRecyclerOnScrollListener.ScrollListener,
@@ -70,7 +69,7 @@ class TimelineActivity: AppCompatActivity(),
         const val STATE_RECYCLER_VIEW = "state_recycler_view"
     }
 
-    override val scope: LifecycleScope = LifecycleScope(this)
+    override val mainScope: LifecycleScope = LifecycleScope(this)
 
     private lateinit var pagingScrollListener: PagingRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
@@ -94,9 +93,6 @@ class TimelineActivity: AppCompatActivity(),
 
     @Inject
     lateinit var og: OpenGraphService
-
-    @Inject
-    lateinit var slack: SlackService
 
     private val successReceiver: BroadcastReceiver = SuccessReceiver()
     private val failureReceiver: BroadcastReceiver = FailureReceiver()
@@ -166,7 +162,8 @@ class TimelineActivity: AppCompatActivity(),
 
     private fun setupDrawerView() {
         val drawerToggle = object : ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close) {
+            this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close
+        ) {
             override fun onDrawerClosed(drawerView: View) {
                 super.onDrawerClosed(drawerView)
                 // always back to timeline navigation
@@ -193,10 +190,12 @@ class TimelineActivity: AppCompatActivity(),
         timeline_list.addOnScrollListener(pagingScrollListener)
 
         swipe_refresh.setOnRefreshListener(this)
-        swipe_refresh.setColorSchemeResources(R.color.green,
+        swipe_refresh.setColorSchemeResources(
+            R.color.green,
             R.color.red,
             R.color.blue,
-            R.color.yellow)
+            R.color.yellow
+        )
 
         toolbar_title.setOnClickListener {
             timeline_list.scrollToPosition(0)
@@ -211,8 +210,10 @@ class TimelineActivity: AppCompatActivity(),
         super.onResume()
         // update relative tweet time
         timelineAdapter.notifyDataSetChanged()
-        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(successReceiver, IntentFilter(StatusUpdateService.ACTION_SUCCESS))
-        LocalBroadcastManager.getInstance(applicationContext).registerReceiver(failureReceiver, IntentFilter(StatusUpdateService.ACTION_FAILURE))
+        LocalBroadcastManager.getInstance(applicationContext)
+            .registerReceiver(successReceiver, IntentFilter(StatusUpdateService.ACTION_SUCCESS))
+        LocalBroadcastManager.getInstance(applicationContext)
+            .registerReceiver(failureReceiver, IntentFilter(StatusUpdateService.ACTION_FAILURE))
     }
 
     override fun onPause() {
@@ -345,8 +346,8 @@ class TimelineActivity: AppCompatActivity(),
     private fun confirmRemoveAccount() {
         AlertDialog.Builder(this)
             .setMessage(R.string.confirm_account_remove_message)
-            .setPositiveButton(R.string.confirm_account_remove_ok, { _, _ -> removeAccount() })
-            .setNegativeButton(R.string.confirm_account_remove_cancel, { _, _ -> /* do nothing */ })
+            .setPositiveButton(R.string.confirm_account_remove_ok) { _, _ -> removeAccount() }
+            .setNegativeButton(R.string.confirm_account_remove_cancel) { _, _ -> /* do nothing */ }
             .show()
     }
 
@@ -524,11 +525,13 @@ class TimelineActivity: AppCompatActivity(),
         CustomTabsHelper.openCustomTab(this, chromeIntent, Uri.parse(url), WebViewFallback())
     }
 
-    override fun onImageClick(images: List<Media>, pos: Int) = startActivity(GalleryActivity.newIntent(this, images, pos))
+    override fun onImageClick(images: List<Media>, pos: Int) =
+        startActivity(GalleryActivity.newIntent(this, images, pos))
 
     override fun onVideoClick(video: VideoInfo) = startActivity(VideoPlayerActivity.newIntent(this, video))
 
-    override fun onReplyClick(tweet: Tweet) = startActivity(StatusUpdateActivity.newIntent(this, tweet.id, tweet.user.screenName))
+    override fun onReplyClick(tweet: Tweet) =
+        startActivity(StatusUpdateActivity.newIntent(this, tweet.id, tweet.user.screenName))
 
     override fun onLikeClick(tweet: Tweet) = presenter.like(tweet)
 

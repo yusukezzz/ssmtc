@@ -13,6 +13,8 @@ class TimelineModule(val view: TimelineContract.View) {
 
     @Provides
     @ActivityScope
-    fun provideTimelinePresenter(view: TimelineContract.View,
-                                 twitter: TwitterService): TimelineContract.Presenter = TimelinePresenter(view, twitter)
+    fun provideTimelinePresenter(
+        view: TimelineContract.View,
+        twitter: TwitterService
+    ): TimelineContract.Presenter = TimelinePresenter(view, twitter)
 }

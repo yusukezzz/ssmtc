@@ -9,7 +9,7 @@ import net.yusukezzz.ssmtc.data.api.model.TwList
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 
 interface TimelineContract {
-    interface Presenter: BasePresenter {
+    interface Presenter : BasePresenter {
         fun setTimeline(timeline: Timeline)
         fun setTokens(credentials: Credentials)
         fun loadTweets(maxId: Long? = null): Job
@@ -19,7 +19,7 @@ interface TimelineContract {
         fun resetIgnoreIds()
     }
 
-    interface View: BaseView {
+    interface View : BaseView {
         fun setLastTweetId(id: Long?)
         fun setTweets(tweets: List<Tweet>)
         fun addTweets(tweets: List<Tweet>)

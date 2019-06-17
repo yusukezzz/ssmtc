@@ -18,7 +18,7 @@ import net.yusukezzz.ssmtc.util.toast
 import javax.inject.Inject
 
 class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
-    override val scope: LifecycleScope = LifecycleScope(this)
+    override val mainScope: LifecycleScope = LifecycleScope(this)
 
     @Inject
     lateinit var prefs: Preferences

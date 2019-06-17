@@ -11,11 +11,13 @@ import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthConsumer
 import oauth.signpost.basic.DefaultOAuthProvider
 
-class AuthorizePresenter(override val view: AuthorizeContract.View,
-                         val prefs: Preferences,
-                         val twitter: TwitterService,
-                         val timelineRepo: TimelineRepository,
-                         val accountRepo: SsmtcAccountRepository) : AuthorizeContract.Presenter {
+class AuthorizePresenter(
+    override val view: AuthorizeContract.View,
+    val prefs: Preferences,
+    val twitter: TwitterService,
+    val timelineRepo: TimelineRepository,
+    val accountRepo: SsmtcAccountRepository
+) : AuthorizeContract.Presenter {
 
     private val consumer = DefaultOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
     private val provider = DefaultOAuthProvider(
@@ -25,16 +27,18 @@ class AuthorizePresenter(override val view: AuthorizeContract.View,
     )
 
     override fun authorizeRequest() {
-        launch {
-            val url = provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND)
+        task({
+            val url = withIO { provider.retrieveRequestToken(consumer, OAuth.OUT_OF_BAND) }
             view.showAuthorizeWeb(url)
-        }
+        })
     }
 
     override fun authorize(pin: String) {
-        launch {
-            provider.retrieveAccessToken(consumer, pin)
-            val cred = Credentials(consumer.token, consumer.tokenSecret)
+        task({
+            val cred = withIO {
+                provider.retrieveAccessToken(consumer, pin)
+                Credentials(consumer.token, consumer.tokenSecret)
+            }
             twitter.setTokens(cred)
             val user = twitter.verifyCredentials()
             prefs.currentUserId = user.id
@@ -42,7 +46,11 @@ class AuthorizePresenter(override val view: AuthorizeContract.View,
             val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)
             accountRepo.add(ssmtcAccount)
             view.authorized()
-        }
+        })
+    }
+
+    override fun handleError(error: Throwable) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
