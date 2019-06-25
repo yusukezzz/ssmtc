@@ -124,8 +124,6 @@ class TimelineActivity : AppCompatActivity(),
             // initial load
             loadAccount()
         }
-
-        og.cleanup()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -1,10 +1,7 @@
 package net.yusukezzz.ssmtc.data.og
 
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Deferred
-import net.yusukezzz.ssmtc.util.async
-import net.yusukezzz.ssmtc.util.ui
-import retrofit2.Call
+import kotlinx.coroutines.Job
 import java.lang.ref.WeakReference
 
 class OpenGraphTask(private val url: String,
@@ -18,32 +15,28 @@ class OpenGraphTask(private val url: String,
     }
 
     private class OGHttpErrorException(message: String) : Exception(message)
-    private class OGCancelException : Exception()
+    private class OGCancelException : CancellationException()
 
-    private var httpCall: Call<OpenGraph>? = null
-    private var realTask: Deferred<OpenGraph>? = null
+    private lateinit var realTask: Job
 
-    fun execute(done: () -> Unit): OpenGraphTask {
-        ui {
-            var og: OpenGraph? = null
-            try {
-                realTask = async { resolve() }
-                og = realTask?.await()
-            } catch (e: CancellationException) {
-                println("async canceled: $e")
-            } catch (e: Exception) {
-                println("OpenGraphTask failed: $e")
-            } finally {
-                if (og == null) og = fallback(url)
-                target.get()?.onComplete(og)
-                done()
-            }
+    suspend fun execute(done: () -> Unit): OpenGraphTask {
+        var og: OpenGraph? = null
+        try {
+            og = resolve()
+        } catch (e: CancellationException) {
+            println("async canceled: $e")
+        } catch (e: Exception) {
+            println("OpenGraphTask failed: $e")
+        } finally {
+            if (og == null) og = fallback(url)
+            target.get()?.onComplete(og)
+            done()
         }
 
         return this
     }
 
-    private fun resolve(): OpenGraph {
+    private suspend fun resolve(): OpenGraph {
         val cached = cache.get(url)
         if (cached != null) {
             return cached
@@ -53,8 +46,7 @@ class OpenGraphTask(private val url: String,
             return OpenGraph.imageData(url)
         }
 
-        httpCall = ogApi.parse(url)
-        val res = httpCall!!.execute()
+        val res = ogApi.parse(url)
         if (!res.isSuccessful) {
             throw OGHttpErrorException("OpenGraph HTTP error: $url")
         }
@@ -65,8 +57,7 @@ class OpenGraphTask(private val url: String,
     }
 
     fun cancel() {
-        httpCall?.cancel()
-        realTask?.cancel(OGCancelException())
+        realTask.cancel(OGCancelException())
     }
 
     private fun fallback(resolvedUrl: String): OpenGraph {

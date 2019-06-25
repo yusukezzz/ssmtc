@@ -1,33 +1,28 @@
 package net.yusukezzz.ssmtc.data.og
 
-import net.yusukezzz.ssmtc.util.async
-import net.yusukezzz.ssmtc.util.ui
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 class OpenGraphService(private val cache: OGDiskCache, private val ogApi: OpenGraphApi) {
     private val tasks: WeakHashMap<OpenGraphLoadable, OpenGraphTask> = WeakHashMap()
 
-    fun load(url: String, view: OpenGraphLoadable) {
-        synchronized(OpenGraphService::class) {
-            view.onStart()
-            // cancel if there are any old requests for the same view
-            tasks.remove(view)?.cancel()
+    suspend fun load(coroutineContext: CoroutineContext, url: String, view: OpenGraphLoadable) {
+        view.onStart()
+        // cancel if there are any old requests for the same view
+        tasks.remove(view)?
 
-            val target = WeakReference<OpenGraphLoadable>(view)
-            val t = OpenGraphTask(url, target, ogApi, cache).execute {
-                target.get()?.let(tasks::remove)
-            }
-            tasks.put(view, t)
+        val target = WeakReference<OpenGraphLoadable>(view)
+        val t = OpenGraphTask(url, target, ogApi, cache).execute {
+            target.get()?.let(tasks::remove)
         }
+        tasks[view] = t
     }
 
-    fun cleanup() = ui {
-        async { cache.removeOldCaches() }.await()
-    }
+    suspend fun cleanup() = cache.removeOldCaches()
 }
 
 interface OpenGraphApi {
@@ -39,5 +34,5 @@ interface OpenGraphApi {
      * }
      */
     @GET("/opengraph/{url}")
-    fun parse(@Path("url") url: String): Call<OpenGraph>
+    suspend fun parse(@Path("url") url: String): Response<OpenGraph>
 }

@@ -29,7 +29,7 @@ class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: Attribu
         loaded = false
     }
 
-    override fun onStart() {
+    override suspend fun onStart() {
         if (!loaded) {
             this.isClickable = false
             this.setOnClickListener { /* unregister listener */ }
@@ -39,7 +39,7 @@ class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: Attribu
         }
     }
 
-    override fun onComplete(og: OpenGraph) {
+    override suspend fun onComplete(og: OpenGraph) {
         loaded = true
         og_title.text = og.title
         og_host.text = Uri.parse(og.url).host

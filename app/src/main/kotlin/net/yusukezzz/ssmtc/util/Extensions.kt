@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.provider.MediaStore
-import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -17,10 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.*
+import androidx.core.content.ContextCompat
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.threeten.bp.OffsetDateTime
@@ -29,7 +25,6 @@ import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
-import kotlin.coroutines.CoroutineContext
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
 fun ViewGroup.setView(resId: Int) = this.addView(inflate(resId), 0)
@@ -71,7 +66,6 @@ fun Context.resolveAttributeId(resId: Int): Int {
     return attr.resourceId
 }
 
-
 fun Intent.getLongExtraOrNull(key: String): Long? {
     return if (this.hasExtra(key)) {
         this.getLongExtra(key, 0)
@@ -79,6 +73,7 @@ fun Intent.getLongExtraOrNull(key: String): Long? {
         null
     }
 }
+
 fun Intent.getStringExtraOrNull(key: String): String? {
     return if (this.hasExtra(key)) {
         this.getStringExtra(key)
@@ -86,6 +81,7 @@ fun Intent.getStringExtraOrNull(key: String): String? {
         null
     }
 }
+
 fun Intent.getExtraStreamOrNull(): Any? = this.extras?.get(Intent.EXTRA_STREAM)
 
 fun VectorDrawable.toBitmap(): Bitmap {
@@ -129,6 +125,7 @@ fun Throwable.prettyMarkdown(): String {
             |$c```
         """.trimMargin()
 }
+
 // https://qiita.com/nukka123/items/205c93c72a35a17a5c3b
 fun String.truncateBytes(bytes: Int): String {
     val charset = StandardCharsets.UTF_8
