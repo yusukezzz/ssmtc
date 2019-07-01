@@ -3,16 +3,16 @@ package net.yusukezzz.ssmtc.ui.timeline
 import dagger.Module
 import dagger.Provides
 import net.yusukezzz.ssmtc.data.api.TwitterService
-import net.yusukezzz.ssmtc.di.ActivityScope
+import net.yusukezzz.ssmtc.di.PerActivity
 
 @Module
 class TimelineModule(val view: TimelineContract.View) {
     @Provides
-    @ActivityScope
+    @PerActivity
     fun provideTimelineView(): TimelineContract.View = view
 
     @Provides
-    @ActivityScope
+    @PerActivity
     fun provideTimelinePresenter(
         view: TimelineContract.View,
         twitter: TwitterService

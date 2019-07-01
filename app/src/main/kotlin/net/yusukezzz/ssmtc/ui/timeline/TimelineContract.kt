@@ -30,6 +30,5 @@ interface TimelineContract {
         fun stopLoading()
         fun rateLimitExceeded()
         fun updateReactedTweet()
-        fun handleError(error: Throwable)
     }
 }

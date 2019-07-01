@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -24,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.base_layout.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 import kotlinx.android.synthetic.main.timeline_layout.*
@@ -55,7 +55,7 @@ import saschpe.android.customtabs.WebViewFallback
 import java.io.File
 import javax.inject.Inject
 
-class TimelineActivity : AppCompatActivity(),
+class TimelineActivity : DaggerAppCompatActivity(),
     TimelineContract.View,
     SwipeRefreshLayout.OnRefreshListener,
     PagingRecyclerOnScrollListener.ScrollListener,

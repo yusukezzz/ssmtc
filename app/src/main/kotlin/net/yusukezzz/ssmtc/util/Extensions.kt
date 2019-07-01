@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.threeten.bp.OffsetDateTime
@@ -25,6 +26,7 @@ import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
+import kotlin.math.ceil
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
 fun ViewGroup.setView(resId: Int) = this.addView(inflate(resId), 0)
@@ -134,7 +136,7 @@ fun String.truncateBytes(bytes: Int): String {
         .onUnmappableCharacter(CodingErrorAction.IGNORE)
         .reset()
 
-    val estimate = this.length * (Math.ceil(encoder.maxBytesPerChar().toDouble()).toInt())
+    val estimate = this.length * (ceil(encoder.maxBytesPerChar().toDouble()).toInt())
     if (estimate <= bytes) {
         return this
     }
@@ -158,3 +160,18 @@ fun String.truncateBytes(bytes: Int): String {
 
     return dstBuffer.toString()
 }
+
+fun CoroutineScope.launchUI(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+): Job =
+    launch(coroutineContext, start, block)
+
+suspend fun <T> CoroutineScope.async(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> T
+): Deferred<T> =
+    async(Dispatchers.IO, start, block)
+
+suspend fun <T> CoroutineScope.withIO(block: suspend CoroutineScope.() -> T): T =
+    withContext(Dispatchers.IO, block)

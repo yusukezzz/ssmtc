@@ -4,7 +4,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancelChildren
+import net.yusukezzz.ssmtc.util.launchUI
 
 class LifecycleScope(private val owner: LifecycleOwner) : LifecycleObserver, CoroutineScope by MainScope() {
     init {
@@ -13,7 +17,7 @@ class LifecycleScope(private val owner: LifecycleOwner) : LifecycleObserver, Cor
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        cancel()
+        coroutineContext.cancelChildren()
         owner.lifecycle.removeObserver(this)
     }
 }
@@ -21,10 +25,8 @@ class LifecycleScope(private val owner: LifecycleOwner) : LifecycleObserver, Cor
 interface BasePresenter {
     val view: BaseView
 
-    fun handleError(error: Throwable)
-
     fun task(block: suspend CoroutineScope.() -> Unit, always: () -> Unit = {}): Job {
-        return view.launch {
+        return view.mainScope.launchUI {
             try {
                 block()
             } catch (e: Throwable) {
@@ -35,22 +37,13 @@ interface BasePresenter {
         }
     }
 
-    suspend fun <T> CoroutineScope.async(
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> T
-    ): Deferred<T> =
-        async(Dispatchers.IO, start, block)
-
-    suspend fun <T> CoroutineScope.withIO(block: suspend CoroutineScope.() -> T): T =
-        withContext(Dispatchers.IO, block)
+    fun handleError(error: Throwable) {
+        view.handleError(error)
+    }
 }
 
 interface BaseView {
     val mainScope: LifecycleScope
 
-    fun launch(
-        start: CoroutineStart = CoroutineStart.DEFAULT,
-        block: suspend CoroutineScope.() -> Unit
-    ): Job =
-        mainScope.launch(mainScope.coroutineContext, start, block)
+    fun handleError(error: Throwable)
 }

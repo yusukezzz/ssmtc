@@ -1,9 +1,9 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
 import dagger.Subcomponent
-import net.yusukezzz.ssmtc.di.ActivityScope
+import net.yusukezzz.ssmtc.di.PerActivity
 
-@ActivityScope
+@PerActivity
 @Subcomponent(modules = [TimelineModule::class])
 interface TimelineComponent {
     fun inject(activity: TimelineActivity)
