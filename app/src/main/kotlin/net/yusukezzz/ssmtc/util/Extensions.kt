@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.util
 
+import android.app.Activity
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -17,7 +18,9 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
+import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.threeten.bp.OffsetDateTime
@@ -51,6 +54,13 @@ fun Context.toast(resId: Int) = this.toast(this.resources.getString(resId))
 fun Context.toast(error: Throwable) {
     Log.e("net.yusukezzz.ssmtc", "ERROR", error)
     toast(error.toString())
+}
+
+fun Activity.snackbar(error: Throwable) {
+    error.printStackTrace()
+    this.findViewById<View>(R.id.content)?.let {
+        Snackbar.make(it, error.message!!, Snackbar.LENGTH_SHORT).show()
+    }
 }
 
 fun Context.getCompatColor(id: Int): Int = ContextCompat.getColor(this, id)

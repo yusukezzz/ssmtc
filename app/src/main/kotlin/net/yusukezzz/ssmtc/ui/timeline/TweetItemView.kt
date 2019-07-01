@@ -203,7 +203,7 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
             open_graph.visible()
         } else {
             open_graph.setListener(listener)
-            ogClient.load(coroutineContext, url, open_graph)
+            ogClient.load(url, open_graph)
         }
     }
 }

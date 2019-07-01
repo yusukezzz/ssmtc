@@ -1,28 +1,36 @@
 package net.yusukezzz.ssmtc.data.og
 
+import kotlinx.coroutines.CoroutineScope
+import net.yusukezzz.ssmtc.util.launchUI
+import net.yusukezzz.ssmtc.util.withIO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import java.lang.ref.WeakReference
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
-class OpenGraphService(private val cache: OGDiskCache, private val ogApi: OpenGraphApi) {
-    private val tasks: WeakHashMap<OpenGraphLoadable, OpenGraphTask> = WeakHashMap()
+class OpenGraphService(
+    private val cache: OGDiskCache,
+    private val ogApi: OpenGraphApi,
+    private val mainScope: CoroutineScope
+) {
+    private val tasks: MutableMap<OpenGraphLoadable, OpenGraphTask> = Collections.synchronizedMap(WeakHashMap())
 
-    suspend fun load(coroutineContext: CoroutineContext, url: String, view: OpenGraphLoadable) {
+    fun load(url: String, view: OpenGraphLoadable) {
         view.onStart()
         // cancel if there are any old requests for the same view
-        tasks.remove(view)?
+        tasks.remove(view)?.cancel()
 
-        val target = WeakReference<OpenGraphLoadable>(view)
-        val t = OpenGraphTask(url, target, ogApi, cache).execute {
+        val target = WeakReference(view)
+        val t = OpenGraphTask(mainScope, url, target, ogApi, cache).execute {
             target.get()?.let(tasks::remove)
         }
         tasks[view] = t
     }
 
-    suspend fun cleanup() = cache.removeOldCaches()
+    fun cleanup() = mainScope.launchUI {
+        withIO { cache.removeOldCaches() }
+    }
 }
 
 interface OpenGraphApi {

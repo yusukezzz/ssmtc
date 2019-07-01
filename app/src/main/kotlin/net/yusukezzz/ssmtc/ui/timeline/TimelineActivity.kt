@@ -549,7 +549,7 @@ class TimelineActivity : DaggerAppCompatActivity(),
     override fun updateReactedTweet() = timelineAdapter.notifyDataSetChanged()
 
     override fun handleError(error: Throwable) {
-        toast(error)
+        snackbar(error)
         swipe_refresh.isRefreshing = false
         pagingScrollListener.stopLoading()
     }

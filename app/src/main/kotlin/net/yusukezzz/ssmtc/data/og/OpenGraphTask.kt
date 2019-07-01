@@ -1,13 +1,19 @@
 package net.yusukezzz.ssmtc.data.og
 
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
+import net.yusukezzz.ssmtc.util.launchUI
+import net.yusukezzz.ssmtc.util.withIO
 import java.lang.ref.WeakReference
 
-class OpenGraphTask(private val url: String,
-                    private val target: WeakReference<OpenGraphLoadable>,
-                    private val ogApi: OpenGraphApi,
-                    private val cache: OGDiskCache) {
+class OpenGraphTask(
+    private val mainScope: CoroutineScope,
+    private val url: String,
+    private val target: WeakReference<OpenGraphLoadable>,
+    private val ogApi: OpenGraphApi,
+    private val cache: OGDiskCache) {
     companion object {
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
         private fun ext(url: String): String = url.split(".").last().toLowerCase()
@@ -17,20 +23,22 @@ class OpenGraphTask(private val url: String,
     private class OGHttpErrorException(message: String) : Exception(message)
     private class OGCancelException : CancellationException()
 
-    private lateinit var realTask: Job
+    private var job: Job? = null
 
-    suspend fun execute(done: () -> Unit): OpenGraphTask {
-        var og: OpenGraph? = null
-        try {
-            og = resolve()
-        } catch (e: CancellationException) {
-            println("async canceled: $e")
-        } catch (e: Exception) {
-            println("OpenGraphTask failed: $e")
-        } finally {
-            if (og == null) og = fallback(url)
-            target.get()?.onComplete(og)
-            done()
+    fun execute(done: () -> Unit): OpenGraphTask {
+        job = mainScope.launchUI {
+            var og: OpenGraph? = null
+            try {
+                og = withIO { resolve() }
+            } catch (e: CancellationException) {
+                println("async canceled: $e")
+            } catch (e: Exception) {
+                println("OpenGraphTask failed: $e")
+            } finally {
+                if (og == null) og = fallback(url)
+                target.get()?.onComplete(og)
+                done()
+            }
         }
 
         return this
@@ -57,7 +65,7 @@ class OpenGraphTask(private val url: String,
     }
 
     fun cancel() {
-        realTask.cancel(OGCancelException())
+        job?.cancelChildren(OGCancelException())
     }
 
     private fun fallback(resolvedUrl: String): OpenGraph {
