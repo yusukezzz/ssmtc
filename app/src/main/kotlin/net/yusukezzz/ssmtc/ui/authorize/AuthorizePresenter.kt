@@ -7,6 +7,7 @@ import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
+import net.yusukezzz.ssmtc.util.withIO
 import oauth.signpost.OAuth
 import oauth.signpost.basic.DefaultOAuthConsumer
 import oauth.signpost.basic.DefaultOAuthProvider
@@ -47,10 +48,6 @@ class AuthorizePresenter(
             accountRepo.add(ssmtcAccount)
             view.authorized()
         })
-    }
-
-    override fun handleError(error: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 

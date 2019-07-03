@@ -14,7 +14,7 @@ import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import net.yusukezzz.ssmtc.util.setView
-import net.yusukezzz.ssmtc.util.toast
+import net.yusukezzz.ssmtc.util.snackbar
 import javax.inject.Inject
 
 class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
@@ -61,6 +61,6 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     }
 
     override fun handleError(error: Throwable) {
-        toast(error)
+        snackbar(error)
     }
 }

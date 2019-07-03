@@ -1,6 +1,5 @@
 package net.yusukezzz.ssmtc.di
 
-import dagger.BindsInstance
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import net.yusukezzz.ssmtc.Application
@@ -20,14 +19,6 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent {
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun application(application: android.app.Application): Builder
-
-        fun build(): AppComponent
-    }
-
     fun plus(timelineModule: TimelineModule): TimelineComponent
     fun inject(app: Application)
     fun inject(activity: AuthorizeActivity)

@@ -12,6 +12,5 @@ interface AuthorizeContract {
     interface View : BaseView {
         fun showAuthorizeWeb(url: String)
         fun authorized()
-        fun handleError(error: Throwable)
     }
 }

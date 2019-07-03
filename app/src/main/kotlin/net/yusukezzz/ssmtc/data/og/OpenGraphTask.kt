@@ -3,7 +3,6 @@ package net.yusukezzz.ssmtc.data.og
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import net.yusukezzz.ssmtc.util.launchUI
 import net.yusukezzz.ssmtc.util.withIO
 import java.lang.ref.WeakReference
@@ -65,7 +64,7 @@ class OpenGraphTask(
     }
 
     fun cancel() {
-        job?.cancelChildren(OGCancelException())
+        job?.cancel(OGCancelException())
     }
 
     private fun fallback(resolvedUrl: String): OpenGraph {

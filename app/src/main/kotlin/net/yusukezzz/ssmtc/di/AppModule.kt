@@ -18,7 +18,6 @@ import net.yusukezzz.ssmtc.data.api.TwitterService.Companion.UPLOAD_BASE_URL
 import net.yusukezzz.ssmtc.data.api.UploadApi
 import net.yusukezzz.ssmtc.data.og.OGDiskCache
 import net.yusukezzz.ssmtc.data.og.OpenGraphApi
-import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import net.yusukezzz.ssmtc.util.gson.DateTimeTypeConverter
@@ -117,10 +116,6 @@ class AppModule(private val app: Application) {
     @Singleton
     fun provideOpenGraphApi(@Named("retrofitBuilder") builder: Retrofit.Builder): OpenGraphApi =
         builder.baseUrl(BuildConfig.MY_API_BASE_URL).build().create(OpenGraphApi::class.java)
-
-    @Provides
-    @Singleton
-    fun provideOpenGraphService(cache: OGDiskCache, ogApi: OpenGraphApi): OpenGraphService = OpenGraphService(cache, ogApi)
 
     @Provides
     @Singleton
