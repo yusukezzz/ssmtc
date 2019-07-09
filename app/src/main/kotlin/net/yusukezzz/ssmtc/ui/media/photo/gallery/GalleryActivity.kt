@@ -79,7 +79,7 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
         val media = images[gallery.currentItem]
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
-        val uri = Uri.parse(media.orig_url)
+        val uri = Uri.parse(media.origUrl)
         val ext = media.media_url.split(".").last()
         val formatter = DateTimeFormatter.ofPattern("YMd_Hms")
         val filename = LocalDateTime.now().format(formatter) + "." + ext

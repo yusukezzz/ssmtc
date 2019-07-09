@@ -179,7 +179,7 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
             photoView.setBackgroundColor(context.getCompatColor(R.color.darker_grey))
             tile.addView(photoView)
             photoView.setOnClickListener { listener.onImageClick(photos, index) }
-            PicassoUtil.thumbnail(media.small_url, photoView)
+            PicassoUtil.thumbnail(media.smallUrl, photoView)
         }
     }
 
@@ -195,7 +195,7 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
         tile.addView(mediaVideo)
         val imgView = media_video_thumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
-        PicassoUtil.thumbnail(video.small_url, imgView)
+        PicassoUtil.thumbnail(video.smallUrl, imgView)
     }
 
     private fun handleOpenGraph(url: String) {

@@ -23,7 +23,7 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
         val view = inflater.inflate(R.layout.photo_gallery_page, container, false)
         val media = images[position]
 
-        Picasso.get().load(media.large_url)
+        Picasso.get().load(media.largeUrl)
             .config(android.graphics.Bitmap.Config.ARGB_8888)
             .fit().centerInside()
             .into(view.page_image, object : Callback {

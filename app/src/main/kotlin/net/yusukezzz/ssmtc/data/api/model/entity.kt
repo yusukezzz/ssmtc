@@ -36,9 +36,9 @@ data class Media(
     val video_info: VideoInfo?
 ) : Parcelable {
     companion object {
-        val TYPE_PHOTO = "photo"
-        val TYPE_ANIMATED_GIF = "animated_gif"
-        val TYPE_VIDEO = "video"
+        const val TYPE_PHOTO = "photo"
+        const val TYPE_ANIMATED_GIF = "animated_gif"
+        const val TYPE_VIDEO = "video"
     }
 
     val isPhoto: Boolean
@@ -53,16 +53,16 @@ data class Media(
     val urlEntity: Url
         get() = Url(url, expanded_url, display_url, indices)
 
-    val thumb_url: String
-        get() = media_url + ":thumb"
-    val small_url: String
-        get() = media_url + ":small"
-    val medium_url: String
-        get() = media_url + ":medium"
-    val large_url: String
-        get() = media_url + ":large"
-    val orig_url: String
-        get() = media_url + ":orig"
+    val thumbUrl: String
+        get() = "$media_url:thumb"
+    val smallUrl: String
+        get() = "$media_url:small"
+    val mediumUrl: String
+        get() = "$media_url:medium"
+    val largeUrl: String
+        get() = "$media_url:large"
+    val origUrl: String
+        get() = "$media_url:orig"
 }
 
 @Parcelize
@@ -76,9 +76,9 @@ data class VideoInfo(
     val mp4High: VideoVariant
         get() = mp4All.first()
     val mp4Mid: VideoVariant
-        get() = mp4All.getOrElse(1, { mp4High })
+        get() = mp4All.getOrElse(1) { mp4High }
     val mp4Small: VideoVariant
-        get() = mp4All.getOrElse(2, { mp4Mid })
+        get() = mp4All.getOrElse(2) { mp4Mid }
 }
 
 @Parcelize
@@ -88,7 +88,7 @@ data class VideoVariant(
     val url: String
 ) : Parcelable {
     companion object {
-        val TYPE_MP4 = "video/mp4"
+        const val TYPE_MP4 = "video/mp4"
     }
 
     val isMP4: Boolean
@@ -99,7 +99,10 @@ data class UploadResult(
     val media_id: Long,
     val media_id_string: String,
     val size: Long,
-    val image: UploadImage
+    val expires_after_secs: Int?,
+    val image: UploadImage?,
+    val video: UploadVideo?,
+    val processingInfo: ProcessingInfo?
 )
 
 data class UploadImage(
@@ -108,3 +111,11 @@ data class UploadImage(
     val image_type: String
 )
 
+data class UploadVideo(
+    val video_type: String
+)
+
+data class ProcessingInfo(
+    val state: String,
+    val check_after_secs: Int
+)

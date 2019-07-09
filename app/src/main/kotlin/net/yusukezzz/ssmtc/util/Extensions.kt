@@ -115,11 +115,7 @@ fun ContentResolver.getImagePath(content: Uri): String {
 }
 
 fun File.mimeType(): String {
-    return if (extension.isEmpty()) {
-        "application/octet-stream" // default
-    } else {
-        MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
-    }
+    return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "application/octet-stream"
 }
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)

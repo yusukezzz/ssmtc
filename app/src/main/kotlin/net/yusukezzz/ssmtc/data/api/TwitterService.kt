@@ -1,20 +1,12 @@
 package net.yusukezzz.ssmtc.data.api
 
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.model.*
-import net.yusukezzz.ssmtc.util.toRequestBody
 import okhttp3.RequestBody
-import retrofit2.Call
 import retrofit2.Response
-import retrofit2.await
 import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
-import java.io.File
 
 class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
                      private val apiService: TwitterApi,
@@ -61,10 +53,16 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
     suspend fun blockedIds(): IdList = execute(apiService.blockedIds())
     suspend fun mutedIds(): IdList = execute(apiService.mutedIds())
 
-    suspend fun tweet(status: String, inReplyToStatusId: Long? = null, mediaIds: List<Long>? = null): Tweet =
+    fun tweet(status: String, inReplyToStatusId: Long? = null, mediaIds: List<Long>? = null): Tweet =
         execute(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds?.joinToString(",")))
 
-    suspend fun upload(media: File): UploadResult = execute(uploadService.upload(media.toRequestBody()))
+    fun upload(media: RequestBody): UploadResult = execute(uploadService.upload(media))
+
+    fun uploadInit(totalBytes: Long): UploadResult = execute(uploadService.init(totalBytes))
+    fun uploadAppend(mediaId: Long, segmentIndex: Int, chunk: RequestBody) =
+        execute(uploadService.append(mediaId, segmentIndex, chunk))
+
+    fun uploadFinalize(mediaId: Long): UploadResult = execute(uploadService.finalize(mediaId))
 
     private suspend fun homeTimeline(maxId: Long?): List<Tweet> =
         execute(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
@@ -81,7 +79,7 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
     private suspend fun userTimeline(screenName: String?, maxId: Long?): List<Tweet> =
         execute(apiService.userTimeline(MAX_RETRIEVE_COUNT, screenName, maxId))
 
-    private suspend fun <T> execute(res: Response<T>): T {
+    private fun <T> execute(res: Response<T>): T {
         if (!res.isSuccessful) {
             handleError(res)
         }
@@ -185,7 +183,7 @@ interface TwitterApi {
 
     @FormUrlEncoded
     @POST("/1.1/statuses/update.json")
-    suspend fun statusesUpdate(
+    fun statusesUpdate(
         @Field("status") status: String,
         @Field("in_reply_to_status_id") inReplyToStatusId: Long?,
         @Field("media_ids") mediaIds: String?
@@ -209,5 +207,25 @@ interface UploadApi {
     @POST("/1.1/media/upload.json")
     fun upload(
         @Part("media") file: RequestBody
+    ): Response<UploadResult>
+
+    @Multipart
+    @POST("/1.1/media/upload.json?command=INIT&media_type=video/mp4")
+    fun init(
+        @Query("total_bytes") totalBytes: Long
+    ): Response<UploadResult>
+
+    @Multipart
+    @POST("/1.1/media/upload.json?command=APPEND")
+    fun append(
+        @Query("media_id") mediaId: Long,
+        @Query("segment_index") segmentIndex: Int,
+        @Part("media") file: RequestBody
+    ): Response<Unit>
+
+    @Multipart
+    @POST("/1.1/media/upload.json?command=FINALIZE")
+    fun finalize(
+        @Query("media_id") mediaId: Long
     ): Response<UploadResult>
 }
