@@ -117,5 +117,13 @@ data class UploadVideo(
 
 data class ProcessingInfo(
     val state: String,
-    val check_after_secs: Int
+    val check_after_secs: Int,
+    val progress_percent: Int?,
+    val error: ProcessingError?
+)
+
+data class ProcessingError(
+    val code: Int,
+    val name: String,
+    val message: String
 )

@@ -17,10 +17,12 @@ import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import net.yusukezzz.ssmtc.util.mimeType
+import okhttp3.MediaType
+import java.io.ByteArrayInputStream
 import java.io.File
 import javax.inject.Inject
 
-class StatusUpdateService: IntentService("StatusUpdateService") {
+class StatusUpdateService : IntentService("StatusUpdateService") {
     companion object {
         const val ACTION_SUCCESS = "net.yusukezzz.ssmtc.ui.status.update.TWEET_SUCCESS"
         const val ACTION_FAILURE = "net.yusukezzz.ssmtc.ui.status.update.TWEET_FAILURE"
@@ -33,12 +35,16 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
         const val PHOTO_MAX_HEIGHT = 960
         const val PHOTO_QUALITY = 85
 
-        const val VIDEO_MAX_LENGTH = 140 // 2m20sec
+        const val MB = 1024 * 1024
+        const val MAX_VIDEO_SIZE = 512 * MB
+        const val VIDEO_CHUNK_SIZE = 2 * MB
+        const val MAX_POLLING_REQUESTS = 20
 
-        fun newIntent(context: Context,
-                      status: String,
-                      inReplyToStatusId: Long? = null,
-                      medias: Array<String>? = null
+        fun newIntent(
+            context: Context,
+            status: String,
+            inReplyToStatusId: Long? = null,
+            medias: Array<String>? = null
         ): Intent {
             return Intent(context, StatusUpdateService::class.java).apply {
                 putExtra(ARG_STATUS_TEXT, status)
@@ -89,9 +95,7 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
             val account = accountRepo.find(prefs.currentUserId)!!
             twitter.setTokens(account.credentials)
 
-            val mediaIds = medias?.map {
-                twitter.upload(compressor.compressImage(it)).media_id
-            }
+            val mediaIds = medias?.map { upload(it) }
 
             twitter.tweet(status, inReplyToStatusId, mediaIds)
             sendSuccessBroadcast()
@@ -105,18 +109,69 @@ class StatusUpdateService: IntentService("StatusUpdateService") {
 
     private fun upload(path: String): Long {
         val file = File(path)
-        when {
-            file.mimeType().startsWith("image") -> uploadImage(file)
-            file.mimeType().startsWith("video") -> {
-            }
-            else -> throw RuntimeException("unsupported file: $path")
+
+        if (file.mimeType().startsWith("image")) {
+            return uploadImage(file)
         }
+
+        if (file.mimeType().startsWith("video")) {
+            return uploadVideo(file)
+        }
+
+        throw RuntimeException("unsupported file: $path")
     }
 
-    // TODO: resize image InputStream
-    private fun uploadImage(file: File): Long = twitter.upload(compressor.compressImage(file)).media_id
+    private fun uploadImage(file: File): Long {
+        val type = MediaType.parse(file.mimeType())
+        // TODO: resize image InputStream
+        val req = InputStreamBody(file.inputStream(), file.length(), type)
+        return twitter.upload(req).media_id
+    }
 
     private fun uploadVideo(file: File): Long {
+        val type = MediaType.parse(file.mimeType())
+        val totalBytes = file.length()
+        if (totalBytes > MAX_VIDEO_SIZE) {
+            throw RuntimeException("video file too large: max ${MAX_VIDEO_SIZE / MB} MBytes")
+        }
+
+        val mediaId = twitter.uploadInit(totalBytes).media_id
+
+        val input = file.inputStream()
+        var data = ByteArray(VIDEO_CHUNK_SIZE)
+        var segmentIndex = 0
+        var totalRead = 0
+        var bytesRead = input.read(data)
+        while (bytesRead > 0) {
+            totalRead += bytesRead
+            val baInput = ByteArrayInputStream(data, 0, bytesRead)
+            val body = InputStreamBody(baInput, bytesRead.toLong(), type)
+            twitter.uploadAppend(mediaId, segmentIndex, body)
+            data = ByteArray(VIDEO_CHUNK_SIZE)
+            segmentIndex++
+            bytesRead = input.read(data)
+        }
+
+        twitter.uploadFinalize(mediaId).processingInfo?.let {
+            Thread.sleep(it.check_after_secs * 1000L)
+        }
+
+        for (i in 1..MAX_POLLING_REQUESTS) {
+            println("video status polling ... $i")
+            val info = twitter.uploadStatus(mediaId).processingInfo!!
+            println(info)
+            if (info.state == "failed") {
+                throw RuntimeException("finalize failed: ${info.error}")
+            }
+            if (info.state == "succeeded") {
+                return mediaId
+            }
+
+            // state = pending or in_progress
+            Thread.sleep(info.check_after_secs * 1000L)
+        }
+
+        throw RuntimeException("finalize failed: status polling max")
     }
 
     private fun sendSuccessBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_SUCCESS))

@@ -13,8 +13,8 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
                      private val uploadService: UploadApi,
                      private val gson: Gson) {
     companion object {
-        const val API_BASE_URL = "https://api.twitter.com"
-        const val UPLOAD_BASE_URL = "https://upload.twitter.com"
+        const val API_BASE_URL = "https://api.twitter.com/1.1"
+        const val UPLOAD_BASE_URL = "https://upload.twitter.com/1.1"
         const val LANG = "ja"
         const val LOCALE = "ja"
         const val SEARCH_RESULT_TYPE = "recent"
@@ -63,6 +63,7 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
         execute(uploadService.append(mediaId, segmentIndex, chunk))
 
     fun uploadFinalize(mediaId: Long): UploadResult = execute(uploadService.finalize(mediaId))
+    fun uploadStatus(mediaId: Long): UploadResult = execute(uploadService.status(mediaId))
 
     private suspend fun homeTimeline(maxId: Long?): List<Tweet> =
         execute(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
@@ -124,29 +125,29 @@ class TwitterApiException(message: String, val statusCode: Int, val errors: List
 }
 
 interface TwitterApi {
-    @GET("/1.1/account/verify_credentials.json")
+    @GET("/account/verify_credentials.json")
     suspend fun verifyCredentials(): Response<User>
 
-    @GET("/1.1/statuses/home_timeline.json?tweet_mode=extended")
+    @GET("/statuses/home_timeline.json?tweet_mode=extended")
     suspend fun homeTimeline(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/1.1/statuses/mentions_timeline.json?tweet_mode=extended")
+    @GET("/statuses/mentions_timeline.json?tweet_mode=extended")
     suspend fun mentionsTimeline(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/1.1/statuses/user_timeline.json?tweet_mode=extended")
+    @GET("/statuses/user_timeline.json?tweet_mode=extended")
     suspend fun userTimeline(
         @Query("count") count: Int?,
         @Query("screen_name") screenName: String?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/1.1/search/tweets.json?tweet_mode=extended")
+    @GET("/search/tweets.json?tweet_mode=extended")
     suspend fun search(
         @Query("count") count: Int?,
         @Query("lang") lang: String,
@@ -156,67 +157,67 @@ interface TwitterApi {
         @Query("max_id") maxId: Long?
     ): Response<Search>
 
-    @GET("/1.1/lists/subscriptions.json")
+    @GET("/lists/subscriptions.json")
     suspend fun subscribedLists(
         @Query("count") count: Int?,
         @Query("user_id") userId: Long
     ): Response<TwLists>
 
-    @GET("/1.1/lists/ownerships.json")
+    @GET("/lists/ownerships.json")
     suspend fun ownedLists(
         @Query("count") count: Int?,
         @Query("user_id") userId: Long
     ): Response<TwLists>
 
-    @GET("/1.1/lists/statuses.json?tweet_mode=extended")
+    @GET("/lists/statuses.json?tweet_mode=extended")
     suspend fun listStatuses(
         @Query("list_id") listId: Long?,
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/1.1/blocks/ids.json")
+    @GET("/blocks/ids.json")
     suspend fun blockedIds(): Response<IdList>
 
-    @GET("/1.1/mutes/users/ids.json")
+    @GET("/mutes/users/ids.json")
     suspend fun mutedIds(): Response<IdList>
 
     @FormUrlEncoded
-    @POST("/1.1/statuses/update.json")
+    @POST("/statuses/update.json")
     fun statusesUpdate(
         @Field("status") status: String,
         @Field("in_reply_to_status_id") inReplyToStatusId: Long?,
         @Field("media_ids") mediaIds: String?
     ): Response<Tweet>
 
-    @POST("/1.1/statuses/retweet/{id}.json")
+    @POST("/statuses/retweet/{id}.json")
     suspend fun retweet(@Path("id") id: Long): Response<Tweet>
 
-    @POST("/1.1/statuses/unretweet/{id}.json")
+    @POST("/statuses/unretweet/{id}.json")
     suspend fun unretweet(@Path("id") id: Long): Response<Tweet>
 
-    @POST("/1.1/favorites/create.json")
+    @POST("/favorites/create.json")
     suspend fun like(@Query("id") id: Long): Response<Tweet>
 
-    @POST("/1.1/favorites/destroy.json")
+    @POST("/favorites/destroy.json")
     suspend fun unlike(@Query("id") id: Long): Response<Tweet>
 }
 
 interface UploadApi {
     @Multipart
-    @POST("/1.1/media/upload.json")
+    @POST("/media/upload.json")
     fun upload(
         @Part("media") file: RequestBody
     ): Response<UploadResult>
 
     @Multipart
-    @POST("/1.1/media/upload.json?command=INIT&media_type=video/mp4")
+    @POST("/media/upload.json?command=INIT&media_type=video/mp4&media_category=tweet_video")
     fun init(
         @Query("total_bytes") totalBytes: Long
     ): Response<UploadResult>
 
     @Multipart
-    @POST("/1.1/media/upload.json?command=APPEND")
+    @POST("/media/upload.json?command=APPEND")
     fun append(
         @Query("media_id") mediaId: Long,
         @Query("segment_index") segmentIndex: Int,
@@ -224,8 +225,13 @@ interface UploadApi {
     ): Response<Unit>
 
     @Multipart
-    @POST("/1.1/media/upload.json?command=FINALIZE")
+    @POST("/media/upload.json?command=FINALIZE")
     fun finalize(
+        @Query("media_id") mediaId: Long
+    ): Response<UploadResult>
+
+    @GET("/media/upload.json?command=STATUS")
+    fun status(
         @Query("media_id") mediaId: Long
     ): Response<UploadResult>
 }
