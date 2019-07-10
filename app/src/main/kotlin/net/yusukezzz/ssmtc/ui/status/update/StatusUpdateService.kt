@@ -18,7 +18,6 @@ import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import net.yusukezzz.ssmtc.util.mimeType
 import okhttp3.MediaType
-import java.io.ByteArrayInputStream
 import java.io.File
 import javax.inject.Inject
 
@@ -138,18 +137,16 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         val mediaId = twitter.uploadInit(totalBytes).media_id
 
         val input = file.inputStream()
-        var data = ByteArray(VIDEO_CHUNK_SIZE)
         var segmentIndex = 0
-        var totalRead = 0
-        var bytesRead = input.read(data)
-        while (bytesRead > 0) {
-            totalRead += bytesRead
-            val baInput = ByteArrayInputStream(data, 0, bytesRead)
+        while (true) {
+            val data = ByteArray(VIDEO_CHUNK_SIZE)
+            val bytesRead = input.read(data)
+            if (bytesRead == -1) break
+            val baInput = data.inputStream(0, bytesRead)
             val body = InputStreamBody(baInput, bytesRead.toLong(), type)
             twitter.uploadAppend(mediaId, segmentIndex, body)
-            data = ByteArray(VIDEO_CHUNK_SIZE)
+            println("append index=$segmentIndex")
             segmentIndex++
-            bytesRead = input.read(data)
         }
 
         twitter.uploadFinalize(mediaId).processingInfo?.let {
