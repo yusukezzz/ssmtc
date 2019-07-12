@@ -146,7 +146,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         val afterSize = image.length()
         println("[image] original    size: ${beforeSize / 1024}KB")
         println("[image] compressed  size: ${afterSize / 1024}KB")
-        println("[image] compressed ratio: ${afterSize / beforeSize * 100}%")
+        println("[image] compressed ratio: ${afterSize.toFloat() / beforeSize * 100}%")
         return twitter.upload(image.toRequestBody()).media_id
     }
 
@@ -154,7 +154,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         val type = MediaType.parse(file.mimeType())
         val totalBytes = file.length()
         if (totalBytes > MAX_VIDEO_SIZE) {
-            throw RuntimeException("video file too large: max ${MAX_VIDEO_SIZE / MB} MBytes")
+            throw RuntimeException("[video] file too large: max ${MAX_VIDEO_SIZE / MB} MBytes")
         }
 
         val mediaId = twitter.uploadInit(totalBytes).media_id
@@ -168,7 +168,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             val baInput = data.inputStream(0, bytesRead)
             val body = InputStreamBody(baInput, bytesRead.toLong(), type)
             twitter.uploadAppend(mediaId, segmentIndex, body)
-            println("append index=$segmentIndex")
+            println("[video] append index=$segmentIndex")
             segmentIndex++
         }
 
@@ -177,11 +177,11 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         }
 
         for (i in 1..MAX_POLLING_REQUESTS) {
-            println("video status polling ... $i")
+            println("[video] status polling ... $i")
             val info = twitter.uploadStatus(mediaId).processingInfo!!
             println(info)
             if (info.state == "failed") {
-                throw RuntimeException("finalize failed: ${info.error}")
+                throw RuntimeException("[video] finalize failed: ${info.error}")
             }
             if (info.state == "succeeded") {
                 return mediaId
@@ -191,7 +191,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             Thread.sleep(info.check_after_secs * 1000L)
         }
 
-        throw RuntimeException("finalize failed: status polling max")
+        throw RuntimeException("[video] finalize failed: status polling max")
     }
 
     private fun sendSuccessBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_SUCCESS))

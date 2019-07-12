@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.model.*
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
@@ -13,8 +14,8 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
                      private val uploadService: UploadApi,
                      private val gson: Gson) {
     companion object {
-        const val API_BASE_URL = "https://api.twitter.com/1.1"
-        const val UPLOAD_BASE_URL = "https://upload.twitter.com/1.1"
+        const val API_BASE_URL = "https://api.twitter.com/1.1/"
+        const val UPLOAD_BASE_URL = "https://upload.twitter.com/1.1/"
         const val LANG = "ja"
         const val LOCALE = "ja"
         const val SEARCH_RESULT_TYPE = "recent"
@@ -25,7 +26,7 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
         oauthConsumer.setTokenWithSecret(credentials.token, credentials.tokenSecret)
     }
 
-    suspend fun verifyCredentials(): User = execute(apiService.verifyCredentials())
+    suspend fun verifyCredentials(): User = handleResponse(apiService.verifyCredentials())
 
     suspend fun statuses(timeline: Timeline, maxId: Long? = null): List<Tweet> = timeline.let {
         val max = maxId?.dec()
@@ -39,48 +40,50 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
         }
     }
 
-    suspend fun like(id: Long): Tweet = execute(apiService.like(id))
-    suspend fun unlike(id: Long): Tweet = execute(apiService.unlike(id))
-    suspend fun retweet(id: Long): Tweet = execute(apiService.retweet(id))
-    suspend fun unretweet(id: Long): Tweet = execute(apiService.unretweet(id))
+    suspend fun like(id: Long): Tweet = handleResponse(apiService.like(id))
+    suspend fun unlike(id: Long): Tweet = handleResponse(apiService.unlike(id))
+    suspend fun retweet(id: Long): Tweet = handleResponse(apiService.retweet(id))
+    suspend fun unretweet(id: Long): Tweet = handleResponse(apiService.unretweet(id))
 
     suspend fun subscribedLists(userId: Long): List<TwList> =
-        execute(apiService.subscribedLists(1000, userId)).lists
+        handleResponse(apiService.subscribedLists(1000, userId)).lists
 
     suspend fun ownedLists(userId: Long): List<TwList> =
-        execute(apiService.ownedLists(1000, userId)).lists
+        handleResponse(apiService.ownedLists(1000, userId)).lists
 
-    suspend fun blockedIds(): IdList = execute(apiService.blockedIds())
-    suspend fun mutedIds(): IdList = execute(apiService.mutedIds())
+    suspend fun blockedIds(): IdList = handleResponse(apiService.blockedIds())
+    suspend fun mutedIds(): IdList = handleResponse(apiService.mutedIds())
 
     fun tweet(status: String, inReplyToStatusId: Long? = null, mediaIds: List<Long>? = null): Tweet =
-        execute(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds?.joinToString(",")))
+        handleCall(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds?.joinToString(",")))
 
-    fun upload(media: RequestBody): UploadResult = execute(uploadService.upload(media))
+    fun upload(media: RequestBody): UploadResult = handleCall(uploadService.upload(media))
 
-    fun uploadInit(totalBytes: Long): UploadResult = execute(uploadService.init(totalBytes))
+    fun uploadInit(totalBytes: Long): UploadResult = handleCall(uploadService.init(totalBytes))
     fun uploadAppend(mediaId: Long, segmentIndex: Int, chunk: RequestBody) =
-        execute(uploadService.append(mediaId, segmentIndex, chunk))
+        handleCall(uploadService.append(mediaId, segmentIndex, chunk))
 
-    fun uploadFinalize(mediaId: Long): UploadResult = execute(uploadService.finalize(mediaId))
-    fun uploadStatus(mediaId: Long): UploadResult = execute(uploadService.status(mediaId))
+    fun uploadFinalize(mediaId: Long): UploadResult = handleCall(uploadService.finalize(mediaId))
+    fun uploadStatus(mediaId: Long): UploadResult = handleCall(uploadService.status(mediaId))
 
     private suspend fun homeTimeline(maxId: Long?): List<Tweet> =
-        execute(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
+        handleResponse(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
 
     private suspend fun mentionsTimeline(maxId: Long?): List<Tweet> =
-        execute(apiService.mentionsTimeline(MAX_RETRIEVE_COUNT, maxId))
+        handleResponse(apiService.mentionsTimeline(MAX_RETRIEVE_COUNT, maxId))
 
     private suspend fun listTimeline(listId: Long?, maxId: Long?): List<Tweet> =
-        execute(apiService.listStatuses(listId, MAX_RETRIEVE_COUNT, maxId))
+        handleResponse(apiService.listStatuses(listId, MAX_RETRIEVE_COUNT, maxId))
 
     private suspend fun searchTimeline(query: String?, maxId: Long?): List<Tweet> =
-        execute(apiService.search(MAX_RETRIEVE_COUNT, LANG, LOCALE, SEARCH_RESULT_TYPE, query, maxId)).statuses
+        handleResponse(apiService.search(MAX_RETRIEVE_COUNT, LANG, LOCALE, SEARCH_RESULT_TYPE, query, maxId)).statuses
 
     private suspend fun userTimeline(screenName: String?, maxId: Long?): List<Tweet> =
-        execute(apiService.userTimeline(MAX_RETRIEVE_COUNT, screenName, maxId))
+        handleResponse(apiService.userTimeline(MAX_RETRIEVE_COUNT, screenName, maxId))
 
-    private fun <T> execute(res: Response<T>): T {
+    private fun <T> handleCall(req: Call<T>): T = handleResponse(req.execute())
+
+    private fun <T> handleResponse(res: Response<T>): T {
         if (!res.isSuccessful) {
             handleError(res)
         }
@@ -125,29 +128,29 @@ class TwitterApiException(message: String, val statusCode: Int, val errors: List
 }
 
 interface TwitterApi {
-    @GET("/account/verify_credentials.json")
+    @GET("account/verify_credentials.json")
     suspend fun verifyCredentials(): Response<User>
 
-    @GET("/statuses/home_timeline.json?tweet_mode=extended")
+    @GET("statuses/home_timeline.json?tweet_mode=extended")
     suspend fun homeTimeline(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/statuses/mentions_timeline.json?tweet_mode=extended")
+    @GET("statuses/mentions_timeline.json?tweet_mode=extended")
     suspend fun mentionsTimeline(
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/statuses/user_timeline.json?tweet_mode=extended")
+    @GET("statuses/user_timeline.json?tweet_mode=extended")
     suspend fun userTimeline(
         @Query("count") count: Int?,
         @Query("screen_name") screenName: String?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/search/tweets.json?tweet_mode=extended")
+    @GET("search/tweets.json?tweet_mode=extended")
     suspend fun search(
         @Query("count") count: Int?,
         @Query("lang") lang: String,
@@ -157,81 +160,81 @@ interface TwitterApi {
         @Query("max_id") maxId: Long?
     ): Response<Search>
 
-    @GET("/lists/subscriptions.json")
+    @GET("lists/subscriptions.json")
     suspend fun subscribedLists(
         @Query("count") count: Int?,
         @Query("user_id") userId: Long
     ): Response<TwLists>
 
-    @GET("/lists/ownerships.json")
+    @GET("lists/ownerships.json")
     suspend fun ownedLists(
         @Query("count") count: Int?,
         @Query("user_id") userId: Long
     ): Response<TwLists>
 
-    @GET("/lists/statuses.json?tweet_mode=extended")
+    @GET("lists/statuses.json?tweet_mode=extended")
     suspend fun listStatuses(
         @Query("list_id") listId: Long?,
         @Query("count") count: Int?,
         @Query("max_id") maxId: Long?
     ): Response<List<Tweet>>
 
-    @GET("/blocks/ids.json")
+    @GET("blocks/ids.json")
     suspend fun blockedIds(): Response<IdList>
 
-    @GET("/mutes/users/ids.json")
+    @GET("mutes/users/ids.json")
     suspend fun mutedIds(): Response<IdList>
 
     @FormUrlEncoded
-    @POST("/statuses/update.json")
+    @POST("statuses/update.json")
     fun statusesUpdate(
         @Field("status") status: String,
         @Field("in_reply_to_status_id") inReplyToStatusId: Long?,
         @Field("media_ids") mediaIds: String?
-    ): Response<Tweet>
+    ): Call<Tweet>
 
-    @POST("/statuses/retweet/{id}.json")
+    @POST("statuses/retweet/{id}.json")
     suspend fun retweet(@Path("id") id: Long): Response<Tweet>
 
-    @POST("/statuses/unretweet/{id}.json")
+    @POST("statuses/unretweet/{id}.json")
     suspend fun unretweet(@Path("id") id: Long): Response<Tweet>
 
-    @POST("/favorites/create.json")
+    @POST("favorites/create.json")
     suspend fun like(@Query("id") id: Long): Response<Tweet>
 
-    @POST("/favorites/destroy.json")
+    @POST("favorites/destroy.json")
     suspend fun unlike(@Query("id") id: Long): Response<Tweet>
 }
 
 interface UploadApi {
     @Multipart
-    @POST("/media/upload.json")
+    @POST("media/upload.json")
     fun upload(
         @Part("media") file: RequestBody
-    ): Response<UploadResult>
+    ): Call<UploadResult>
 
     @Multipart
-    @POST("/media/upload.json?command=INIT&media_type=video/mp4&media_category=tweet_video")
+    @POST("media/upload.json?command=INIT&media_type=video/mp4&media_category=tweet_video")
     fun init(
         @Query("total_bytes") totalBytes: Long
-    ): Response<UploadResult>
+    ): Call<UploadResult>
 
     @Multipart
-    @POST("/media/upload.json?command=APPEND")
+    @POST("media/upload.json?command=APPEND")
     fun append(
         @Query("media_id") mediaId: Long,
         @Query("segment_index") segmentIndex: Int,
         @Part("media") file: RequestBody
-    ): Response<Unit>
+    ): Call<Unit>
 
     @Multipart
-    @POST("/media/upload.json?command=FINALIZE")
+    @POST("media/upload.json?command=FINALIZE")
     fun finalize(
         @Query("media_id") mediaId: Long
-    ): Response<UploadResult>
+    ): Call<UploadResult>
 
-    @GET("/media/upload.json?command=STATUS")
+    @GET("media/upload.json?command=STATUS")
     fun status(
         @Query("media_id") mediaId: Long
-    ): Response<UploadResult>
+    ): Call<UploadResult>
 }
