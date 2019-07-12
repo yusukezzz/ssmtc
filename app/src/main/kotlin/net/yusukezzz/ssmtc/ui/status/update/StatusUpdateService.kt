@@ -17,6 +17,7 @@ import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import net.yusukezzz.ssmtc.util.mimeType
+import net.yusukezzz.ssmtc.util.toRequestBody
 import okhttp3.MediaType
 import java.io.File
 import javax.inject.Inject
@@ -121,10 +122,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     }
 
     private fun uploadImage(file: File): Long {
-        val type = MediaType.parse(file.mimeType())
-        // TODO: resize image InputStream
-        val req = InputStreamBody(file.inputStream(), file.length(), type)
-        return twitter.upload(req).media_id
+        return twitter.upload(compressor.compressImage(file).toRequestBody()).media_id
     }
 
     private fun uploadVideo(file: File): Long {
