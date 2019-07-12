@@ -1,6 +1,8 @@
 package net.yusukezzz.ssmtc.ui.status.update
 
 import android.app.IntentService
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -26,6 +28,11 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     companion object {
         const val ACTION_SUCCESS = "net.yusukezzz.ssmtc.ui.status.update.TWEET_SUCCESS"
         const val ACTION_FAILURE = "net.yusukezzz.ssmtc.ui.status.update.TWEET_FAILURE"
+
+        const val CHANNEL_ID = "status_update"
+        const val CHANNEL_NAME = "tweets"
+        const val CHANNEL_DESC = "Tweet sending ..."
+        const val NOTIFICATION_ID = 0
 
         const val ARG_STATUS_TEXT = "status_text"
         const val ARG_IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id"
@@ -86,10 +93,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         val medias = intent.getStringArrayExtra(ARG_MEDIAS)
 
         val manager = NotificationManagerCompat.from(this)
-        val builder = NotificationCompat.Builder(this, "ch-tweet")
-            .setSmallIcon(R.drawable.ic_menu_send)
-            .setContentTitle("Tweet sending...")
-        manager.notify(0, builder.build())
+        showNotification(manager)
 
         try {
             val account = accountRepo.find(prefs.currentUserId)!!
@@ -103,8 +107,23 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             slack.sendMessage(e, BuildConfig.SLACK_CHANNEL)
             sendFailureBroadcast()
         } finally {
-            manager.cancel(0)
+            manager.cancel(NOTIFICATION_ID)
         }
+    }
+
+    private fun showNotification(manager: NotificationManagerCompat) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val ch = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
+            description = CHANNEL_DESC
+            enableVibration(false)
+            enableLights(false)
+            setShowBadge(false)
+        }
+        manager.createNotificationChannel(ch)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_menu_send)
+            .setContentTitle("Tweet sending...")
+        manager.notify(NOTIFICATION_ID, builder.build())
     }
 
     private fun upload(path: String): Long {
@@ -122,7 +141,13 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     }
 
     private fun uploadImage(file: File): Long {
-        return twitter.upload(compressor.compressImage(file).toRequestBody()).media_id
+        val beforeSize = file.length()
+        val image = compressor.compressImage(file)
+        val afterSize = image.length()
+        println("[image] original    size: ${beforeSize / 1024}KB")
+        println("[image] compressed  size: ${afterSize / 1024}KB")
+        println("[image] compressed ratio: ${afterSize / beforeSize * 100}%")
+        return twitter.upload(image.toRequestBody()).media_id
     }
 
     private fun uploadVideo(file: File): Long {
