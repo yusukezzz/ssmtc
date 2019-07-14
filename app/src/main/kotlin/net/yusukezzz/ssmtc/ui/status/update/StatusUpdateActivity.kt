@@ -14,8 +14,8 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
+import net.yusukezzz.ssmtc.util.getContentPath
 import net.yusukezzz.ssmtc.util.getExtraStreamOrNull
-import net.yusukezzz.ssmtc.util.getImagePath
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import net.yusukezzz.ssmtc.util.getStringExtraOrNull
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
@@ -73,8 +73,12 @@ class StatusUpdateActivity: AppCompatActivity() {
         // initial photo from intent
         // TODO: check login and permission
         intent.getExtraStreamOrNull()?.let {
-            val path = contentResolver.getImagePath(it as Uri)
-            showSelectedPhotos(arrayOf(path))
+            if (it is Uri) {
+                println(it)
+                val path = contentResolver.getContentPath(it)
+                println(path)
+                showSelectedPhotos(arrayOf(path))
+            }
         }
 
         val account = accountRepo.find(prefs.currentUserId)!!

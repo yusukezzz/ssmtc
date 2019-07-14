@@ -45,7 +45,9 @@ fun ViewGroup.children(func: (View) -> Unit) {
     }
 }
 
-fun View.beVisibleIf(visible: Boolean) = if (visible) this.visibility = View.VISIBLE else this.visibility = View.GONE
+fun View.beVisibleIf(visible: Boolean) =
+    if (visible) this.visibility = View.VISIBLE else this.visibility = View.GONE
+
 fun View.gone() = this.beVisibleIf(false)
 fun View.visible() = this.beVisibleIf(true)
 
@@ -97,7 +99,8 @@ fun Intent.getStringExtraOrNull(key: String): String? {
 fun Intent.getExtraStreamOrNull(): Any? = this.extras?.get(Intent.EXTRA_STREAM)
 
 fun VectorDrawable.toBitmap(): Bitmap {
-    val bitmap = Bitmap.createBitmap(this.intrinsicWidth, this.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val bitmap =
+        Bitmap.createBitmap(this.intrinsicWidth, this.intrinsicHeight, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
     this.setBounds(0, 0, canvas.width, canvas.height)
     this.draw(canvas)
@@ -105,33 +108,39 @@ fun VectorDrawable.toBitmap(): Bitmap {
     return bitmap
 }
 
-fun ContentResolver.getImagePath(content: Uri): String {
-    val column = MediaStore.Images.Media.DATA
-    val cursor = this.query(content, arrayOf(column), null, null, null) ?: return content.path
+fun ContentResolver.getContentPath(content: Uri): String {
+    val mimeType = getType(content)
+    val column = when {
+        mimeType.startsWith("image") -> MediaStore.Images.Media.DATA
+        mimeType.startsWith("video") -> MediaStore.Video.Media.DATA
+        else -> throw RuntimeException("unknown mimeType or not content uri: uri=$content mimeType=$mimeType")
+    }
+    val cursor = this.query(content, arrayOf(), null, null, null) ?: return content.path
     return cursor.use {
         it.moveToFirst()
+        println(it.columnNames.toList())
         cursor.getString(cursor.getColumnIndex(column))
     }
 }
 
 fun File.mimeType(): String {
-    return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "application/octet-stream"
+    return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+        ?: "application/octet-stream"
 }
 
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
 
 fun Throwable.prettyMarkdown(): String {
     val c = cause?.let { "\n[cause] ${it.message}\n${it.stackTrace.joinToString("\n")}" } ?: ""
-    return """|```[error] ${OffsetDateTime.now()}
-            |Message:
-            |$message
-            |
-            |Stacktrace:
-            |${stackTrace.joinToString("\n")}
-            |
-            |Cause:
-            |$c```
-        """.trimMargin()
+    return """```[error] ${OffsetDateTime.now()}
+             |Message:
+             |$message
+             |
+             |Stacktrace:
+             |${stackTrace.joinToString("\n")}
+             |
+             |Cause:
+             |$c```""".trimMargin()
 }
 
 // https://qiita.com/nukka123/items/205c93c72a35a17a5c3b

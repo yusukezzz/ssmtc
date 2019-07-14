@@ -73,6 +73,7 @@ class AppModule(private val app: Application) {
     @Singleton
     @Named("twitterOkHttp")
     fun provideTwitterOkhttp(oauthConsumer: OkHttpOAuthConsumer): OkHttpClient = OkHttpClient.Builder()
+        //.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
         .addInterceptor(SigningInterceptor(oauthConsumer))
         .addInterceptor(RetryWithDelayInterceptor())
         .build()

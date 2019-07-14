@@ -3,16 +3,19 @@ package net.yusukezzz.ssmtc.data.api
 import com.google.gson.Gson
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.model.*
+import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 
-class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
-                     private val apiService: TwitterApi,
-                     private val uploadService: UploadApi,
-                     private val gson: Gson) {
+class TwitterService(
+    private val oauthConsumer: OkHttpOAuthConsumer,
+    private val apiService: TwitterApi,
+    private val uploadService: UploadApi,
+    private val gson: Gson
+) {
     companion object {
         const val API_BASE_URL = "https://api.twitter.com/1.1/"
         const val UPLOAD_BASE_URL = "https://upload.twitter.com/1.1/"
@@ -54,17 +57,39 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
     suspend fun blockedIds(): IdList = handleResponse(apiService.blockedIds())
     suspend fun mutedIds(): IdList = handleResponse(apiService.mutedIds())
 
-    fun tweet(status: String, inReplyToStatusId: Long? = null, mediaIds: List<Long>? = null): Tweet =
-        handleCall(apiService.statusesUpdate(status, inReplyToStatusId, mediaIds?.joinToString(",")))
+    fun tweet(
+        status: String,
+        inReplyToStatusId: Long? = null,
+        mediaIds: List<Long>? = null
+    ): Tweet =
+        handleCall(
+            apiService.statusesUpdate(
+                status,
+                inReplyToStatusId,
+                mediaIds?.joinToString(",")
+            )
+        )
 
     fun upload(media: RequestBody): UploadResult = handleCall(uploadService.upload(media))
 
-    fun uploadInit(totalBytes: Long): UploadResult = handleCall(uploadService.init(totalBytes))
-    fun uploadAppend(mediaId: Long, segmentIndex: Int, chunk: RequestBody) =
-        handleCall(uploadService.append(mediaId, segmentIndex, chunk))
+    private val textType = MediaType.parse("text/plain")
+    fun uploadInit(totalBytes: Long): UploadResult =
+        handleCall(uploadService.init(totalBytes))
 
-    fun uploadFinalize(mediaId: Long): UploadResult = handleCall(uploadService.finalize(mediaId))
-    fun uploadStatus(mediaId: Long): UploadResult = handleCall(uploadService.status(mediaId))
+    fun uploadAppend(mediaId: Long, segmentIndex: Int, chunk: RequestBody) =
+        handleEmptyResponse(
+            uploadService.append(
+                RequestBody.create(textType, mediaId.toString()),
+                RequestBody.create(textType, segmentIndex.toString()),
+                chunk
+            )
+        )
+
+    fun uploadFinalize(mediaId: Long): UploadResult =
+        handleCall(uploadService.finalize(mediaId))
+
+    fun uploadStatus(mediaId: Long): UploadResult =
+        handleCall(uploadService.status(mediaId))
 
     private suspend fun homeTimeline(maxId: Long?): List<Tweet> =
         handleResponse(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
@@ -76,12 +101,28 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
         handleResponse(apiService.listStatuses(listId, MAX_RETRIEVE_COUNT, maxId))
 
     private suspend fun searchTimeline(query: String?, maxId: Long?): List<Tweet> =
-        handleResponse(apiService.search(MAX_RETRIEVE_COUNT, LANG, LOCALE, SEARCH_RESULT_TYPE, query, maxId)).statuses
+        handleResponse(
+            apiService.search(
+                MAX_RETRIEVE_COUNT,
+                LANG,
+                LOCALE,
+                SEARCH_RESULT_TYPE,
+                query,
+                maxId
+            )
+        ).statuses
 
     private suspend fun userTimeline(screenName: String?, maxId: Long?): List<Tweet> =
         handleResponse(apiService.userTimeline(MAX_RETRIEVE_COUNT, screenName, maxId))
 
     private fun <T> handleCall(req: Call<T>): T = handleResponse(req.execute())
+
+    private fun handleEmptyResponse(req: Call<Unit>) {
+        val res = req.execute()
+        if (!res.isSuccessful) {
+            handleError(res)
+        }
+    }
 
     private fun <T> handleResponse(res: Response<T>): T {
         if (!res.isSuccessful) {
@@ -92,23 +133,41 @@ class TwitterService(private val oauthConsumer: OkHttpOAuthConsumer,
     }
 
     private fun handleError(res: Response<*>) {
+        val url = res.raw().request().url()
         val statusCode = res.code()
-        val body = gson.fromJson(res.errorBody()!!.string(), TwitterErrorResponse::class.java)
-        throw TwitterApiException("twitter API error code=$statusCode", statusCode, body.errors)
+        val errors = res.errorBody()?.let {
+            val st = it.string()
+            println(st)
+            try {
+                val body = gson.fromJson(st, TwitterErrorResponse::class.java)
+                body.errors
+            } catch (e: Throwable) {
+                null
+            }
+        }
+        throw TwitterApiException(
+            "twitter API error: url=$url code=$statusCode",
+            statusCode,
+            errors
+        )
     }
 
     data class TwitterErrorResponse(val errors: List<TwitterErrorDetail>)
     data class TwitterErrorDetail(val code: Int, val message: String)
 }
 
-class TwitterApiException(message: String, val statusCode: Int, val errors: List<TwitterService.TwitterErrorDetail>) : RuntimeException(message) {
+class TwitterApiException(
+    message: String,
+    val statusCode: Int,
+    val errors: List<TwitterService.TwitterErrorDetail>?
+) : RuntimeException(message) {
     companion object {
         const val STATUS_CODE_RATE_LIMIT = 429
     }
 
     fun isRateLimitExceeded(): Boolean = (statusCode == STATUS_CODE_RATE_LIMIT)
     override fun toString(): String {
-        val details = errors.joinToString("\n") { "code=${it.code}, message=${it.message}" }
+        val details = errors?.joinToString("\n") { "code=${it.code}, message=${it.message}" }
 
         return """
         |[message]
@@ -213,24 +272,28 @@ interface UploadApi {
         @Part("media") file: RequestBody
     ): Call<UploadResult>
 
-    @Multipart
-    @POST("media/upload.json?command=INIT&media_type=video/mp4&media_category=tweet_video")
+    @FormUrlEncoded
+    @POST("media/upload.json?command=INIT&media_type=video%2Fmp4&media_category=tweet_video")
     fun init(
-        @Query("total_bytes") totalBytes: Long
+        @Field("total_bytes") totalBytes: Long
     ): Call<UploadResult>
 
     @Multipart
-    @POST("media/upload.json?command=APPEND")
+    @POST("media/upload.json")
     fun append(
-        @Query("media_id") mediaId: Long,
-        @Query("segment_index") segmentIndex: Int,
-        @Part("media") file: RequestBody
+        @Part("media_id") mediaId: RequestBody,
+        @Part("segment_index") segmentIndex: RequestBody,
+        @Part("media") media: RequestBody,
+        @Part("command") command: RequestBody = RequestBody.create(
+            MediaType.parse("text/plain"),
+            "APPEND"
+        )
     ): Call<Unit>
 
-    @Multipart
+    @FormUrlEncoded
     @POST("media/upload.json?command=FINALIZE")
     fun finalize(
-        @Query("media_id") mediaId: Long
+        @Field("media_id") mediaId: Long
     ): Call<UploadResult>
 
     @GET("media/upload.json?command=STATUS")

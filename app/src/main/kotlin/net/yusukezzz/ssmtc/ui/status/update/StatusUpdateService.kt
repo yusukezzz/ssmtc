@@ -113,12 +113,11 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
     private fun showNotification(manager: NotificationManagerCompat) {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val ch = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance).apply {
-            description = CHANNEL_DESC
-            enableVibration(false)
-            enableLights(false)
-            setShowBadge(false)
-        }
+        val ch = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
+        ch.description = CHANNEL_DESC
+        ch.enableVibration(false)
+        ch.enableLights(false)
+        ch.setShowBadge(false)
         manager.createNotificationChannel(ch)
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_menu_send)
@@ -157,6 +156,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             throw RuntimeException("[video] file too large: max ${MAX_VIDEO_SIZE / MB} MBytes")
         }
 
+        println("[video] init start")
         val mediaId = twitter.uploadInit(totalBytes).media_id
 
         val input = file.inputStream()
@@ -172,18 +172,21 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             segmentIndex++
         }
 
-        twitter.uploadFinalize(mediaId).processingInfo?.let {
+        println("[video] finalize")
+        twitter.uploadFinalize(mediaId).processing_info?.let {
+            println(it)
             Thread.sleep(it.check_after_secs * 1000L)
         }
 
         for (i in 1..MAX_POLLING_REQUESTS) {
             println("[video] status polling ... $i")
-            val info = twitter.uploadStatus(mediaId).processingInfo!!
+            val info = twitter.uploadStatus(mediaId).processing_info!!
             println(info)
             if (info.state == "failed") {
                 throw RuntimeException("[video] finalize failed: ${info.error}")
             }
             if (info.state == "succeeded") {
+                println("[video] complete")
                 return mediaId
             }
 

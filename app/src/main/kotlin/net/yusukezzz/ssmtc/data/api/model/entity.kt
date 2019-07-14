@@ -102,7 +102,7 @@ data class UploadResult(
     val expires_after_secs: Int?,
     val image: UploadImage?,
     val video: UploadVideo?,
-    val processingInfo: ProcessingInfo?
+    val processing_info: ProcessingInfo?
 )
 
 data class UploadImage(

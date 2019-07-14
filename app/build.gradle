@@ -92,6 +92,7 @@ dependencies {
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:$permission_dispatcher_version"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:3.14.0"
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'

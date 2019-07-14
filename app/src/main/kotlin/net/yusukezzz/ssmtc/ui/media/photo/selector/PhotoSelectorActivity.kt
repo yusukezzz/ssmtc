@@ -38,9 +38,10 @@ class PhotoSelectorActivity: MediaBaseActivity(),
 
     private fun findPhotosFromGallery(): List<String> {
         val photos = arrayListOf<Uri>()
+        val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val column = MediaStore.Images.Media.DATA
         val orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC"
-        val cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(column), null, null, orderBy)
+        val cursor = contentResolver.query(uri, arrayOf(column), null, null, orderBy)
         cursor.use {
             while (it.moveToNext()) {
                 photos.add(Uri.parse(it.getString(it.getColumnIndex(column))))
