@@ -39,7 +39,6 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
 
     private lateinit var listener: TweetItemListener
     private lateinit var ogClient: OpenGraphService
-    private val mediaVideo: View by lazy { this.inflate(R.layout.media_video) }
 
     interface TweetItemListener {
         fun onImageClick(images: List<Media>, pos: Int)
@@ -186,6 +185,7 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
     private fun handleVideo(video: Media, tile: ThumbnailTileLayout) {
         if (video.video_info == null) return
 
+        val mediaVideo: View = this.inflate(R.layout.media_video)
         mediaVideo.ic_play_circle.setImageResource(R.drawable.ic_play_video)
         mediaVideo.media_video_time.text = if (video.isGif) {
             "GIF"
