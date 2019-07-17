@@ -14,7 +14,7 @@ import net.yusukezzz.ssmtc.util.TextUtil
 import net.yusukezzz.ssmtc.util.gone
 import net.yusukezzz.ssmtc.util.visible
 
-class VideoPlayerActivity: MediaBaseActivity(),
+class VideoPlayerActivity : MediaBaseActivity(),
     MediaPlayer.OnPreparedListener,
     MediaPlayer.OnCompletionListener {
 

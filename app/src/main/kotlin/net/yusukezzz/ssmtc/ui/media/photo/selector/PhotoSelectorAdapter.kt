@@ -13,7 +13,7 @@ import java.util.*
 class PhotoSelectorAdapter(
     private val photoPaths: List<String>,
     val listener: PhotoSelectorListener
-): RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder>() {
     companion object {
         const val MAX_PHOTO_COUNT = 4
     }
@@ -30,7 +30,8 @@ class PhotoSelectorAdapter(
         return ViewHolder(view, this)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, pos: Int) = holder.bindPhoto(photoPaths[pos], isSelected(photoPaths[pos]))
+    override fun onBindViewHolder(holder: ViewHolder, pos: Int) =
+        holder.bindPhoto(photoPaths[pos], isSelected(photoPaths[pos]))
 
     override fun getItemCount(): Int = photoPaths.size
 

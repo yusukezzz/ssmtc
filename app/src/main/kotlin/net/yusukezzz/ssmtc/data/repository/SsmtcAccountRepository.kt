@@ -8,9 +8,11 @@ import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.model.User
 import java.util.*
 
-class SsmtcAccountRepository(private val am: AccountManager,
-                             private val gson: Gson,
-                             private val timelineRepository: TimelineRepository) {
+class SsmtcAccountRepository(
+    private val am: AccountManager,
+    private val gson: Gson,
+    private val timelineRepository: TimelineRepository
+) {
     companion object {
         const val ACCOUNT_DATA_ID = "account_data_id"
         const val ACCOUNT_DATA_USER = "account_data_user"

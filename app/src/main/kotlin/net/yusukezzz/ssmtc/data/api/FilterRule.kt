@@ -46,5 +46,6 @@ data class FilterRule(
         return false
     }
 
-    private fun List<String>.toRegex(): Regex = Regex(this.joinToString("|", transform = Pattern::quote), RegexOption.IGNORE_CASE)
+    private fun List<String>.toRegex(): Regex =
+        Regex(this.joinToString("|", transform = Pattern::quote), RegexOption.IGNORE_CASE)
 }

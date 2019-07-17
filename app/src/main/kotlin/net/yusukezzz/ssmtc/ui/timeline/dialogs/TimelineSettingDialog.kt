@@ -14,7 +14,7 @@ import net.yusukezzz.ssmtc.data.api.FilterRule
 import net.yusukezzz.ssmtc.data.api.Timeline
 import javax.inject.Inject
 
-class TimelineSettingDialog: AppCompatDialogFragment() {
+class TimelineSettingDialog : AppCompatDialogFragment() {
     companion object {
         const val ARG_TIMELINE = "timeline"
 
@@ -54,7 +54,8 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
             view.timeline_query_edit.setText(timeline.query)
         }
 
-        val adapter = ArrayAdapter.createFromResource(context, R.array.filter_media, android.R.layout.simple_spinner_item)
+        val adapter =
+            ArrayAdapter.createFromResource(context, R.array.filter_media, android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         view.timeline_media_spinner.adapter = adapter
         timeline?.let {
@@ -84,7 +85,8 @@ class TimelineSettingDialog: AppCompatDialogFragment() {
         val excludeWords = view.timeline_exclude.text.toString().lines().filter(String::isNotEmpty)
         val newFilter = FilterRule(showing, includeWords, excludeWords)
 
-        val newTimeline = oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter, includeRetweets = includeRts)
+        val newTimeline =
+            oldTimeline.copy(title = newTitle, query = newQuery, filter = newFilter, includeRetweets = includeRts)
         listener.onSaveTimeline(newTimeline)
     }
 }

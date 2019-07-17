@@ -12,7 +12,8 @@ class OpenGraphTask(
     private val url: String,
     private val target: WeakReference<OpenGraphLoadable>,
     private val ogApi: OpenGraphApi,
-    private val cache: OGDiskCache) {
+    private val cache: OGDiskCache
+) {
     companion object {
         private val IMAGE_EXTENSIONS = listOf("jpg", "jpeg", "gif", "png")
         private fun ext(url: String): String = url.split(".").last().toLowerCase()

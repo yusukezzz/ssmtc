@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.photo_selector.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 
-class PhotoSelectorActivity: MediaBaseActivity(),
+class PhotoSelectorActivity : MediaBaseActivity(),
     PhotoSelectorAdapter.PhotoSelectorListener {
     companion object {
         const val RESULT_SELECTED_PHOTOS = "result_selected_photos"

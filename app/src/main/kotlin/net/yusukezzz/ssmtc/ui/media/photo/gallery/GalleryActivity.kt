@@ -85,7 +85,10 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
         val filename = LocalDateTime.now().format(formatter) + "." + ext
 
         val req = DownloadManager.Request(uri)
-        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, resources.getString(R.string.app_name) + "/" + filename)
+        req.setDestinationInExternalPublicDir(
+            Environment.DIRECTORY_PICTURES,
+            resources.getString(R.string.app_name) + "/" + filename
+        )
 
         manager.enqueue(req)
         toast(R.string.photo_download_start)

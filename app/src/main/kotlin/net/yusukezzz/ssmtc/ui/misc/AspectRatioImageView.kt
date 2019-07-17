@@ -6,7 +6,7 @@ import android.view.View.MeasureSpec.EXACTLY
 import android.widget.ImageView
 import net.yusukezzz.ssmtc.R
 
-class AspectRatioImageView: ImageView {
+class AspectRatioImageView : ImageView {
     companion object {
         const val DEFAULT_WIDTH_RATIO: Int = 16
         const val DEFAULT_HEIGHT_RATIO: Int = 9

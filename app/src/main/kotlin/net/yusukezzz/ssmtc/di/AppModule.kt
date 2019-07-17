@@ -60,7 +60,8 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideOauthConsumer(): OkHttpOAuthConsumer = OkHttpOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
+    fun provideOauthConsumer(): OkHttpOAuthConsumer =
+        OkHttpOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
 
     @Provides
     @Singleton
@@ -88,9 +89,10 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     @Named("twitterRetrofitBuilder")
-    fun provideTwitterRetrofitBuilder(gson: Gson, @Named("twitterOkHttp") okhttp: OkHttpClient): Retrofit.Builder = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(okhttp)
+    fun provideTwitterRetrofitBuilder(gson: Gson, @Named("twitterOkHttp") okhttp: OkHttpClient): Retrofit.Builder =
+        Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okhttp)
 
     @Provides
     @Singleton
@@ -104,10 +106,12 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideTwitterService(oauthConsumer: OkHttpOAuthConsumer,
-                              apiService: TwitterApi,
-                              uploadService: UploadApi,
-                              gson: Gson): TwitterService = TwitterService(oauthConsumer, apiService, uploadService, gson)
+    fun provideTwitterService(
+        oauthConsumer: OkHttpOAuthConsumer,
+        apiService: TwitterApi,
+        uploadService: UploadApi,
+        gson: Gson
+    ): TwitterService = TwitterService(oauthConsumer, apiService, uploadService, gson)
 
     @Provides
     @Singleton
@@ -125,7 +129,8 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideTimelineRepository(@Named("filesDir") filesDir: File, gson: Gson): TimelineRepository = TimelineRepository(filesDir, gson)
+    fun provideTimelineRepository(@Named("filesDir") filesDir: File, gson: Gson): TimelineRepository =
+        TimelineRepository(filesDir, gson)
 
     @Provides
     @Singleton
@@ -133,7 +138,9 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideSsmtcAccountRepository(am: AccountManager,
-                                      gson: Gson,
-                                      timelineRepository: TimelineRepository): SsmtcAccountRepository = SsmtcAccountRepository(am, gson, timelineRepository)
+    fun provideSsmtcAccountRepository(
+        am: AccountManager,
+        gson: Gson,
+        timelineRepository: TimelineRepository
+    ): SsmtcAccountRepository = SsmtcAccountRepository(am, gson, timelineRepository)
 }

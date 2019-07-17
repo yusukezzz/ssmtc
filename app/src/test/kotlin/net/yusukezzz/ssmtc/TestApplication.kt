@@ -16,6 +16,7 @@ class TestApplication : Application() {
     companion object {
         private var picassoInitialized = false
     }
+
     val module: TestAppModule = TestAppModule(this)
 
     override fun setupLeakCanary(): RefWatcher {

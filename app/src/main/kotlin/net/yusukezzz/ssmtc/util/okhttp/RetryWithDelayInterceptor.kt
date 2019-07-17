@@ -7,7 +7,7 @@ import okhttp3.Response
 class RetryWithDelayInterceptor(
     private val maxRetryCount: Int = 3,
     private val retryDelayMillis: Long = 1000L
-): Interceptor {
+) : Interceptor {
     companion object {
         val TAG: String = RetryWithDelayInterceptor::class.java.simpleName
     }

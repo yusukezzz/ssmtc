@@ -24,7 +24,7 @@ import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
 @RuntimePermissions
-class StatusUpdateActivity: AppCompatActivity() {
+class StatusUpdateActivity : AppCompatActivity() {
     companion object {
         const val REQUEST_PHOTO_SELECT = 0
         const val ARG_REPLY_STATUS_ID = "reply_status_id"

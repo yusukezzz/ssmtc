@@ -123,7 +123,13 @@ class ThumbnailTileLayout : ViewGroup {
         val halfHeight = Math.round(bottom * 1f / 2)
         layout(0, left, top, halfWidth - marginPx, bottom) // left half & full height
         layout(1, left + halfWidth + marginPx, top, right, halfHeight - marginPx) // right half & top half height
-        layout(2, left + halfWidth + marginPx, top + halfHeight + marginPx, right, bottom) // right half & bottom half height
+        layout(
+            2,
+            left + halfWidth + marginPx,
+            top + halfHeight + marginPx,
+            right,
+            bottom
+        ) // right half & bottom half height
     }
 
     private fun layoutFour(left: Int, top: Int, right: Int, bottom: Int) {
@@ -137,10 +143,17 @@ class ThumbnailTileLayout : ViewGroup {
         layout(0, left, top, halfWidth - marginPx, halfHeight - marginPx) // left half & top half height
         layout(1, left + halfWidth + marginPx, top, right, halfHeight - marginPx) // right half & top half height
         layout(2, left, top + halfHeight + marginPx, halfWidth - marginPx, bottom) // left half & bottom half height
-        layout(3, left + halfWidth + marginPx, top + halfHeight + marginPx, right, bottom) // right half & bottom half height
+        layout(
+            3,
+            left + halfWidth + marginPx,
+            top + halfHeight + marginPx,
+            right,
+            bottom
+        ) // right half & bottom half height
     }
 
-    private fun layout(i: Int, left: Int, top: Int, right: Int, bottom: Int) = getChildAt(i).layout(left, top, right, bottom)
+    private fun layout(i: Int, left: Int, top: Int, right: Int, bottom: Int) =
+        getChildAt(i).layout(left, top, right, bottom)
 
     private val marginPx: Int by lazy { Math.round(2.0 * resources.displayMetrics.density).toInt() }
 }

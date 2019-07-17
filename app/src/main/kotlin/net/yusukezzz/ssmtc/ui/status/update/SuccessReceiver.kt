@@ -6,7 +6,7 @@ import android.content.Intent
 import androidx.core.app.NotificationManagerCompat
 import net.yusukezzz.ssmtc.util.toast
 
-class SuccessReceiver: BroadcastReceiver() {
+class SuccessReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val manager = NotificationManagerCompat.from(context)
         manager.cancelAll()

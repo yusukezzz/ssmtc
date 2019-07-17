@@ -21,7 +21,12 @@ object TextUtil {
         return "%01d:%02d".format(m, s)
     }
 
-    fun formattedText(tweet: Tweet, listener: TweetItemListener, ogUrl: String = "", removeQuote: Boolean = false): CharSequence {
+    fun formattedText(
+        tweet: Tweet,
+        listener: TweetItemListener,
+        ogUrl: String = "",
+        removeQuote: Boolean = false
+    ): CharSequence {
         val entities = tweet.entities
         val decodedText = StringEscapeUtils.unescapeHtml4(tweet.full_text)
 
@@ -37,7 +42,13 @@ object TextUtil {
         return spannable
     }
 
-    private fun removeUrls(str: String, urls: List<Url>, medias: List<Url>, ogUrl: String, removeQuote: Boolean): String {
+    private fun removeUrls(
+        str: String,
+        urls: List<Url>,
+        medias: List<Url>,
+        ogUrl: String,
+        removeQuote: Boolean
+    ): String {
         fun String.remove(target: String): String = this.replace(target, "")
 
         // use quoted tweet view
@@ -49,9 +60,11 @@ object TextUtil {
             .remove(ogUrl) // use open graph view
     }
 
-    private fun replaceUrlEntities(spannable: SpannableStringBuilder,
-                                   entities: List<Url>,
-                                   listener: TweetItemListener) {
+    private fun replaceUrlEntities(
+        spannable: SpannableStringBuilder,
+        entities: List<Url>,
+        listener: TweetItemListener
+    ) {
         entities.forEach { entity ->
             val start = spannable.indexOf(entity.url)
             val end = start + entity.url.length
@@ -70,8 +83,10 @@ object TextUtil {
         }
     }
 
-    private fun replaceScreenName(spannable: SpannableStringBuilder,
-                                  listener: TweetItemListener) {
+    private fun replaceScreenName(
+        spannable: SpannableStringBuilder,
+        listener: TweetItemListener
+    ) {
         SCREEN_NAME_PATTERN.findAll(spannable).forEach {
             val span = object : ClickableSpan() {
                 override fun onClick(widget: View?) {
@@ -82,8 +97,10 @@ object TextUtil {
         }
     }
 
-    private fun replaceHashTag(spannable: SpannableStringBuilder,
-                               listener: TweetItemListener) {
+    private fun replaceHashTag(
+        spannable: SpannableStringBuilder,
+        listener: TweetItemListener
+    ) {
         HASH_TAG_PATTERN.findAll(spannable).forEach {
             val span = object : ClickableSpan() {
                 override fun onClick(widget: View?) {

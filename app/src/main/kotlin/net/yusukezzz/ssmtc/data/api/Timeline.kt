@@ -28,9 +28,12 @@ data class Timeline(
         fun home(): Timeline = Timeline(UUID.randomUUID(), TYPE_HOME, "Home")
 
         fun mentions(): Timeline = Timeline(UUID.randomUUID(), TYPE_MENTIONS, "Mentions")
-        fun list(listId: Long, slug: String) = Timeline(uuid = UUID.randomUUID(), type = TYPE_LISTS, title = slug, listId = listId)
+        fun list(listId: Long, slug: String) =
+            Timeline(uuid = UUID.randomUUID(), type = TYPE_LISTS, title = slug, listId = listId)
+
         fun search(query: String) = Timeline(uuid = UUID.randomUUID(), type = TYPE_SEARCH, title = query, query = query)
-        fun user(screenName: String) = Timeline(uuid = UUID.randomUUID(), type = TYPE_USER, title = screenName, screenName = screenName)
+        fun user(screenName: String) =
+            Timeline(uuid = UUID.randomUUID(), type = TYPE_USER, title = screenName, screenName = screenName)
     }
 }
 

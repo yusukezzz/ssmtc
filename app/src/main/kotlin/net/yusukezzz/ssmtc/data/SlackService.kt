@@ -12,7 +12,9 @@ class SlackService(private val token: String, private val api: SlackApi) {
         private const val MAX_MESSAGE_LENGTH = 4000
     }
 
-    fun sendMessage(mes: String, channel: String): SlackUploadResult = api.postMessage(token, channel, mes.truncateBytes(MAX_MESSAGE_LENGTH)).execute().body()!!
+    fun sendMessage(mes: String, channel: String): SlackUploadResult =
+        api.postMessage(token, channel, mes.truncateBytes(MAX_MESSAGE_LENGTH)).execute().body()!!
+
     fun sendMessage(e: Throwable, channel: String): SlackUploadResult = sendMessage(e.prettyMarkdown(), channel)
 }
 
@@ -23,5 +25,6 @@ interface SlackApi {
     fun postMessage(
         @Query("token") token: String,
         @Query("channel") channel: String,
-        @Query("text") content: String): Call<SlackUploadResult>
+        @Query("text") content: String
+    ): Call<SlackUploadResult>
 }

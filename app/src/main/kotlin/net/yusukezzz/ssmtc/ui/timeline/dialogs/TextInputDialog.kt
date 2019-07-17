@@ -28,7 +28,8 @@ class TextInputDialog : BaseDialogFragment() {
         val type = arguments!!.getInt(ARG_TIMELINE_TYPE)
 
         val edit = EditText(context)
-        val padding = resources.getDimensionPixelSize(context!!.resolveAttributeId(android.R.attr.dialogPreferredPadding))
+        val padding =
+            resources.getDimensionPixelSize(context!!.resolveAttributeId(android.R.attr.dialogPreferredPadding))
         val linear = LinearLayout(context)
         linear.setPadding(padding, padding, padding, padding)
         linear.orientation = LinearLayout.VERTICAL

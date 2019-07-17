@@ -5,12 +5,15 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.threeten.bp.Instant
 import java.io.File
 
-class OGDiskCache(appCacheDir: File,
-                  private val gson: Gson) {
+class OGDiskCache(
+    appCacheDir: File,
+    private val gson: Gson
+) {
     companion object {
         private const val CACHE_DIR_NAME = "og_cache"
         private const val CACHE_EXPIRE_MILLI_SECONDS = 86400 * 1000L // 1 day
     }
+
     private val cacheDir = File(appCacheDir, CACHE_DIR_NAME)
 
     init {
