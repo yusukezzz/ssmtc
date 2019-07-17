@@ -112,7 +112,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     }
 
     private fun showNotification(manager: NotificationManagerCompat) {
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val importance = NotificationManager.IMPORTANCE_LOW
         val ch = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
         ch.description = CHANNEL_DESC
         ch.enableVibration(false)
