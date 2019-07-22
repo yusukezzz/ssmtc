@@ -10,10 +10,6 @@ import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.media_video.view.*
 import kotlinx.android.synthetic.main.open_graph.view.*
 import kotlinx.android.synthetic.main.tweet_item.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelChildren
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -24,14 +20,9 @@ import net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
 import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.text.DecimalFormat
-import kotlin.coroutines.CoroutineContext
 
 class TweetItemView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
-    LinearLayout(context, attrs, defStyle), CoroutineScope {
-
-    private val job: Job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+    LinearLayout(context, attrs, defStyle) {
 
     companion object {
         private val numberFormatter = DecimalFormat("#,###,###")
@@ -165,7 +156,6 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     fun cleanup() {
-        job.cancelChildren()
         PicassoUtil.cancel(tweet_user_image)
         open_graph.reset()
         thumbnail_tile.children { PicassoUtil.cancel(it) }
@@ -193,7 +183,7 @@ class TweetItemView @JvmOverloads constructor(context: Context, attrs: Attribute
             TextUtil.milliSecToTime(video.video_info.duration_millis)
         }
         tile.addView(mediaVideo)
-        val imgView = media_video_thumbnail
+        val imgView = mediaVideo.media_video_thumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
         PicassoUtil.thumbnail(video.smallUrl, imgView)
     }
