@@ -535,9 +535,15 @@ class TimelineActivity : AppCompatActivity(),
 
     override fun onRetweetClick(tweet: Tweet) = presenter.retweet(tweet)
 
-    override fun onScreenNameClick(screenName: String) = onTimelineSelect(Timeline.user(screenName))
+    override fun onScreenNameClick(screenName: String) = showConfirmTimelineSelect(Timeline.user(screenName))
 
-    override fun onHashTagClick(hashTag: String) = onTimelineSelect(Timeline.search(hashTag))
+    override fun onHashTagClick(hashTag: String) = showConfirmTimelineSelect(Timeline.search(hashTag))
+
+    private fun showConfirmTimelineSelect(timeline: Timeline) {
+        ConfirmTimelineSelectDialog.newInstance(timeline)
+            .setTimelineSelectListener(this)
+            .show(supportFragmentManager, "ConfirmTimelineSelectDialog")
+    }
 
     override fun onShareClick(tweet: Tweet) {
         val i = Intent(Intent.ACTION_SEND)

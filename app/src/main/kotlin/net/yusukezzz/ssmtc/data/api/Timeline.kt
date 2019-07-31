@@ -18,11 +18,11 @@ data class Timeline(
     override fun compareTo(other: Timeline): Int = compareValuesBy(this, other, { it.type }, { it.title.toLowerCase() })
 
     companion object {
-        val TYPE_HOME = 0
-        val TYPE_MENTIONS = 1
-        val TYPE_LISTS = 2
-        val TYPE_SEARCH = 3
-        val TYPE_USER = 4
+        const val TYPE_HOME = 0
+        const val TYPE_MENTIONS = 1
+        const val TYPE_LISTS = 2
+        const val TYPE_SEARCH = 3
+        const val TYPE_USER = 4
 
         // factory
         fun home(): Timeline = Timeline(UUID.randomUUID(), TYPE_HOME, "Home")

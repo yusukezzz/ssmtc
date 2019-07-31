@@ -67,7 +67,7 @@ dependencies {
         lifecycle_version = '2.2.0-alpha02'
         retrofit_version = '2.6.0'
         permission_dispatcher_version = '4.3.1'
-        dagger_version = '2.23.2'
+        dagger_version = '2.24'
         leakcanary_version = '1.6.3'
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
