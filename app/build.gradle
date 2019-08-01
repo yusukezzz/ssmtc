@@ -114,21 +114,6 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:latest.release'
     testImplementation 'org.robolectric:robolectric:3.8'
 }
-repositories {
-    mavenCentral()
-    maven { url 'https://jitpack.bg' }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
-    }
-}
 
 // ignore unstable releases
 dependencyUpdates.resolutionStrategy = {
