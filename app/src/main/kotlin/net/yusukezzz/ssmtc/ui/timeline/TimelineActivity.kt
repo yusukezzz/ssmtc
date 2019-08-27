@@ -24,10 +24,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.base_layout.*
-import kotlinx.android.synthetic.main.nav_header_main.*
-import kotlinx.android.synthetic.main.timeline_layout.*
-import kotlinx.android.synthetic.main.timeline_list.*
+import kotlinx.android.synthetic.main.base_layout.main_contents
+import kotlinx.android.synthetic.main.base_layout.toolbar
+import kotlinx.android.synthetic.main.base_layout.toolbar_title
+import kotlinx.android.synthetic.main.nav_header_main.btn_account_selector
+import kotlinx.android.synthetic.main.timeline_layout.drawer
+import kotlinx.android.synthetic.main.timeline_layout.nav_view
+import kotlinx.android.synthetic.main.timeline_list.swipe_refresh
+import kotlinx.android.synthetic.main.timeline_list.timeline_list
+import kotlinx.android.synthetic.main.timeline_list.tweet_btn
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
@@ -47,9 +52,19 @@ import net.yusukezzz.ssmtc.ui.status.update.FailureReceiver
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateService
 import net.yusukezzz.ssmtc.ui.status.update.SuccessReceiver
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
-import net.yusukezzz.ssmtc.util.*
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.BaseDialogFragment
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.ConfirmTimelineSelectDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.ListsSelectDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.TextInputDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSelectDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
+import net.yusukezzz.ssmtc.util.getCompatDrawable
+import net.yusukezzz.ssmtc.util.getVectorDrawable
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
+import net.yusukezzz.ssmtc.util.setView
+import net.yusukezzz.ssmtc.util.snackbar
+import net.yusukezzz.ssmtc.util.toBitmap
+import net.yusukezzz.ssmtc.util.toast
 import saschpe.android.customtabs.CustomTabsHelper
 import saschpe.android.customtabs.WebViewFallback
 import java.io.File
@@ -73,8 +88,12 @@ class TimelineActivity : AppCompatActivity(),
 
     private lateinit var pagingScrollListener: PagingRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
-    private val timelineAdapter: TimelineAdapter by lazy { timeline_list.adapter as TimelineAdapter }
-    private val lastTimelineFile by lazy { File(applicationContext.cacheDir, "last_timeline.json") }
+    private val timelineAdapter: TimelineAdapter by lazy {
+        timeline_list.adapter as TimelineAdapter
+    }
+    private val lastTimelineFile by lazy {
+        File(applicationContext.cacheDir, "last_timeline.json")
+    }
 
     // Oldest tweet id on current timeline (use for next paging request)
     private var lastTweetId: Long? = null
@@ -133,7 +152,10 @@ class TimelineActivity : AppCompatActivity(),
         val json = gson.toJson(timelineAdapter.getAll())
         lastTimelineFile.writeText(json)
         // save last scroll position
-        outState.putParcelable(STATE_RECYCLER_VIEW, timeline_list.layoutManager!!.onSaveInstanceState())
+        outState.putParcelable(
+            STATE_RECYCLER_VIEW,
+            timeline_list.layoutManager!!.onSaveInstanceState()
+        )
         // save oldest tweet id
         lastTweetId?.let { outState.putLong(STATE_OLDEST_TWEET_ID, it) }
     }
@@ -290,7 +312,8 @@ class TimelineActivity : AppCompatActivity(),
         return false
     }
 
-    private fun launchAuthorizeActivity() = startActivity(Intent(this, AuthorizeActivity::class.java))
+    private fun launchAuthorizeActivity() =
+        startActivity(Intent(this, AuthorizeActivity::class.java))
 
     private fun loadAccount(init: Boolean = true) {
         val account = currentAccount()
@@ -400,7 +423,12 @@ class TimelineActivity : AppCompatActivity(),
 
     override fun onTimelineSelect(timeline: Timeline) {
         val account = currentAccount()
-        accountRepo.update(account.copy(timelines = account.timelines + timeline, currentTimelineUuid = timeline.uuid))
+        accountRepo.update(
+            account.copy(
+                timelines = account.timelines + timeline,
+                currentTimelineUuid = timeline.uuid
+            )
+        )
         switchTimeline(timeline)
     }
 
@@ -526,7 +554,8 @@ class TimelineActivity : AppCompatActivity(),
     override fun onImageClick(images: List<Media>, pos: Int) =
         startActivity(GalleryActivity.newIntent(this, images, pos))
 
-    override fun onVideoClick(video: VideoInfo) = startActivity(VideoPlayerActivity.newIntent(this, video))
+    override fun onVideoClick(video: VideoInfo) =
+        startActivity(VideoPlayerActivity.newIntent(this, video))
 
     override fun onReplyClick(tweet: Tweet) =
         startActivity(StatusUpdateActivity.newIntent(this, tweet.id, tweet.user.screenName))
@@ -535,9 +564,11 @@ class TimelineActivity : AppCompatActivity(),
 
     override fun onRetweetClick(tweet: Tweet) = presenter.retweet(tweet)
 
-    override fun onScreenNameClick(screenName: String) = showConfirmTimelineSelect(Timeline.user(screenName))
+    override fun onScreenNameClick(screenName: String) =
+        showConfirmTimelineSelect(Timeline.user(screenName))
 
-    override fun onHashTagClick(hashTag: String) = showConfirmTimelineSelect(Timeline.search(hashTag))
+    override fun onHashTagClick(hashTag: String) =
+        showConfirmTimelineSelect(Timeline.search(hashTag))
 
     private fun showConfirmTimelineSelect(timeline: Timeline) {
         ConfirmTimelineSelectDialog.newInstance(timeline)
@@ -560,4 +591,3 @@ class TimelineActivity : AppCompatActivity(),
         pagingScrollListener.stopLoading()
     }
 }
-

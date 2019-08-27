@@ -37,11 +37,13 @@ class TimelineRepository(filesDir: File, private val gson: Gson) {
 
     fun add(userId: Long, timeline: Timeline) = save(userId, findAll(userId) + timeline)
 
-    fun delete(userId: Long, timeline: Timeline) = save(userId, findAll(userId).filterNot { it.uuid == timeline.uuid })
+    fun delete(userId: Long, timeline: Timeline) =
+        save(userId, findAll(userId).filterNot { it.uuid == timeline.uuid })
 
     fun deleteAll(userId: Long): Boolean = jsonFile(userId).delete()
 
-    fun save(userId: Long, timelines: List<Timeline>) = jsonFile(userId).writeText(gson.toJson(timelines.sorted()))
+    fun save(userId: Long, timelines: List<Timeline>) =
+        jsonFile(userId).writeText(gson.toJson(timelines.sorted()))
 
     private fun jsonFile(userId: Long): File = File(repoDir, "$userId.json")
 }

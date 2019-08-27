@@ -21,12 +21,32 @@ import org.robolectric.Shadows
 
 @RunWith(RobolectricTestRunner::class)
 class TimelineActivityTest {
-    private fun getModule(): TestAppModule = (RuntimeEnvironment.application as TestApplication).module
+    private fun getModule(): TestAppModule =
+        (RuntimeEnvironment.application as TestApplication).module
+
     private fun mockUser(id: Long = 1): User =
-        User(id, "name", "screenName", false, false, "profileImage", "profileImageHttps", 0, 0, 0, 0, 0)
+        User(
+            id,
+            "name",
+            "screenName",
+            false,
+            false,
+            "profileImage",
+            "profileImageHttps",
+            0,
+            0,
+            0,
+            0,
+            0
+        )
 
     private fun mockAccount(timelines: List<Timeline>): SsmtcAccount =
-        SsmtcAccount(Credentials("dummyToken", "dummyTokenSecret"), mockUser(), timelines, timelines.first().uuid)
+        SsmtcAccount(
+            Credentials("dummyToken", "dummyTokenSecret"),
+            mockUser(),
+            timelines,
+            timelines.first().uuid
+        )
 
     @Test
     fun shouldStartAuthorizeIfNotLoggedIn() {

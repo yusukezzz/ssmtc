@@ -26,7 +26,7 @@ class OGDiskCache(
             return null
         }
         return gson.fromJson(cache.readText(), OpenGraph::class.java)
-        //.let { it.copy(title = "[C] " + it.title) } // append cache mark for debug
+        // .let { it.copy(title = "[C] " + it.title) } // append cache mark for debug
     }
 
     fun put(url: String, og: OpenGraph) = synchronized(OGDiskCache::class) {
@@ -42,5 +42,6 @@ class OGDiskCache(
         }
     }
 
-    private fun prepareCacheFile(url: String): File = File(cacheDir, DigestUtils.md5Hex(url) + ".json")
+    private fun prepareCacheFile(url: String): File =
+        File(cacheDir, DigestUtils.md5Hex(url) + ".json")
 }

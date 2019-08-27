@@ -73,35 +73,47 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     @Named("twitterOkHttp")
-    fun provideTwitterOkhttp(oauthConsumer: OkHttpOAuthConsumer): OkHttpClient = OkHttpClient.Builder()
-        //.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
-        .addInterceptor(SigningInterceptor(oauthConsumer))
-        .addInterceptor(RetryWithDelayInterceptor())
-        .build()
+    fun provideTwitterOkhttp(oauthConsumer: OkHttpOAuthConsumer): OkHttpClient =
+        OkHttpClient.Builder()
+            // .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
+            .addInterceptor(SigningInterceptor(oauthConsumer))
+            .addInterceptor(RetryWithDelayInterceptor())
+            .build()
 
     @Provides
     @Singleton
     @Named("retrofitBuilder")
-    fun provideRetrofitBuilder(gson: Gson, @Named("okHttp") okhttp: OkHttpClient): Retrofit.Builder = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(okhttp)
-
-    @Provides
-    @Singleton
-    @Named("twitterRetrofitBuilder")
-    fun provideTwitterRetrofitBuilder(gson: Gson, @Named("twitterOkHttp") okhttp: OkHttpClient): Retrofit.Builder =
+    fun provideRetrofitBuilder(
+        gson: Gson,
+        @Named("okHttp") okhttp: OkHttpClient
+    ): Retrofit.Builder =
         Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okhttp)
 
     @Provides
     @Singleton
-    fun provideTwitterApi(@Named("twitterRetrofitBuilder") builder: Retrofit.Builder): TwitterApi =
+    @Named("twitterRetrofitBuilder")
+    fun provideTwitterRetrofitBuilder(
+        gson: Gson,
+        @Named("twitterOkHttp") okhttp: OkHttpClient
+    ): Retrofit.Builder =
+        Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okhttp)
+
+    @Provides
+    @Singleton
+    fun provideTwitterApi(
+        @Named("twitterRetrofitBuilder") builder: Retrofit.Builder
+    ): TwitterApi =
         builder.baseUrl(API_BASE_URL).build().create(TwitterApi::class.java)
 
     @Provides
     @Singleton
-    fun provideTwitterUploadApi(@Named("twitterRetrofitBuilder") builder: Retrofit.Builder): UploadApi =
+    fun provideTwitterUploadApi(
+        @Named("twitterRetrofitBuilder") builder: Retrofit.Builder
+    ): UploadApi =
         builder.baseUrl(UPLOAD_BASE_URL).build().create(UploadApi::class.java)
 
     @Provides
@@ -115,7 +127,8 @@ class AppModule(private val app: Application) {
 
     @Provides
     @Singleton
-    fun provideOGDiskCache(@Named("cacheDir") cacheDir: File, gson: Gson): OGDiskCache = OGDiskCache(cacheDir, gson)
+    fun provideOGDiskCache(@Named("cacheDir") cacheDir: File, gson: Gson): OGDiskCache =
+        OGDiskCache(cacheDir, gson)
 
     @Provides
     @Singleton
@@ -125,11 +138,17 @@ class AppModule(private val app: Application) {
     @Provides
     @Singleton
     fun provideSlackService(@Named("retrofitBuilder") builder: Retrofit.Builder): SlackService =
-        SlackService(BuildConfig.SLACK_TOKEN, builder.baseUrl(SLACK_BASE_URL).build().create(SlackApi::class.java))
+        SlackService(
+            BuildConfig.SLACK_TOKEN,
+            builder.baseUrl(SLACK_BASE_URL).build().create(SlackApi::class.java)
+        )
 
     @Provides
     @Singleton
-    fun provideTimelineRepository(@Named("filesDir") filesDir: File, gson: Gson): TimelineRepository =
+    fun provideTimelineRepository(
+        @Named("filesDir") filesDir: File,
+        gson: Gson
+    ): TimelineRepository =
         TimelineRepository(filesDir, gson)
 
     @Provides

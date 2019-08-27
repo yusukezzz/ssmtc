@@ -6,7 +6,6 @@ import androidx.appcompat.app.AlertDialog
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.Timeline
 
-
 class TimelineSelectDialog : BaseDialogFragment() {
     companion object {
         val TIMELINE_TYPES = arrayOf("Home", "Mentions", "Lists", "Search", "User")
@@ -30,4 +29,3 @@ class TimelineSelectDialog : BaseDialogFragment() {
         }.create()
     }
 }
-

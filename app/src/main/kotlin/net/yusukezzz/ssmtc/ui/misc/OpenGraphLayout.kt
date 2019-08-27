@@ -4,7 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import kotlinx.android.synthetic.main.open_graph.view.*
+import kotlinx.android.synthetic.main.open_graph.view.og_contents
+import kotlinx.android.synthetic.main.open_graph.view.og_host
+import kotlinx.android.synthetic.main.open_graph.view.og_image
+import kotlinx.android.synthetic.main.open_graph.view.og_loading
+import kotlinx.android.synthetic.main.open_graph.view.og_title
 import net.yusukezzz.ssmtc.data.og.OpenGraph
 import net.yusukezzz.ssmtc.data.og.OpenGraphLoadable
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView
@@ -12,7 +16,11 @@ import net.yusukezzz.ssmtc.util.gone
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.visible
 
-class OpenGraphLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+class OpenGraphLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) :
     FrameLayout(context, attrs, defStyle), OpenGraphLoadable {
 
     private lateinit var listener: TweetItemView.TweetItemListener

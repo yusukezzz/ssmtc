@@ -11,7 +11,11 @@ class ThumbnailTileLayout : ViewGroup {
     }
 
     @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle)
+    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(
+        context,
+        attrs,
+        defStyle
+    )
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (childCount == 0) {
@@ -122,7 +126,13 @@ class ThumbnailTileLayout : ViewGroup {
         val halfWidth = Math.round(right * 1f / 2)
         val halfHeight = Math.round(bottom * 1f / 2)
         layout(0, left, top, halfWidth - marginPx, bottom) // left half & full height
-        layout(1, left + halfWidth + marginPx, top, right, halfHeight - marginPx) // right half & top half height
+        layout(
+            1,
+            left + halfWidth + marginPx,
+            top,
+            right,
+            halfHeight - marginPx
+        ) // right half & top half height
         layout(
             2,
             left + halfWidth + marginPx,
@@ -140,9 +150,27 @@ class ThumbnailTileLayout : ViewGroup {
         // ---------
         val halfWidth = Math.round(right * 1f / 2)
         val halfHeight = Math.round(bottom * 1f / 2)
-        layout(0, left, top, halfWidth - marginPx, halfHeight - marginPx) // left half & top half height
-        layout(1, left + halfWidth + marginPx, top, right, halfHeight - marginPx) // right half & top half height
-        layout(2, left, top + halfHeight + marginPx, halfWidth - marginPx, bottom) // left half & bottom half height
+        layout(
+            0,
+            left,
+            top,
+            halfWidth - marginPx,
+            halfHeight - marginPx
+        ) // left half & top half height
+        layout(
+            1,
+            left + halfWidth + marginPx,
+            top,
+            right,
+            halfHeight - marginPx
+        ) // right half & top half height
+        layout(
+            2,
+            left,
+            top + halfHeight + marginPx,
+            halfWidth - marginPx,
+            bottom
+        ) // left half & bottom half height
         layout(
             3,
             left + halfWidth + marginPx,

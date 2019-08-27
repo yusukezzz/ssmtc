@@ -34,7 +34,7 @@ class TestApplication : Application() {
 
     override fun initComponent() {
         // ignore for missing TZDB.dat
-        //AndroidThreeTen.init(this)
+        // AndroidThreeTen.init(this)
         component = DaggerTestAppComponent.builder()
             .testAppModule(module)
             .build()

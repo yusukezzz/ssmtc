@@ -20,7 +20,9 @@ class AccountAuthenticatorService : Service() {
 
     override fun onBind(intent: Intent): IBinder = authenticator.iBinder
 
-    internal class SsmtcAccountAuthenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
+    internal class SsmtcAccountAuthenticator(
+        private val context: Context
+    ) : AbstractAccountAuthenticator(context) {
         override fun addAccount(
             response: AccountAuthenticatorResponse,
             accountType: String?,
@@ -73,12 +75,14 @@ class AccountAuthenticatorService : Service() {
             features: Array<out String>?
         ): Bundle = defaultResponse()
 
-        override fun editProperties(response: AccountAuthenticatorResponse?, accountType: String?): Bundle =
+        override fun editProperties(
+            response: AccountAuthenticatorResponse?,
+            accountType: String?
+        ): Bundle =
             defaultResponse()
 
         private fun defaultResponse(): Bundle = Bundle().apply {
             putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true)
         }
-
     }
 }

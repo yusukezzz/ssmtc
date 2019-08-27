@@ -1,11 +1,17 @@
 package net.yusukezzz.ssmtc.util.picasso
 
-import android.graphics.*
+import android.graphics.Bitmap
 import android.graphics.Bitmap.Config
+import android.graphics.BitmapShader
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.graphics.Shader
 import com.squareup.picasso.Transformation
 
 // https://gist.github.com/aprock/6213395
-class RoundedTransformation(private val radiusDp: Int, private val marginDp: Int = 0) : Transformation {
+class RoundedTransformation(private val radiusDp: Int, private val marginDp: Int = 0) :
+    Transformation {
     private val KEY: String = "rounded(radius=$radiusDp, margin=$marginDp)"
 
     override fun transform(source: Bitmap): Bitmap {

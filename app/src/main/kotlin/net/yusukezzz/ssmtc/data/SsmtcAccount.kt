@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import net.yusukezzz.ssmtc.data.api.Timeline
 import net.yusukezzz.ssmtc.data.api.model.User
-import java.util.*
+import java.util.UUID
 
 @Parcelize
 data class Credentials(val token: String, val tokenSecret: String) : Parcelable

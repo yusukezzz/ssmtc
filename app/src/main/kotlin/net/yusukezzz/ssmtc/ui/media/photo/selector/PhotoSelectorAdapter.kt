@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.beVisibleIf
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
-import java.util.*
+import java.util.ArrayList
 
 class PhotoSelectorAdapter(
     private val photoPaths: List<String>,
@@ -26,7 +26,8 @@ class PhotoSelectorAdapter(
     private val selected = ArrayList<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.photo_select_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.photo_select_item, parent, false)
         return ViewHolder(view, this)
     }
 
@@ -50,7 +51,8 @@ class PhotoSelectorAdapter(
 
     private fun isSelected(path: String): Boolean = selected.indexOf(path) > -1
 
-    class ViewHolder(val view: View, private val adapter: PhotoSelectorAdapter) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View, private val adapter: PhotoSelectorAdapter) :
+        RecyclerView.ViewHolder(view) {
         private val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
         private val selectedIcon: ImageView = view.findViewById(R.id.iv_selected)
 

@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.photo_gallery_page.view.*
+import kotlinx.android.synthetic.main.photo_gallery_page.view.loading_bar
+import kotlinx.android.synthetic.main.photo_gallery_page.view.page_image
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.util.toast
 
-class GalleryPageAdapter(private val context: Context, private val images: List<Media>) : PagerAdapter() {
+class GalleryPageAdapter(private val context: Context, private val images: List<Media>) :
+    PagerAdapter() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun isViewFromObject(view: View, obj: Any): Boolean = (view == obj)
@@ -42,5 +44,6 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
         return view
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) = container.removeView((obj as View))
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) =
+        container.removeView((obj as View))
 }

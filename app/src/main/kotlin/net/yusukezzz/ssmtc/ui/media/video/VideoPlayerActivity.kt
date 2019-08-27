@@ -6,7 +6,9 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import kotlinx.android.synthetic.main.video_player.*
+import kotlinx.android.synthetic.main.video_player.media_video
+import kotlinx.android.synthetic.main.video_player.video_loading_bar
+import kotlinx.android.synthetic.main.video_player.video_time
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity

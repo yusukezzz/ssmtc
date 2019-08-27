@@ -1,0 +1,6 @@
+[*.{kt, kts}]
+indent_size = 4
+insert_final_newline = true
+# from Android Kotlin Style Guide
+max_line_length = 100
+disabled_rules = import-ordering

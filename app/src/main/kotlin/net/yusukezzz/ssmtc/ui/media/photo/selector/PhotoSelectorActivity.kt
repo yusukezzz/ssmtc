@@ -5,7 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.photo_selector.*
+import kotlinx.android.synthetic.main.photo_selector.photo_selector_complete
+import kotlinx.android.synthetic.main.photo_selector.photo_selector_grid
+import kotlinx.android.synthetic.main.photo_selector.photo_selector_title
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 

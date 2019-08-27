@@ -15,7 +15,8 @@ class SlackService(private val token: String, private val api: SlackApi) {
     fun sendMessage(mes: String, channel: String): SlackUploadResult =
         api.postMessage(token, channel, mes.truncateBytes(MAX_MESSAGE_LENGTH)).execute().body()!!
 
-    fun sendMessage(e: Throwable, channel: String): SlackUploadResult = sendMessage(e.prettyMarkdown(), channel)
+    fun sendMessage(e: Throwable, channel: String): SlackUploadResult =
+        sendMessage(e.prettyMarkdown(), channel)
 }
 
 data class SlackUploadResult(val ok: Boolean, val error: String)

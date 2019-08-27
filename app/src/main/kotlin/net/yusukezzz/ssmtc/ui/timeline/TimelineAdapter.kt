@@ -32,7 +32,8 @@ class TimelineAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, pos: Int) =
         (holder as TweetViewHolder).bind(timeline[pos])
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) = (holder as TweetViewHolder).cleanup()
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) =
+        (holder as TweetViewHolder).cleanup()
 
     override fun getItemCount(): Int = timeline.size
     override fun getItemId(pos: Int): Long = timeline[pos].id

@@ -4,8 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.authorize.*
-import kotlinx.android.synthetic.main.base_layout.*
+import kotlinx.android.synthetic.main.authorize.btn_authorize
+import kotlinx.android.synthetic.main.authorize.btn_authorize_request
+import kotlinx.android.synthetic.main.authorize.edit_pin_code
+import kotlinx.android.synthetic.main.base_layout.main_contents
+import kotlinx.android.synthetic.main.base_layout.toolbar_title
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences

@@ -5,7 +5,11 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
@@ -34,7 +38,7 @@ open class Application : android.app.Application(), CoroutineScope {
     override fun onCreate() {
         super.onCreate()
 
-        //setupLeakCanary()
+        // setupLeakCanary()
 
         initPicasso()
         initComponent()

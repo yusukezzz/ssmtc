@@ -22,7 +22,8 @@ class TimelinePresenter(
     }
 
     private var ignoreUserIds: List<Long> = listOf()
-    private var ignoreIdsLastUpdatedAt: OffsetDateTime = OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
+    private var ignoreIdsLastUpdatedAt: OffsetDateTime =
+        OffsetDateTime.now().minusSeconds(IGNORE_IDS_CACHE_SECONDS)
     private lateinit var timeline: Timeline
 
     override fun setTimeline(timeline: Timeline) {
@@ -148,5 +149,4 @@ class TimelinePresenter(
             view.handleError(error)
         }
     }
-
 }

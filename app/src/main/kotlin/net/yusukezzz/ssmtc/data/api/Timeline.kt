@@ -2,7 +2,7 @@ package net.yusukezzz.ssmtc.data.api
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import java.util.*
+import java.util.UUID
 
 @Parcelize
 data class Timeline(
@@ -15,7 +15,8 @@ data class Timeline(
     val listId: Long? = null,
     val includeRetweets: Boolean = true
 ) : Parcelable, Comparable<Timeline> {
-    override fun compareTo(other: Timeline): Int = compareValuesBy(this, other, { it.type }, { it.title.toLowerCase() })
+    override fun compareTo(other: Timeline): Int =
+        compareValuesBy(this, other, { it.type }, { it.title.toLowerCase() })
 
     companion object {
         const val TYPE_HOME = 0
@@ -31,9 +32,15 @@ data class Timeline(
         fun list(listId: Long, slug: String) =
             Timeline(uuid = UUID.randomUUID(), type = TYPE_LISTS, title = slug, listId = listId)
 
-        fun search(query: String) = Timeline(uuid = UUID.randomUUID(), type = TYPE_SEARCH, title = query, query = query)
+        fun search(query: String) =
+            Timeline(uuid = UUID.randomUUID(), type = TYPE_SEARCH, title = query, query = query)
+
         fun user(screenName: String) =
-            Timeline(uuid = UUID.randomUUID(), type = TYPE_USER, title = screenName, screenName = screenName)
+            Timeline(
+                uuid = UUID.randomUUID(),
+                type = TYPE_USER,
+                title = screenName,
+                screenName = screenName
+            )
     }
 }
-

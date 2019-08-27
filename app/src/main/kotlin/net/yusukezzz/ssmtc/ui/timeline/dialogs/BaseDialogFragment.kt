@@ -13,7 +13,6 @@ open class BaseDialogFragment : AppCompatDialogFragment() {
 
     protected lateinit var listener: TimelineSelectListener
 
-
     fun setTimelineSelectListener(listener: TimelineSelectListener): BaseDialogFragment {
         this.listener = listener
 

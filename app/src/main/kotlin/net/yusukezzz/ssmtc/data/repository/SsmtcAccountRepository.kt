@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.SsmtcAccount
 import net.yusukezzz.ssmtc.data.api.model.User
-import java.util.*
+import java.util.UUID
 
 class SsmtcAccountRepository(
     private val am: AccountManager,
@@ -23,7 +23,10 @@ class SsmtcAccountRepository(
 
     fun findAll(): List<SsmtcAccount> {
         return am.getAccountsByType(ACCOUNT_TYPE).map {
-            val cred = gson.fromJson(am.peekAuthToken(it, ACCOUNT_AUTH_TOKEN_TYPE), Credentials::class.java)
+            val cred = gson.fromJson(
+                am.peekAuthToken(it, ACCOUNT_AUTH_TOKEN_TYPE),
+                Credentials::class.java
+            )
             val user = gson.fromJson(am.getUserData(it, ACCOUNT_DATA_USER), User::class.java)
             val uuid = UUID.fromString(am.getUserData(it, ACCOUNT_DATA_LAST_TIMELINE_UUID))
             val params = timelineRepository.findAll(user.id)
@@ -56,7 +59,11 @@ class SsmtcAccountRepository(
     private fun save(account: Account, ssmtcAccount: SsmtcAccount) {
         am.setUserData(account, ACCOUNT_DATA_ID, ssmtcAccount.user.id.toString())
         am.setUserData(account, ACCOUNT_DATA_USER, gson.toJson(ssmtcAccount.user))
-        am.setUserData(account, ACCOUNT_DATA_LAST_TIMELINE_UUID, ssmtcAccount.currentTimelineUuid.toString())
+        am.setUserData(
+            account,
+            ACCOUNT_DATA_LAST_TIMELINE_UUID,
+            ssmtcAccount.currentTimelineUuid.toString()
+        )
 
         timelineRepository.save(ssmtcAccount.user.id, ssmtcAccount.timelines)
     }

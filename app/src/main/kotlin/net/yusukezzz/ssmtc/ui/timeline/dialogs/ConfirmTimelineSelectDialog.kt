@@ -10,11 +10,12 @@ class ConfirmTimelineSelectDialog : BaseDialogFragment() {
     companion object {
         const val ARG_TIMELINE = "timeline"
 
-        fun newInstance(timeline: Timeline): ConfirmTimelineSelectDialog = ConfirmTimelineSelectDialog().apply {
-            arguments = Bundle().apply {
-                putParcelable(ARG_TIMELINE, timeline)
+        fun newInstance(timeline: Timeline): ConfirmTimelineSelectDialog =
+            ConfirmTimelineSelectDialog().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_TIMELINE, timeline)
+                }
             }
-        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

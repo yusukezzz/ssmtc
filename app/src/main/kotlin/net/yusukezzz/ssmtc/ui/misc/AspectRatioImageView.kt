@@ -16,10 +16,16 @@ class AspectRatioImageView : ImageView {
     private var heightRatio: Int = 1
 
     @JvmOverloads
-    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         val arr = context.obtainStyledAttributes(attrs, R.styleable.AspectRatioImageView)
-        widthRatio = arr.getInteger(R.styleable.AspectRatioImageView_widthRatio, DEFAULT_WIDTH_RATIO)
-        heightRatio = arr.getInteger(R.styleable.AspectRatioImageView_heightRatio, DEFAULT_HEIGHT_RATIO)
+        widthRatio =
+            arr.getInteger(R.styleable.AspectRatioImageView_widthRatio, DEFAULT_WIDTH_RATIO)
+        heightRatio =
+            arr.getInteger(R.styleable.AspectRatioImageView_heightRatio, DEFAULT_HEIGHT_RATIO)
         arr.recycle()
     }
 

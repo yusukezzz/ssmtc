@@ -4,4 +4,3 @@ interface OpenGraphLoadable {
     fun onStart()
     fun onComplete(og: OpenGraph)
 }
-

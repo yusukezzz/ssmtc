@@ -52,7 +52,8 @@ object PicassoUtil {
             .into(imgView)
     }
 
-    private fun resizedUrl(imageUrl: String, width: Int = 200): String = BuildConfig.MY_API_BASE_URL + "/thumbnail/" +
+    private fun resizedUrl(imageUrl: String, width: Int = 200): String =
+        BuildConfig.MY_API_BASE_URL + "/thumbnail/" +
             URLEncoder.encode(imageUrl, "UTF-8") + "?w=$width"
 
     fun resumeThumbnail() = Picasso.get().resumeTag(THUMBNAIL_IMAGE_TAG)

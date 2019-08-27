@@ -10,7 +10,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
 import net.yusukezzz.ssmtc.util.launchUI
 
-class LifecycleScope(private val owner: LifecycleOwner) : LifecycleObserver, CoroutineScope by MainScope() {
+class LifecycleScope(private val owner: LifecycleOwner) : LifecycleObserver,
+    CoroutineScope by MainScope() {
     init {
         owner.lifecycle.addObserver(this)
     }

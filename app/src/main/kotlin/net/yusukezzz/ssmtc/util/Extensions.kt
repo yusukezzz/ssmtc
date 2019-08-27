@@ -19,7 +19,14 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -113,7 +120,9 @@ fun ContentResolver.getContentPath(content: Uri): String {
     val column = when {
         mimeType.startsWith("image") -> MediaStore.Images.Media.DATA
         mimeType.startsWith("video") -> MediaStore.Video.Media.DATA
-        else -> throw RuntimeException("unknown mimeType or not content uri: uri=$content mimeType=$mimeType")
+        else -> throw RuntimeException(
+            "unknown mimeType or not content uri: uri=$content mimeType=$mimeType"
+        )
     }
     val cursor = this.query(content, arrayOf(), null, null, null) ?: return content.path
     return cursor.use {
@@ -131,7 +140,9 @@ fun File.mimeType(): String {
 fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
 
 fun Throwable.prettyMarkdown(): String {
-    val c = cause?.let { "\n[cause] ${it.message}\n${it.stackTrace.joinToString("\n")}" } ?: ""
+    val c = cause?.let {
+        "\n[cause] ${it.message}\n${it.stackTrace.joinToString("\n")}"
+    } ?: ""
     return """```[error] ${OffsetDateTime.now()}
              |Message:
              |$message

@@ -19,4 +19,3 @@ data class User(
     @SerializedName("friends_count") val friendsCount: Long,
     @SerializedName("listed_count") val listedCount: Long
 ) : Parcelable
-

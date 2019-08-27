@@ -7,7 +7,13 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.status_update.*
+import kotlinx.android.synthetic.main.status_update.select_photos
+import kotlinx.android.synthetic.main.status_update.send_tweet
+import kotlinx.android.synthetic.main.status_update.status_input
+import kotlinx.android.synthetic.main.status_update.status_thumbnail_tile
+import kotlinx.android.synthetic.main.status_update.status_update_toolbar
+import kotlinx.android.synthetic.main.status_update.toolbar_avatar
+import kotlinx.android.synthetic.main.status_update.toolbar_screen_name
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
@@ -30,7 +36,11 @@ class StatusUpdateActivity : AppCompatActivity() {
         const val ARG_REPLY_STATUS_ID = "reply_status_id"
         const val ARG_REPLY_SCREEN_NAME = "reply_screen_name"
 
-        fun newIntent(context: Context, replyStatusId: Long? = null, replyScreenName: String? = null): Intent =
+        fun newIntent(
+            context: Context,
+            replyStatusId: Long? = null,
+            replyScreenName: String? = null
+        ): Intent =
             Intent(context, StatusUpdateActivity::class.java).apply {
                 putExtra(ARG_REPLY_STATUS_ID, replyStatusId)
                 putExtra(ARG_REPLY_SCREEN_NAME, replyScreenName)
@@ -92,7 +102,11 @@ class StatusUpdateActivity : AppCompatActivity() {
         startActivityForResult(i, REQUEST_PHOTO_SELECT)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
     }

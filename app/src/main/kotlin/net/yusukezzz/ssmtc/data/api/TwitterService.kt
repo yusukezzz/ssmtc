@@ -2,12 +2,25 @@ package net.yusukezzz.ssmtc.data.api
 
 import com.google.gson.Gson
 import net.yusukezzz.ssmtc.data.Credentials
-import net.yusukezzz.ssmtc.data.api.model.*
+import net.yusukezzz.ssmtc.data.api.model.IdList
+import net.yusukezzz.ssmtc.data.api.model.Search
+import net.yusukezzz.ssmtc.data.api.model.TwList
+import net.yusukezzz.ssmtc.data.api.model.TwLists
+import net.yusukezzz.ssmtc.data.api.model.Tweet
+import net.yusukezzz.ssmtc.data.api.model.UploadResult
+import net.yusukezzz.ssmtc.data.api.model.User
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 
 class TwitterService(

@@ -68,7 +68,11 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             .setQuality(PHOTO_QUALITY)
     }
 
-    private val bcastManager: LocalBroadcastManager by lazy { LocalBroadcastManager.getInstance(applicationContext) }
+    private val bcastManager: LocalBroadcastManager by lazy {
+        LocalBroadcastManager.getInstance(
+            applicationContext
+        )
+    }
 
     @Inject
     lateinit var prefs: Preferences

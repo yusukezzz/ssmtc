@@ -12,6 +12,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion 28
@@ -157,4 +158,9 @@ tasks.withType(Test) {
             }
         }
     }
+}
+
+ktlint {
+    version = "0.34.2"
+    android = true
 }

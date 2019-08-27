@@ -33,7 +33,15 @@ object TextUtil {
         val urls = entities.urls
         val mediaUrls = entities.media.map { it.urlEntity }
 
-        val spannable = SpannableStringBuilder(removeUrls(decodedText, urls, mediaUrls, ogUrl, removeQuote).trim())
+        val spannable = SpannableStringBuilder(
+            removeUrls(
+                decodedText,
+                urls,
+                mediaUrls,
+                ogUrl,
+                removeQuote
+            ).trim()
+        )
 
         replaceUrlEntities(spannable, urls, listener)
         replaceScreenName(spannable, listener)
@@ -93,7 +101,12 @@ object TextUtil {
                     listener.onScreenNameClick(it.value.removePrefix("@"))
                 }
             }
-            spannable.setSpan(span, it.range.first, it.range.last + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.setSpan(
+                span,
+                it.range.first,
+                it.range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
     }
 
@@ -107,7 +120,12 @@ object TextUtil {
                     listener.onHashTagClick(it.value)
                 }
             }
-            spannable.setSpan(span, it.range.first, it.range.last + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.setSpan(
+                span,
+                it.range.first,
+                it.range.last + 1,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
     }
 }

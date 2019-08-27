@@ -12,5 +12,4 @@ class FailureReceiver : BroadcastReceiver() {
         manager.cancelAll()
         context.toast("tweet failed...")
     }
-
 }

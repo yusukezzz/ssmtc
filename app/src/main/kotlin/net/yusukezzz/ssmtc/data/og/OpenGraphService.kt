@@ -7,14 +7,16 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Collections
+import java.util.WeakHashMap
 
 class OpenGraphService(
     private val cache: OGDiskCache,
     private val ogApi: OpenGraphApi,
     private val mainScope: CoroutineScope
 ) {
-    private val tasks: MutableMap<OpenGraphLoadable, OpenGraphTask> = Collections.synchronizedMap(WeakHashMap())
+    private val tasks: MutableMap<OpenGraphLoadable, OpenGraphTask> =
+        Collections.synchronizedMap(WeakHashMap())
 
     fun load(url: String, view: OpenGraphLoadable) {
         view.onStart()

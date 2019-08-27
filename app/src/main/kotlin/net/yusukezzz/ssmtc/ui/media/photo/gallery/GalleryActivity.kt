@@ -8,7 +8,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.photo_gallery.*
+import kotlinx.android.synthetic.main.photo_gallery.currentPage
+import kotlinx.android.synthetic.main.photo_gallery.gallery
+import kotlinx.android.synthetic.main.photo_gallery.photo_gallery_download
+import kotlinx.android.synthetic.main.photo_gallery.photo_gallery_share
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
@@ -31,7 +34,9 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
             }
     }
 
-    private val images: List<Media> by lazy { intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as Media) } }
+    private val images: List<Media> by lazy {
+        intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as Media) }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +78,6 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
         currentPage.text = "$page/$max"
     }
 
-
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadImage() {
         val media = images[gallery.currentItem]
@@ -102,7 +106,11 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
         startActivity(intent)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
     }

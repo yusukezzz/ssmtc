@@ -20,7 +20,8 @@ class AuthorizePresenter(
     val accountRepo: SsmtcAccountRepository
 ) : AuthorizeContract.Presenter {
 
-    private val consumer = DefaultOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
+    private val consumer =
+        DefaultOAuthConsumer(BuildConfig.CONSUMER_KEY, BuildConfig.CONSUMER_SECRET)
     private val provider = DefaultOAuthProvider(
         "https://api.twitter.com/oauth/request_token",
         "https://api.twitter.com/oauth/access_token",
@@ -50,4 +51,3 @@ class AuthorizePresenter(
         })
     }
 }
-

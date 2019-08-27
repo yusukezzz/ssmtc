@@ -8,7 +8,8 @@ class Preferences(context: Context) {
         const val KEY_CURRENT_USER_ID = "current_user_id"
     }
 
-    private val sharedPrefs: SharedPreferences = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+    private val sharedPrefs: SharedPreferences =
+        context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
     var currentUserId: Long
         get() = getLong(KEY_CURRENT_USER_ID)
