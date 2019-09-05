@@ -14,8 +14,7 @@ jobs:
       with:
         java-version: 1.8
     - name: copy secret.properties
-      run: |
-        cp app/secret.properties.sample app/secret.properties
+      run: cp app/secret.properties.sample app/secret.properties
     - name: Build with Gradle
       run: ./gradlew build
 
