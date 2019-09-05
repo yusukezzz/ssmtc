@@ -16,5 +16,5 @@ jobs:
     - name: copy secret.properties
       run: cp app/secret.properties.sample app/secret.properties
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
 
