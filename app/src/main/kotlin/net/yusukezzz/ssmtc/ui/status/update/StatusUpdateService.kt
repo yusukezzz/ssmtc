@@ -18,9 +18,8 @@ import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
-import net.yusukezzz.ssmtc.util.mimeType
-import net.yusukezzz.ssmtc.util.toRequestBody
-import okhttp3.MediaType
+import net.yusukezzz.ssmtc.util.mediaType
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
@@ -132,11 +131,11 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     private fun upload(path: String): Long {
         val file = File(path)
 
-        if (file.mimeType().startsWith("image")) {
+        if (file.mediaType().type == "image") {
             return uploadImage(file)
         }
 
-        if (file.mimeType().startsWith("video")) {
+        if (file.mediaType().type == "video") {
             return uploadVideo(file)
         }
 
@@ -150,11 +149,11 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         println("[image] original    size: ${beforeSize / 1024}KB")
         println("[image] compressed  size: ${afterSize / 1024}KB")
         println("[image] compressed ratio: ${afterSize.toFloat() / beforeSize * 100}%")
-        return twitter.upload(image.toRequestBody()).media_id
+        return twitter.upload(image.asRequestBody(image.mediaType())).media_id
     }
 
     private fun uploadVideo(file: File): Long {
-        val type = MediaType.parse(file.mimeType())
+        val type = file.mediaType()
         val totalBytes = file.length()
         if (totalBytes > MAX_VIDEO_SIZE) {
             throw RuntimeException("[video] file too large: max ${MAX_VIDEO_SIZE / MB} MBytes")
