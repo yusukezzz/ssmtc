@@ -3,7 +3,7 @@ package net.yusukezzz.ssmtc.ui.status.update
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
-import okio.Okio
+import okio.source
 import java.io.InputStream
 
 class InputStreamBody(
@@ -15,7 +15,5 @@ class InputStreamBody(
 
     override fun contentLength(): Long = length
 
-    override fun writeTo(sink: BufferedSink) {
-        Okio.source(input).use { sink.writeAll(it) }
-    }
+    override fun writeTo(sink: BufferedSink): Unit = input.source().use { sink.writeAll(it) }
 }

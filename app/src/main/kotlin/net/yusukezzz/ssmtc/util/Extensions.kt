@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaType
 import org.threeten.bp.OffsetDateTime
 import java.io.File
 import java.nio.ByteBuffer
@@ -137,7 +137,7 @@ fun File.mimeType(): String {
         ?: "application/octet-stream"
 }
 
-fun File.toRequestBody(): RequestBody = RequestBody.create(MediaType.parse(mimeType()), this)
+fun File.mediaType(): MediaType = this.mimeType().toMediaType()
 
 fun Throwable.prettyMarkdown(): String {
     val c = cause?.let {

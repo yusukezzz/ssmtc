@@ -9,8 +9,9 @@ import net.yusukezzz.ssmtc.data.api.model.TwLists
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.UploadResult
 import net.yusukezzz.ssmtc.data.api.model.User
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Field
@@ -85,7 +86,7 @@ class TwitterService(
 
     fun upload(media: RequestBody): UploadResult = handleCall(uploadService.upload(media))
 
-    private val textType = MediaType.parse("text/plain")
+    private val textType = "text/plain".toMediaType()
     fun uploadInit(totalBytes: Long): UploadResult =
         handleCall(uploadService.init(totalBytes))
 
@@ -146,7 +147,7 @@ class TwitterService(
     }
 
     private fun handleError(res: Response<*>) {
-        val url = res.raw().request().url()
+        val url = res.raw().request.url
         val statusCode = res.code()
         val errors = res.errorBody()?.let {
             val st = it.string()
@@ -297,10 +298,7 @@ interface UploadApi {
         @Part("media_id") mediaId: RequestBody,
         @Part("segment_index") segmentIndex: RequestBody,
         @Part("media") media: RequestBody,
-        @Part("command") command: RequestBody = RequestBody.create(
-            MediaType.parse("text/plain"),
-            "APPEND"
-        )
+        @Part("command") command: RequestBody = "APPEND".toRequestBody("text/plain".toMediaType())
     ): Call<Unit>
 
     @FormUrlEncoded

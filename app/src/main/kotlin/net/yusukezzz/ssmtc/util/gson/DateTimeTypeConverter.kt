@@ -13,7 +13,7 @@ import java.util.Locale
 
 class DateTimeTypeConverter : JsonSerializer<OffsetDateTime>, JsonDeserializer<OffsetDateTime> {
     companion object {
-        val DATETIME_PATTERN = "EEE MMM dd HH:mm:ss Z yyyy"
+        const val DATETIME_PATTERN = "EEE MMM dd HH:mm:ss Z yyyy"
     }
 
     private val fmt = DateTimeFormatter.ofPattern(DATETIME_PATTERN).withLocale(Locale.US)
