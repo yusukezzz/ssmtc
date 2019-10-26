@@ -5,9 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.photo_selector.photo_selector_complete
-import kotlinx.android.synthetic.main.photo_selector.photo_selector_grid
-import kotlinx.android.synthetic.main.photo_selector.photo_selector_title
+import kotlinx.android.synthetic.main.photo_selector.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 
@@ -45,7 +43,7 @@ class PhotoSelectorActivity : MediaBaseActivity(),
         val orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC"
         val cursor = contentResolver.query(uri, arrayOf(column), null, null, orderBy)
         cursor.use {
-            while (it.moveToNext()) {
+            while (it != null && it.moveToNext()) {
                 photos.add(Uri.parse(it.getString(it.getColumnIndex(column))))
             }
         }

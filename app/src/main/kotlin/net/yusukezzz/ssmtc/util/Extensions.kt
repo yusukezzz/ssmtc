@@ -19,14 +19,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -116,7 +109,7 @@ fun VectorDrawable.toBitmap(): Bitmap {
 }
 
 fun ContentResolver.getContentPath(content: Uri): String {
-    val mimeType = getType(content)
+    val mimeType = getType(content)!!
     val column = when {
         mimeType.startsWith("image") -> MediaStore.Images.Media.DATA
         mimeType.startsWith("video") -> MediaStore.Video.Media.DATA
@@ -124,7 +117,7 @@ fun ContentResolver.getContentPath(content: Uri): String {
             "unknown mimeType or not content uri: uri=$content mimeType=$mimeType"
         )
     }
-    val cursor = this.query(content, arrayOf(), null, null, null) ?: return content.path
+    val cursor = this.query(content, arrayOf(), null, null, null) ?: return content.path!!
     return cursor.use {
         it.moveToFirst()
         println(it.columnNames.toList())

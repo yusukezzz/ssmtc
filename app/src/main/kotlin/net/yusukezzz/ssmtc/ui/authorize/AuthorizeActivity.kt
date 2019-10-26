@@ -4,11 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.authorize.btn_authorize
-import kotlinx.android.synthetic.main.authorize.btn_authorize_request
-import kotlinx.android.synthetic.main.authorize.edit_pin_code
-import kotlinx.android.synthetic.main.base_layout.main_contents
-import kotlinx.android.synthetic.main.base_layout.toolbar_title
+import kotlinx.android.synthetic.main.authorize.*
+import kotlinx.android.synthetic.main.base_layout.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
@@ -57,7 +54,7 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     }
 
     override fun authorized() {
-        val i = baseContext.packageManager.getLaunchIntentForPackage(baseContext.packageName)
+        val i = baseContext.packageManager.getLaunchIntentForPackage(baseContext.packageName)!!
         i.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(i)
         finish()

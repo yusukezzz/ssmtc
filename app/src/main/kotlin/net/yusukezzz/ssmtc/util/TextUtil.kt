@@ -81,7 +81,7 @@ object TextUtil {
                 spannable.replace(start, end, entity.display_url)
                 val displayEnd = start + entity.display_url.length
                 val span = object : ClickableSpan() {
-                    override fun onClick(widget: View?) {
+                    override fun onClick(widget: View) {
                         listener.onUrlClick(entity.expanded_url)
                     }
                 }
@@ -97,7 +97,7 @@ object TextUtil {
     ) {
         SCREEN_NAME_PATTERN.findAll(spannable).forEach {
             val span = object : ClickableSpan() {
-                override fun onClick(widget: View?) {
+                override fun onClick(widget: View) {
                     listener.onScreenNameClick(it.value.removePrefix("@"))
                 }
             }
@@ -116,7 +116,7 @@ object TextUtil {
     ) {
         HASH_TAG_PATTERN.findAll(spannable).forEach {
             val span = object : ClickableSpan() {
-                override fun onClick(widget: View?) {
+                override fun onClick(widget: View) {
                     listener.onHashTagClick(it.value)
                 }
             }

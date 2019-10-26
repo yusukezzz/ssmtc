@@ -19,7 +19,7 @@ class ConfirmTimelineSelectDialog : BaseDialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val timeline: Timeline = arguments!!.getParcelable(ARG_TIMELINE)
+        val timeline: Timeline = arguments!!.getParcelable(ARG_TIMELINE)!!
 
         return AlertDialog.Builder(context!!).apply {
             setMessage("${timeline.title} タイムラインを追加しますか？")

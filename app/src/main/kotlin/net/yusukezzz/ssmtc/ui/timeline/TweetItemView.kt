@@ -7,31 +7,9 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.media_video.view.ic_play_circle
-import kotlinx.android.synthetic.main.media_video.view.media_video_thumbnail
-import kotlinx.android.synthetic.main.media_video.view.media_video_time
-import kotlinx.android.synthetic.main.open_graph.view.open_graph
-import kotlinx.android.synthetic.main.tweet_item.view.ic_tweet_share
-import kotlinx.android.synthetic.main.tweet_item.view.ic_twitter_like
-import kotlinx.android.synthetic.main.tweet_item.view.ic_twitter_reply
-import kotlinx.android.synthetic.main.tweet_item.view.ic_twitter_retweet
-import kotlinx.android.synthetic.main.tweet_item.view.quote_container
-import kotlinx.android.synthetic.main.tweet_item.view.quote_text
-import kotlinx.android.synthetic.main.tweet_item.view.quote_thumbnail_tile
-import kotlinx.android.synthetic.main.tweet_item.view.quote_user_name
-import kotlinx.android.synthetic.main.tweet_item.view.quote_user_screen_name
-import kotlinx.android.synthetic.main.tweet_item.view.thumbnail_tile
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_date
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_like_count
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_retweet_count
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_retweeted_container
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_retweeted_message
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_text
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_user_image
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_user_name
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_user_protected_icon
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_user_screen_name
-import kotlinx.android.synthetic.main.tweet_item.view.tweet_user_verified_icon
+import kotlinx.android.synthetic.main.media_video.view.*
+import kotlinx.android.synthetic.main.open_graph.view.*
+import kotlinx.android.synthetic.main.tweet_item.view.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.Tweet
@@ -39,15 +17,8 @@ import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
-import net.yusukezzz.ssmtc.util.TextUtil
-import net.yusukezzz.ssmtc.util.beVisibleIf
-import net.yusukezzz.ssmtc.util.children
-import net.yusukezzz.ssmtc.util.getCompatColor
-import net.yusukezzz.ssmtc.util.gone
-import net.yusukezzz.ssmtc.util.inflate
+import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
-import net.yusukezzz.ssmtc.util.resolveAttributeId
-import net.yusukezzz.ssmtc.util.visible
 import java.text.DecimalFormat
 
 class TweetItemView @JvmOverloads constructor(
@@ -108,7 +79,7 @@ class TweetItemView @JvmOverloads constructor(
         } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
             val urls = tweet.entities.urls
             // ignore host only url
-            urls.firstOrNull { Uri.parse(it.expanded_url).path.isNotEmpty() }?.let {
+            urls.firstOrNull { Uri.parse(it.expanded_url).path!!.isNotEmpty() }?.let {
                 removeUrl = it.url // use open graph view instead of link text
                 handleOpenGraph(it.expanded_url)
             }

@@ -15,7 +15,6 @@ class Preferences(context: Context) {
         get() = getLong(KEY_CURRENT_USER_ID)
         set(value) = put(KEY_CURRENT_USER_ID, value)
 
-    private fun getString(key: String): String = sharedPrefs.getString(key, "")
     private fun getLong(key: String): Long = sharedPrefs.getLong(key, 0)
     private fun put(key: String, value: Any) {
         val editor = sharedPrefs.edit()

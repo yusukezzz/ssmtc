@@ -6,13 +6,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
-import kotlinx.android.synthetic.main.timeline_setting.view.include_rts
-import kotlinx.android.synthetic.main.timeline_setting.view.timeline_exclude
-import kotlinx.android.synthetic.main.timeline_setting.view.timeline_include
-import kotlinx.android.synthetic.main.timeline_setting.view.timeline_media_spinner
-import kotlinx.android.synthetic.main.timeline_setting.view.timeline_query
-import kotlinx.android.synthetic.main.timeline_setting.view.timeline_query_edit
-import kotlinx.android.synthetic.main.timeline_setting.view.timeline_title_edit
+import kotlinx.android.synthetic.main.timeline_setting.view.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
@@ -62,7 +56,7 @@ class TimelineSettingDialog : AppCompatDialogFragment() {
 
         val adapter =
             ArrayAdapter.createFromResource(
-                context,
+                context!!,
                 R.array.filter_media,
                 android.R.layout.simple_spinner_item
             )

@@ -90,7 +90,9 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         Application.component.inject(this)
     }
 
-    override fun onHandleIntent(intent: Intent) {
+    override fun onHandleIntent(intent: Intent?) {
+        if (intent == null) return
+
         val status = intent.getStringExtra(ARG_STATUS_TEXT)
         val inReplyToStatusId = intent.getLongExtraOrNull(ARG_IN_REPLY_TO_STATUS_ID)
         val medias = intent.getStringArrayExtra(ARG_MEDIAS)
