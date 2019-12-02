@@ -1,5 +1,6 @@
 package net.yusukezzz.ssmtc.ui.media.photo.selector
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import java.util.ArrayList
 
 class PhotoSelectorAdapter(
-    private val photoPaths: List<String>,
+    private val photoPaths: List<Uri>,
     val listener: PhotoSelectorListener
 ) : RecyclerView.Adapter<PhotoSelectorAdapter.ViewHolder>() {
     companion object {
@@ -23,7 +24,7 @@ class PhotoSelectorAdapter(
         fun onSelectCompleted()
     }
 
-    private val selected = ArrayList<String>()
+    private val selected = ArrayList<Uri>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
@@ -36,11 +37,11 @@ class PhotoSelectorAdapter(
 
     override fun getItemCount(): Int = photoPaths.size
 
-    fun selectedPhotoPaths(): Array<String> = selected.toTypedArray()
+    fun selectedPhotoPaths(): Array<Uri> = selected.toTypedArray()
 
-    fun toggleSelected(path: String) {
-        if (!selected.remove(path)) {
-            selected.add(path)
+    fun toggleSelected(uri: Uri) {
+        if (!selected.remove(uri)) {
+            selected.add(uri)
         }
         notifyDataSetChanged()
         listener.onSelectChanged(MAX_PHOTO_COUNT - selected.size)
@@ -49,16 +50,16 @@ class PhotoSelectorAdapter(
         }
     }
 
-    private fun isSelected(path: String): Boolean = selected.indexOf(path) > -1
+    private fun isSelected(uri: Uri): Boolean = selected.indexOf(uri) > -1
 
     class ViewHolder(val view: View, private val adapter: PhotoSelectorAdapter) :
         RecyclerView.ViewHolder(view) {
         private val thumbnail: ImageView = view.findViewById(R.id.thumbnail)
         private val selectedIcon: ImageView = view.findViewById(R.id.iv_selected)
 
-        fun bindPhoto(path: String, selected: Boolean) {
-            PicassoUtil.thumbnail(path, thumbnail)
-            thumbnail.setOnClickListener { adapter.toggleSelected(path) }
+        fun bindPhoto(uri: Uri, selected: Boolean) {
+            PicassoUtil.thumbnail(uri, thumbnail)
+            thumbnail.setOnClickListener { adapter.toggleSelected(uri) }
             selectedIcon.beVisibleIf(selected)
         }
     }

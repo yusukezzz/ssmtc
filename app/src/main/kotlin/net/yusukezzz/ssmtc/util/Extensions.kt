@@ -1,15 +1,12 @@
 package net.yusukezzz.ssmtc.util
 
 import android.app.Activity
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
-import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -19,7 +16,14 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -106,23 +110,6 @@ fun VectorDrawable.toBitmap(): Bitmap {
     this.draw(canvas)
 
     return bitmap
-}
-
-fun ContentResolver.getContentPath(content: Uri): String {
-    val mimeType = getType(content)!!
-    val column = when {
-        mimeType.startsWith("image") -> MediaStore.Images.Media.DATA
-        mimeType.startsWith("video") -> MediaStore.Video.Media.DATA
-        else -> throw RuntimeException(
-            "unknown mimeType or not content uri: uri=$content mimeType=$mimeType"
-        )
-    }
-    val cursor = this.query(content, arrayOf(), null, null, null) ?: return content.path!!
-    return cursor.use {
-        it.moveToFirst()
-        println(it.columnNames.toList())
-        cursor.getString(cursor.getColumnIndex(column))
-    }
 }
 
 fun File.mimeType(): String {

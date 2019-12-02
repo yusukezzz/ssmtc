@@ -6,6 +6,8 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.MediaStore
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -50,7 +52,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             context: Context,
             status: String,
             inReplyToStatusId: Long? = null,
-            medias: Array<String>? = null
+            medias: Array<Uri>? = null
         ): Intent {
             return Intent(context, StatusUpdateService::class.java).apply {
                 putExtra(ARG_STATUS_TEXT, status)
@@ -95,7 +97,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
         val status = intent.getStringExtra(ARG_STATUS_TEXT)
         val inReplyToStatusId = intent.getLongExtraOrNull(ARG_IN_REPLY_TO_STATUS_ID)
-        val medias = intent.getStringArrayExtra(ARG_MEDIAS)
+        val medias = intent.getParcelableArrayExtra(ARG_MEDIAS)
 
         val manager = NotificationManagerCompat.from(this)
         showNotification(manager)
@@ -104,7 +106,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             val account = accountRepo.find(prefs.currentUserId)!!
             twitter.setTokens(account.credentials)
 
-            val mediaIds = medias?.map { upload(it) }
+            val mediaIds = medias?.map { upload(it as Uri) }
 
             twitter.tweet(status, inReplyToStatusId, mediaIds)
             sendSuccessBroadcast()
@@ -130,18 +132,18 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         manager.notify(NOTIFICATION_ID, builder.build())
     }
 
-    private fun upload(path: String): Long {
-        val file = File(path)
+    private fun upload(uri: Uri): Long {
+        val mimeType = contentResolver.getType(uri) ?: ""
 
-        if (file.mediaType().type == "image") {
-            return uploadImage(file)
+        if (mimeType.startsWith("image")) {
+            return uploadImage(contentResolver.)
         }
 
         if (file.mediaType().type == "video") {
             return uploadVideo(file)
         }
 
-        throw RuntimeException("unsupported file: $path")
+        throw RuntimeException("unsupported file: $uri")
     }
 
     private fun uploadImage(file: File): Long {

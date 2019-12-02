@@ -1,10 +1,12 @@
 package net.yusukezzz.ssmtc.ui.status.update
 
 import android.Manifest
+import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.status_update.select_photos
@@ -20,7 +22,6 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-import net.yusukezzz.ssmtc.util.getContentPath
 import net.yusukezzz.ssmtc.util.getExtraStreamOrNull
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
 import net.yusukezzz.ssmtc.util.getStringExtraOrNull
@@ -53,7 +54,7 @@ class StatusUpdateActivity : AppCompatActivity() {
     @Inject
     lateinit var accountRepo: SsmtcAccountRepository
 
-    private var photos: Array<String>? = null
+    private var photos: Array<Uri>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,10 +85,7 @@ class StatusUpdateActivity : AppCompatActivity() {
         // TODO: check login and permission
         intent.getExtraStreamOrNull()?.let {
             if (it is Uri) {
-                println(it)
-                val path = contentResolver.getContentPath(it)
-                println(path)
-                showSelectedPhotos(arrayOf(path))
+                showSelectedPhotos(arrayOf(getContentUri(it)))
             }
         }
 
@@ -113,12 +111,12 @@ class StatusUpdateActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_PHOTO_SELECT && resultCode == RESULT_OK && data != null) {
-            val paths = data.getStringArrayExtra(PhotoSelectorActivity.RESULT_SELECTED_PHOTOS)
-            showSelectedPhotos(paths)
+            val paths = data.getParcelableArrayExtra(PhotoSelectorActivity.RESULT_SELECTED_PHOTOS)
+            showSelectedPhotos(paths as Array<Uri>)
         }
     }
 
-    private fun showSelectedPhotos(paths: Array<String>) {
+    private fun showSelectedPhotos(paths: Array<Uri>) {
         photos = null
         status_thumbnail_tile.removeAllViews()
         if (paths.isEmpty()) return
@@ -129,5 +127,27 @@ class StatusUpdateActivity : AppCompatActivity() {
             status_thumbnail_tile.addView(imgView)
             PicassoUtil.thumbnail(path, imgView)
         }
+    }
+
+    private fun getContentUri(content: Uri): Uri {
+        val mimeType = contentResolver.getType(content)!!
+        val (id, contentUri) = when {
+            mimeType.startsWith("image") ->
+                Pair(MediaStore.Images.Media._ID, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            mimeType.startsWith("video") ->
+                Pair(MediaStore.Video.Media._ID, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+            else -> throw RuntimeException(
+                "unknown mimeType or not content uri: uri=$content mimeType=$mimeType"
+            )
+        }
+        val projections = arrayOf(id)
+        val selection = null
+        val args = null
+        val order = null
+        val uri: Uri? = contentResolver.query(content, projections, selection, args, order)?.use {
+            it.moveToFirst()
+            ContentUris.withAppendedId(contentUri, it.getLong(it.getColumnIndex(id)))
+        }
+        return uri ?: content
     }
 }

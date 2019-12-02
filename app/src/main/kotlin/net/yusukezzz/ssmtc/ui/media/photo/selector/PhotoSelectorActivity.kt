@@ -1,11 +1,14 @@
 package net.yusukezzz.ssmtc.ui.media.photo.selector
 
+import android.content.ContentUris
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.photo_selector.*
+import kotlinx.android.synthetic.main.photo_selector.photo_selector_complete
+import kotlinx.android.synthetic.main.photo_selector.photo_selector_grid
+import kotlinx.android.synthetic.main.photo_selector.photo_selector_title
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 
@@ -36,19 +39,18 @@ class PhotoSelectorActivity : MediaBaseActivity(),
         photo_selector_complete.setOnClickListener { onSelectCompleted() }
     }
 
-    private fun findPhotosFromGallery(): List<String> {
+    private fun findPhotosFromGallery(): List<Uri> {
         val photos = arrayListOf<Uri>()
         val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val column = MediaStore.Images.Media.DATA
+        val column = MediaStore.Images.Media._ID
         val orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC"
-        val cursor = contentResolver.query(uri, arrayOf(column), null, null, orderBy)
-        cursor.use {
-            while (it != null && it.moveToNext()) {
-                photos.add(Uri.parse(it.getString(it.getColumnIndex(column))))
+        contentResolver.query(uri, arrayOf(column), null, null, orderBy)?.use {
+            while (it.moveToNext()) {
+                photos.add(ContentUris.withAppendedId(uri, it.getLong(it.getColumnIndex(column))))
             }
         }
 
-        return photos.map { it.toString() }
+        return photos
     }
 
     override fun onSelectChanged(remainCount: Int) {
