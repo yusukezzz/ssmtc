@@ -9,13 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.status_update.select_photos
-import kotlinx.android.synthetic.main.status_update.send_tweet
-import kotlinx.android.synthetic.main.status_update.status_input
-import kotlinx.android.synthetic.main.status_update.status_thumbnail_tile
-import kotlinx.android.synthetic.main.status_update.status_update_toolbar
-import kotlinx.android.synthetic.main.status_update.toolbar_avatar
-import kotlinx.android.synthetic.main.status_update.toolbar_screen_name
+import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
@@ -110,9 +104,11 @@ class StatusUpdateActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_PHOTO_SELECT && resultCode == RESULT_OK && data != null) {
-            val paths = data.getParcelableArrayExtra(PhotoSelectorActivity.RESULT_SELECTED_PHOTOS)
-            showSelectedPhotos(paths as Array<Uri>)
+            data.getParcelableArrayListExtra<Uri>(PhotoSelectorActivity.RESULT_SELECTED_PHOTOS)?.let {
+                showSelectedPhotos(it.toTypedArray())
+            }
         }
     }
 

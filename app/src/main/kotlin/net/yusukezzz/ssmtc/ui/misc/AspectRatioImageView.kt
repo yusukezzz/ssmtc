@@ -3,10 +3,10 @@ package net.yusukezzz.ssmtc.ui.misc
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View.MeasureSpec.EXACTLY
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import net.yusukezzz.ssmtc.R
 
-class AspectRatioImageView : ImageView {
+class AspectRatioImageView : AppCompatImageView {
     companion object {
         const val DEFAULT_WIDTH_RATIO: Int = 16
         const val DEFAULT_HEIGHT_RATIO: Int = 9

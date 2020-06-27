@@ -5,13 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import id.zelory.compressor.Compressor
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
@@ -19,10 +16,12 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.util.ImageUtil
 import net.yusukezzz.ssmtc.util.getLongExtraOrNull
+import net.yusukezzz.ssmtc.util.getSize
 import net.yusukezzz.ssmtc.util.mediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
-import java.io.File
 import javax.inject.Inject
 
 class StatusUpdateService : IntentService("StatusUpdateService") {
@@ -38,10 +37,6 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         const val ARG_STATUS_TEXT = "status_text"
         const val ARG_IN_REPLY_TO_STATUS_ID = "in_reply_to_status_id"
         const val ARG_MEDIAS = "medias"
-
-        const val PHOTO_MAX_WIDTH = 1280
-        const val PHOTO_MAX_HEIGHT = 960
-        const val PHOTO_QUALITY = 85
 
         const val MB = 1024 * 1024
         const val MAX_VIDEO_SIZE = 512 * MB
@@ -62,12 +57,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         }
     }
 
-    private val compressor: Compressor by lazy {
-        Compressor(this)
-            .setMaxWidth(PHOTO_MAX_WIDTH)
-            .setMaxHeight(PHOTO_MAX_HEIGHT)
-            .setQuality(PHOTO_QUALITY)
-    }
+    private val imageUtil: ImageUtil by lazy { ImageUtil(this) }
 
     private val bcastManager: LocalBroadcastManager by lazy {
         LocalBroadcastManager.getInstance(
@@ -95,7 +85,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     override fun onHandleIntent(intent: Intent?) {
         if (intent == null) return
 
-        val status = intent.getStringExtra(ARG_STATUS_TEXT)
+        val status = intent.getStringExtra(ARG_STATUS_TEXT) ?: ""
         val inReplyToStatusId = intent.getLongExtraOrNull(ARG_IN_REPLY_TO_STATUS_ID)
         val medias = intent.getParcelableArrayExtra(ARG_MEDIAS)
 
@@ -134,46 +124,43 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
     private fun upload(uri: Uri): Long {
         val mimeType = contentResolver.getType(uri) ?: ""
+        println("uploading: mimeType=$mimeType uri=$uri")
 
         if (mimeType.startsWith("image")) {
-            return uploadImage(contentResolver.)
+            return uploadImage(uri)
         }
 
-        if (file.mediaType().type == "video") {
-            return uploadVideo(file)
+        if (mimeType.startsWith("video")) {
+            return uploadVideo(uri, mimeType)
         }
 
         throw RuntimeException("unsupported file: $uri")
     }
 
-    private fun uploadImage(file: File): Long {
-        val beforeSize = file.length()
-        val image = compressor.compressImage(file)
+    private fun uploadImage(uri: Uri): Long {
+        val image = imageUtil.compress(uri)
         val afterSize = image.length()
-        println("[image] original    size: ${beforeSize / 1024}KB")
-        println("[image] compressed  size: ${afterSize / 1024}KB")
-        println("[image] compressed ratio: ${afterSize.toFloat() / beforeSize * 100}%")
+        println("[image] compressed size: ${afterSize / 1024}KB")
         return twitter.upload(image.asRequestBody(image.mediaType())).media_id
     }
 
-    private fun uploadVideo(file: File): Long {
-        val type = file.mediaType()
-        val totalBytes = file.length()
+    private fun uploadVideo(uri: Uri, mimeType: String): Long {
+        val totalBytes = contentResolver.getSize(uri)
         if (totalBytes > MAX_VIDEO_SIZE) {
-            throw RuntimeException("[video] file too large: max ${MAX_VIDEO_SIZE / MB} MBytes")
+            throw RuntimeException("[video] file too large: max ${MAX_VIDEO_SIZE / MB} MBytes, but ${totalBytes / MB} MBytes given")
         }
 
         println("[video] init start")
         val mediaId = twitter.uploadInit(totalBytes).media_id
 
-        val input = file.inputStream()
+        val input = contentResolver.openInputStream(uri)!!.buffered()
         var segmentIndex = 0
         while (true) {
             val data = ByteArray(VIDEO_CHUNK_SIZE)
             val bytesRead = input.read(data)
             if (bytesRead == -1) break
             val baInput = data.inputStream(0, bytesRead)
-            val body = InputStreamBody(baInput, bytesRead.toLong(), type)
+            val body = InputStreamBody(baInput, bytesRead.toLong(), mimeType.toMediaType())
             twitter.uploadAppend(mediaId, segmentIndex, body)
             println("[video] append index=$segmentIndex")
             segmentIndex++
@@ -207,15 +194,4 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     private fun sendSuccessBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_SUCCESS))
 
     private fun sendFailureBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_FAILURE))
-
-    private fun Compressor.compressImage(file: File): File {
-        val format = when (file.extension.toLowerCase()) {
-            "jpg" -> Bitmap.CompressFormat.JPEG
-            "jpeg" -> Bitmap.CompressFormat.JPEG
-            "png" -> Bitmap.CompressFormat.PNG
-            "webp" -> Bitmap.CompressFormat.WEBP
-            else -> Bitmap.CompressFormat.JPEG // try convert to jpeg
-        }
-        return this.setCompressFormat(format).compressToFile(file)
-    }
 }

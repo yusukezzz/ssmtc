@@ -12,11 +12,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.ben-manes.versions'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "net.yusukezzz.ssmtc"
@@ -57,6 +56,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
     testOptions {
         unitTests {
             includeAndroidResources = true
@@ -72,29 +74,31 @@ configurations.all {
 }
 dependencies {
     ext {
-        kotlin_coroutines_version = '1.3.2'
+        kotlin_coroutines_version = '1.3.7'
         support_version = '28.0.0'
-        lifecycle_version = '2.2.0-rc02'
-        retrofit_version = '2.6.2'
-        okhttp_version = '4.2.2'
-        permission_dispatcher_version = '4.6.0'
-        dagger_version = '2.25.2'
+        lifecycle_version = '2.2.0'
+        retrofit_version = '2.9.0'
+        okhttp_version = '4.7.2'
+        permission_dispatcher_version = '4.7.0'
+        dagger_version = '2.28.1'
         leakcanary_version = '1.6.3'
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
+    implementation "androidx.activity:activity-ktx:1.2.0-alpha06"
     implementation "androidx.appcompat:appcompat:1.1.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-    implementation "androidx.exifinterface:exifinterface:1.1.0"
+    implementation "androidx.exifinterface:exifinterface:1.2.0"
     implementation "androidx.recyclerview:recyclerview:1.1.0"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    implementation "androidx.browser:browser:1.0.0"
-    implementation "androidx.drawerlayout:drawerlayout:1.0.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "androidx.browser:browser:1.2.0"
+    implementation "androidx.drawerlayout:drawerlayout:1.1.0"
     implementation "androidx.viewpager:viewpager:1.0.0"
-    implementation "com.google.android.material:material:1.2.0-alpha02"
+    implementation "com.google.android.material:material:1.2.0-beta01"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
@@ -106,22 +110,19 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.1'
-    testImplementation('org.threeten:threetenbp:1.4.0') {
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+    testImplementation('org.threeten:threetenbp:1.4.4') {
         exclude group: 'com.jakewharton.threetenabp', module: 'threetenabp'
     }
     implementation 'se.akerfeldt:okhttp-signpost:1.1.0'
-    implementation 'id.zelory:compressor:2.1.0'
 
-    // html entity decoding
     implementation 'org.apache.commons:commons-text:1.8'
-    implementation 'saschpe.android:customtabs:2.0.3'
-    implementation 'com.deploygate:sdk:4.1.0'
+    implementation 'saschpe.android:customtabs:3.0.2'
+    implementation 'com.deploygate:sdk:4.2.0'
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
     testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakcanary_version"
-    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:latest.release'
     testImplementation 'org.robolectric:robolectric:3.8'
 }
@@ -159,9 +160,4 @@ tasks.withType(Test) {
             }
         }
     }
-}
-
-ktlint {
-    version = "0.34.2"
-    android = true
 }

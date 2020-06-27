@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.util.beVisibleIf
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
-import java.util.ArrayList
+import java.util.*
 
 class PhotoSelectorAdapter(
     private val photoPaths: List<Uri>,
@@ -37,7 +37,7 @@ class PhotoSelectorAdapter(
 
     override fun getItemCount(): Int = photoPaths.size
 
-    fun selectedPhotoPaths(): Array<Uri> = selected.toTypedArray()
+    fun selectedPhotoPaths(): ArrayList<Uri> = selected
 
     fun toggleSelected(uri: Uri) {
         if (!selected.remove(uri)) {

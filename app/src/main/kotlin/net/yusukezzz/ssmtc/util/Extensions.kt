@@ -1,12 +1,15 @@
 package net.yusukezzz.ssmtc.util
 
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.VectorDrawable
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -16,14 +19,7 @@ import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -111,6 +107,12 @@ fun VectorDrawable.toBitmap(): Bitmap {
 
     return bitmap
 }
+
+fun ContentResolver.getSize(uri: Uri): Long =
+    this.query(uri, arrayOf(MediaStore.MediaColumns.SIZE), null, null, null).use {
+        it?.moveToFirst()
+        it?.getLong(0)
+    } ?: 0L
 
 fun File.mimeType(): String {
     return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
