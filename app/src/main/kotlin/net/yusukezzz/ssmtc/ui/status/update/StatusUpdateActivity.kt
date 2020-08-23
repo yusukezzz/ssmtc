@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,9 +17,7 @@ import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
-import net.yusukezzz.ssmtc.util.getExtraStreamOrNull
-import net.yusukezzz.ssmtc.util.getLongExtraOrNull
-import net.yusukezzz.ssmtc.util.getStringExtraOrNull
+import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
@@ -75,13 +74,7 @@ class StatusUpdateActivity : AppCompatActivity() {
             finish()
         }
 
-        // initial photo from intent
-        // TODO: check login and permission
-        intent.getExtraStreamOrNull()?.let {
-            if (it is Uri) {
-                showSelectedPhotos(arrayOf(getContentUri(it)))
-            }
-        }
+        handleIntent(intent)
 
         val account = accountRepo.find(prefs.currentUserId)!!
         PicassoUtil.userIcon(account.user, toolbar_avatar)
@@ -112,6 +105,25 @@ class StatusUpdateActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleIntent(intent: Intent) {
+        if (intent.action != Intent.ACTION_SEND) {
+            return
+        }
+        if (!intent.isImage() && !intent.isVideo()) {
+            return
+        }
+
+        // initial photo from intent
+        // TODO: check login and permission
+        (intent.getExtraStreamOrNull() as? Uri)?.let {
+            println(it.toString())
+            val mimeType: String? = contentResolver.getType(it)
+            if (mimeType != null) {
+                showSelectedPhotos(arrayOf(getContentUri(it, mimeType)))
+            }
+        }
+    }
+
     private fun showSelectedPhotos(paths: Array<Uri>) {
         photos = null
         status_thumbnail_tile.removeAllViews()
@@ -125,13 +137,11 @@ class StatusUpdateActivity : AppCompatActivity() {
         }
     }
 
-    private fun getContentUri(content: Uri): Uri {
-        val mimeType = contentResolver.getType(content)!!
-        val (id, contentUri) = when {
-            mimeType.startsWith("image") ->
-                Pair(MediaStore.Images.Media._ID, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            mimeType.startsWith("video") ->
-                Pair(MediaStore.Video.Media._ID, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+    private fun getContentUri(content: Uri, mimeType: String): Uri {
+        val id = BaseColumns._ID
+        val contentUri = when {
+            mimeType.startsWith("image/") -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            mimeType.startsWith("video/") -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             else -> throw RuntimeException(
                 "unknown mimeType or not content uri: uri=$content mimeType=$mimeType"
             )
@@ -142,7 +152,11 @@ class StatusUpdateActivity : AppCompatActivity() {
         val order = null
         val uri: Uri? = contentResolver.query(content, projections, selection, args, order)?.use {
             it.moveToFirst()
-            ContentUris.withAppendedId(contentUri, it.getLong(it.getColumnIndex(id)))
+            try {
+                ContentUris.withAppendedId(contentUri, it.getLong(it.getColumnIndex(id)))
+            } catch (e: Exception) {
+                null
+            }
         }
         return uri ?: content
     }

@@ -1,8 +1,6 @@
 package net.yusukezzz.ssmtc.ui.timeline
 
-import android.content.BroadcastReceiver
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -17,22 +15,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.base_layout.main_contents
-import kotlinx.android.synthetic.main.base_layout.toolbar
-import kotlinx.android.synthetic.main.base_layout.toolbar_title
-import kotlinx.android.synthetic.main.nav_header_main.btn_account_selector
-import kotlinx.android.synthetic.main.timeline_layout.drawer
-import kotlinx.android.synthetic.main.timeline_layout.nav_view
-import kotlinx.android.synthetic.main.timeline_list.swipe_refresh
-import kotlinx.android.synthetic.main.timeline_list.timeline_list
-import kotlinx.android.synthetic.main.timeline_list.tweet_btn
+import kotlinx.android.synthetic.main.base_layout.*
+import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.android.synthetic.main.timeline_layout.*
+import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
@@ -48,23 +40,10 @@ import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
-import net.yusukezzz.ssmtc.ui.status.update.FailureReceiver
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
-import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateService
-import net.yusukezzz.ssmtc.ui.status.update.SuccessReceiver
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.BaseDialogFragment
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.ConfirmTimelineSelectDialog
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.ListsSelectDialog
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.TextInputDialog
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSelectDialog
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
-import net.yusukezzz.ssmtc.util.getCompatDrawable
-import net.yusukezzz.ssmtc.util.getVectorDrawable
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
+import net.yusukezzz.ssmtc.util.*
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
-import net.yusukezzz.ssmtc.util.setView
-import net.yusukezzz.ssmtc.util.snackbar
-import net.yusukezzz.ssmtc.util.toBitmap
-import net.yusukezzz.ssmtc.util.toast
 import saschpe.android.customtabs.CustomTabsHelper
 import saschpe.android.customtabs.WebViewFallback
 import java.io.File
@@ -112,9 +91,6 @@ class TimelineActivity : AppCompatActivity(),
 
     @Inject
     lateinit var og: OpenGraphService
-
-    private val successReceiver: BroadcastReceiver = SuccessReceiver()
-    private val failureReceiver: BroadcastReceiver = FailureReceiver()
 
     private fun currentAccount(): SsmtcAccount = accountRepo.find(prefs.currentUserId)!!
 
@@ -230,16 +206,6 @@ class TimelineActivity : AppCompatActivity(),
         super.onResume()
         // update relative tweet time
         timelineAdapter.notifyDataSetChanged()
-        LocalBroadcastManager.getInstance(applicationContext)
-            .registerReceiver(successReceiver, IntentFilter(StatusUpdateService.ACTION_SUCCESS))
-        LocalBroadcastManager.getInstance(applicationContext)
-            .registerReceiver(failureReceiver, IntentFilter(StatusUpdateService.ACTION_FAILURE))
-    }
-
-    override fun onPause() {
-        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(successReceiver)
-        LocalBroadcastManager.getInstance(applicationContext).unregisterReceiver(failureReceiver)
-        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

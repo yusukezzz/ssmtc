@@ -97,6 +97,8 @@ fun Intent.getStringExtraOrNull(key: String): String? {
 }
 
 fun Intent.getExtraStreamOrNull(): Any? = this.extras?.get(Intent.EXTRA_STREAM)
+fun Intent.isImage(): Boolean = this.type?.startsWith("image/") == true
+fun Intent.isVideo(): Boolean = this.type?.startsWith("video/") == true
 
 fun VectorDrawable.toBitmap(): Bitmap {
     val bitmap =

@@ -6,9 +6,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.BuildConfig
 import net.yusukezzz.ssmtc.Preferences
@@ -59,12 +59,6 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
     private val imageUtil: ImageUtil by lazy { ImageUtil(this) }
 
-    private val bcastManager: LocalBroadcastManager by lazy {
-        LocalBroadcastManager.getInstance(
-            applicationContext
-        )
-    }
-
     @Inject
     lateinit var prefs: Preferences
 
@@ -99,10 +93,10 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             val mediaIds = medias?.map { upload(it as Uri) }
 
             twitter.tweet(status, inReplyToStatusId, mediaIds)
-            sendSuccessBroadcast()
+            Toast.makeText(this, "tweet done.", Toast.LENGTH_SHORT).show()
         } catch (e: Throwable) {
             slack.sendMessage(e, BuildConfig.SLACK_CHANNEL)
-            sendFailureBroadcast()
+            Toast.makeText(this, "tweet failed.", Toast.LENGTH_SHORT).show()
         } finally {
             manager.cancel(NOTIFICATION_ID)
         }
@@ -190,8 +184,4 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
         throw RuntimeException("[video] finalize failed: status polling max")
     }
-
-    private fun sendSuccessBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_SUCCESS))
-
-    private fun sendFailureBroadcast() = bcastManager.sendBroadcast(Intent(ACTION_FAILURE))
 }

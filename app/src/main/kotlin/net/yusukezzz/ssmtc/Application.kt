@@ -2,14 +2,8 @@ package net.yusukezzz.ssmtc
 
 import android.graphics.Bitmap.Config.RGB_565
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.squareup.leakcanary.LeakCanary
-import com.squareup.leakcanary.RefWatcher
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import net.yusukezzz.ssmtc.data.SlackService
 import net.yusukezzz.ssmtc.di.AppComponent
 import net.yusukezzz.ssmtc.di.AppModule
@@ -49,15 +43,6 @@ open class Application : android.app.Application(), CoroutineScope {
         Thread.setDefaultUncaughtExceptionHandler(this@Application::handleUncaughtException)
 
         sendErrorLog()
-    }
-
-    protected open fun setupLeakCanary(): RefWatcher {
-        if (LeakCanary.isInAnalyzerProcess(this) || !BuildConfig.DEBUG) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return RefWatcher.DISABLED
-        }
-        return LeakCanary.install(this)
     }
 
     protected open fun initPicasso() {
