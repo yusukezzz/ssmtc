@@ -483,11 +483,13 @@ class TimelineActivity : AppCompatActivity(),
     override fun addTweets(tweets: List<Tweet>) = timelineAdapter.add(tweets)
 
     override fun timelineEdgeReached() {
+        swipe_refresh.isRefreshing = false
         pagingScrollListener.disable()
         toast(resources.getString(R.string.end_of_timeline_reached))
     }
 
     override fun rateLimitExceeded() {
+        swipe_refresh.isRefreshing = false
         pagingScrollListener.disable()
         toast(resources.getString(R.string.rate_limit_exceeded))
     }

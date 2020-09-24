@@ -135,7 +135,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         val image = imageUtil.compress(uri)
         val afterSize = image.length()
         println("[image] compressed size: ${afterSize / 1024}KB")
-        return twitter.upload(image.asRequestBody(image.mediaType())).media_id
+        return twitter.upload(image.asRequestBody(image.mediaType())).data!!.media_id
     }
 
     private fun uploadVideo(uri: Uri, mimeType: String): Long {
@@ -145,7 +145,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         }
 
         println("[video] init start")
-        val mediaId = twitter.uploadInit(totalBytes).media_id
+        val mediaId = twitter.uploadInit(totalBytes).data!!.media_id
 
         val input = contentResolver.openInputStream(uri)!!.buffered()
         var segmentIndex = 0
@@ -161,14 +161,14 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         }
 
         println("[video] finalize")
-        twitter.uploadFinalize(mediaId).processing_info?.let {
+        twitter.uploadFinalize(mediaId).data?.processing_info?.let {
             println(it)
             Thread.sleep(it.check_after_secs * 1000L)
         }
 
         for (i in 1..MAX_POLLING_REQUESTS) {
             println("[video] status polling ... $i")
-            val info = twitter.uploadStatus(mediaId).processing_info!!
+            val info = twitter.uploadStatus(mediaId).data!!.processing_info!!
             println(info)
             if (info.state == "failed") {
                 throw RuntimeException("[video] finalize failed: ${info.error}")

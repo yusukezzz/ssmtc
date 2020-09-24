@@ -5,7 +5,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import net.yusukezzz.ssmtc.data.Credentials
 import net.yusukezzz.ssmtc.data.api.Timeline
-import net.yusukezzz.ssmtc.data.api.TwitterApiException
+import net.yusukezzz.ssmtc.data.api.TwitterApiError
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.util.async
@@ -74,12 +74,14 @@ class TimelinePresenter(
     ): Deferred<List<Tweet>> {
         val fetchTweetsTask = async { twitter.statuses(timeline, maxId) }
         return async {
-            if (shouldIgnoreIdsUpdate(now)) {
-                updateIgnoreIdsTask()
-                fetchTweetsTask.await()
-            } else {
-                // use cached ignoreUserIds
-                fetchTweetsTask.await()
+            try {
+                if (shouldIgnoreIdsUpdate(now)) {
+                    updateIgnoreIdsTask()
+                }
+                fetchTweetsTask.await().data!!
+            } catch (e: Throwable) {
+                println(e)
+                listOf()
             }
         }
     }
@@ -88,8 +90,8 @@ class TimelinePresenter(
         now.isAfter(ignoreIdsLastUpdatedAt.plusSeconds(IGNORE_IDS_CACHE_SECONDS))
 
     private suspend fun CoroutineScope.updateIgnoreIdsTask(): Unit = withIO {
-        val blockIds = async { twitter.blockedIds().ids }
-        val muteIds = async { twitter.mutedIds().ids }
+        val blockIds = async { twitter.blockedIds().data?.ids ?: listOf() }
+        val muteIds = async { twitter.mutedIds().data?.ids ?: listOf() }
         // save blocked and muted user ids
         ignoreIdsLastUpdatedAt = OffsetDateTime.now()
         ignoreUserIds = (blockIds.await() + muteIds.await()).distinct()
@@ -97,8 +99,8 @@ class TimelinePresenter(
 
     override fun loadLists(userId: Long): Job = task({
         view.showListsLoading()
-        val owned = async { twitter.ownedLists(userId) }
-        val subscribed = async { twitter.subscribedLists(userId) }
+        val owned = async { twitter.ownedLists(userId).data?.lists ?: listOf() }
+        val subscribed = async { twitter.subscribedLists(userId).data?.lists ?: listOf() }
         view.showListsSelector(owned.await() + subscribed.await())
     }, view::dismissListsLoading)
 
@@ -143,7 +145,7 @@ class TimelinePresenter(
     })
 
     override fun handleError(error: Throwable) {
-        if (error is TwitterApiException && error.isRateLimitExceeded()) {
+        if (error is TwitterApiError && error.isRateLimitExceeded()) {
             view.rateLimitExceeded()
         } else {
             view.handleError(error)

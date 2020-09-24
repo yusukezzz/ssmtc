@@ -121,9 +121,8 @@ class AppModule(private val app: Application) {
     fun provideTwitterService(
         oauthConsumer: OkHttpOAuthConsumer,
         apiService: TwitterApi,
-        uploadService: UploadApi,
-        gson: Gson
-    ): TwitterService = TwitterService(oauthConsumer, apiService, uploadService, gson)
+        uploadService: UploadApi
+    ): TwitterService = TwitterService(oauthConsumer, apiService, uploadService)
 
     @Provides
     @Singleton

@@ -119,6 +119,7 @@ class StatusUpdateActivity : AppCompatActivity() {
             println(it.toString())
             val mimeType: String? = contentResolver.getType(it)
             if (mimeType != null) {
+                // TODO: save photos to avoid SecurityException
                 showSelectedPhotos(arrayOf(getContentUri(it, mimeType)))
             }
         }

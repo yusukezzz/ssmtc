@@ -42,7 +42,7 @@ class AuthorizePresenter(
                 Credentials(consumer.token, consumer.tokenSecret)
             }
             twitter.setTokens(cred)
-            val user = twitter.verifyCredentials()
+            val user = twitter.verifyCredentials().data!!
             prefs.currentUserId = user.id
             val timelines = timelineRepo.initialize(user.id)
             val ssmtcAccount = SsmtcAccount(cred, user, timelines, timelines.first().uuid)

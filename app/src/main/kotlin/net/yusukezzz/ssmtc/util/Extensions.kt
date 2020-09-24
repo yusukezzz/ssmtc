@@ -60,8 +60,10 @@ fun Context.toast(error: Throwable) {
 
 fun Activity.snackbar(error: Throwable) {
     error.printStackTrace()
-    this.findViewById<View>(R.id.content)?.let {
-        Snackbar.make(it, error.message!!, Snackbar.LENGTH_SHORT).show()
+    this.findViewById<View>(R.id.content)?.let { view ->
+        error.message?.let {
+            Snackbar.make(view, it, Snackbar.LENGTH_SHORT).show()
+        }
     }
 }
 
@@ -123,20 +125,8 @@ fun File.mimeType(): String {
 
 fun File.mediaType(): MediaType = this.mimeType().toMediaType()
 
-fun Throwable.prettyMarkdown(): String {
-    val c = cause?.let {
-        "\n[cause] ${it.message}\n${it.stackTrace.joinToString("\n")}"
-    } ?: ""
-    return """```[error] ${OffsetDateTime.now()}
-             |Message:
-             |$message
-             |
-             |Stacktrace:
-             |${stackTrace.joinToString("\n")}
-             |
-             |Cause:
-             |$c```""".trimMargin()
-}
+fun Throwable.prettyMarkdown(): String =
+    "```[error] ${OffsetDateTime.now()}\n\n${this.stackTraceToString()}```".trim()
 
 // https://qiita.com/nukka123/items/205c93c72a35a17a5c3b
 fun String.truncateBytes(bytes: Int): String {

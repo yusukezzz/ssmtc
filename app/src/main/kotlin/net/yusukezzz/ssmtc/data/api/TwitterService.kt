@@ -1,34 +1,19 @@
 package net.yusukezzz.ssmtc.data.api
 
-import com.google.gson.Gson
 import net.yusukezzz.ssmtc.data.Credentials
-import net.yusukezzz.ssmtc.data.api.model.IdList
-import net.yusukezzz.ssmtc.data.api.model.Search
-import net.yusukezzz.ssmtc.data.api.model.TwList
-import net.yusukezzz.ssmtc.data.api.model.TwLists
-import net.yusukezzz.ssmtc.data.api.model.Tweet
-import net.yusukezzz.ssmtc.data.api.model.UploadResult
-import net.yusukezzz.ssmtc.data.api.model.User
+import net.yusukezzz.ssmtc.data.api.model.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 
 class TwitterService(
     private val oauthConsumer: OkHttpOAuthConsumer,
     private val apiService: TwitterApi,
-    private val uploadService: UploadApi,
-    private val gson: Gson
+    private val uploadService: UploadApi
 ) {
     companion object {
         const val API_BASE_URL = "https://api.twitter.com/1.1/"
@@ -43,9 +28,9 @@ class TwitterService(
         oauthConsumer.setTokenWithSecret(credentials.token, credentials.tokenSecret)
     }
 
-    suspend fun verifyCredentials(): User = handleResponse(apiService.verifyCredentials())
+    suspend fun verifyCredentials(): TwitterApiResult<User> = handleResponse(apiService.verifyCredentials())
 
-    suspend fun statuses(timeline: Timeline, maxId: Long? = null): List<Tweet> = timeline.let {
+    suspend fun statuses(timeline: Timeline, maxId: Long? = null): TwitterApiResult<List<Tweet>> = timeline.let {
         val max = maxId?.dec()
         when (it.type) {
             Timeline.TYPE_HOME -> homeTimeline(max)
@@ -57,25 +42,25 @@ class TwitterService(
         }
     }
 
-    suspend fun like(id: Long): Tweet = handleResponse(apiService.like(id))
-    suspend fun unlike(id: Long): Tweet = handleResponse(apiService.unlike(id))
-    suspend fun retweet(id: Long): Tweet = handleResponse(apiService.retweet(id))
-    suspend fun unretweet(id: Long): Tweet = handleResponse(apiService.unretweet(id))
+    suspend fun like(id: Long): TwitterApiResult<Tweet> = handleResponse(apiService.like(id))
+    suspend fun unlike(id: Long): TwitterApiResult<Tweet> = handleResponse(apiService.unlike(id))
+    suspend fun retweet(id: Long): TwitterApiResult<Tweet> = handleResponse(apiService.retweet(id))
+    suspend fun unretweet(id: Long): TwitterApiResult<Tweet> = handleResponse(apiService.unretweet(id))
 
-    suspend fun subscribedLists(userId: Long): List<TwList> =
-        handleResponse(apiService.subscribedLists(1000, userId)).lists
+    suspend fun subscribedLists(userId: Long): TwitterApiResult<TwLists> =
+        handleResponse(apiService.subscribedLists(1000, userId))
 
-    suspend fun ownedLists(userId: Long): List<TwList> =
-        handleResponse(apiService.ownedLists(1000, userId)).lists
+    suspend fun ownedLists(userId: Long): TwitterApiResult<TwLists> =
+        handleResponse(apiService.ownedLists(1000, userId))
 
-    suspend fun blockedIds(): IdList = handleResponse(apiService.blockedIds())
-    suspend fun mutedIds(): IdList = handleResponse(apiService.mutedIds())
+    suspend fun blockedIds(): TwitterApiResult<IdList> = handleResponse(apiService.blockedIds())
+    suspend fun mutedIds(): TwitterApiResult<IdList> = handleResponse(apiService.mutedIds())
 
     fun tweet(
         status: String,
         inReplyToStatusId: Long? = null,
         mediaIds: List<Long>? = null
-    ): Tweet =
+    ): TwitterApiResult<Tweet> =
         handleCall(
             apiService.statusesUpdate(
                 status,
@@ -84,38 +69,36 @@ class TwitterService(
             )
         )
 
-    fun upload(media: RequestBody): UploadResult = handleCall(uploadService.upload(media))
+    fun upload(media: RequestBody): TwitterApiResult<UploadResult> = handleCall(uploadService.upload(media))
 
     private val textType = "text/plain".toMediaType()
-    fun uploadInit(totalBytes: Long): UploadResult =
+    fun uploadInit(totalBytes: Long): TwitterApiResult<UploadResult> =
         handleCall(uploadService.init(totalBytes))
 
     fun uploadAppend(mediaId: Long, segmentIndex: Int, chunk: RequestBody) =
-        handleEmptyResponse(
             uploadService.append(
-                RequestBody.create(textType, mediaId.toString()),
-                RequestBody.create(textType, segmentIndex.toString()),
+                mediaId.toString().toRequestBody(textType),
+                segmentIndex.toString().toRequestBody(textType),
                 chunk
-            )
-        )
+            ).execute()
 
-    fun uploadFinalize(mediaId: Long): UploadResult =
+    fun uploadFinalize(mediaId: Long): TwitterApiResult<UploadResult> =
         handleCall(uploadService.finalize(mediaId))
 
-    fun uploadStatus(mediaId: Long): UploadResult =
+    fun uploadStatus(mediaId: Long): TwitterApiResult<UploadResult> =
         handleCall(uploadService.status(mediaId))
 
-    private suspend fun homeTimeline(maxId: Long?): List<Tweet> =
+    private suspend fun homeTimeline(maxId: Long?): TwitterApiResult<List<Tweet>> =
         handleResponse(apiService.homeTimeline(MAX_RETRIEVE_COUNT, maxId))
 
-    private suspend fun mentionsTimeline(maxId: Long?): List<Tweet> =
+    private suspend fun mentionsTimeline(maxId: Long?): TwitterApiResult<List<Tweet>> =
         handleResponse(apiService.mentionsTimeline(MAX_RETRIEVE_COUNT, maxId))
 
-    private suspend fun listTimeline(listId: Long?, maxId: Long?): List<Tweet> =
+    private suspend fun listTimeline(listId: Long?, maxId: Long?): TwitterApiResult<List<Tweet>> =
         handleResponse(apiService.listStatuses(listId, MAX_RETRIEVE_COUNT, maxId))
 
-    private suspend fun searchTimeline(query: String?, maxId: Long?): List<Tweet> =
-        handleResponse(
+    private suspend fun searchTimeline(query: String?, maxId: Long?): TwitterApiResult<List<Tweet>> {
+        val res = handleResponse(
             apiService.search(
                 MAX_RETRIEVE_COUNT,
                 LANG,
@@ -124,81 +107,56 @@ class TwitterService(
                 query,
                 maxId
             )
-        ).statuses
+        )
+        // unwrap Search result
+        return TwitterApiResult(res.data?.statuses, res.error)
+    }
 
-    private suspend fun userTimeline(screenName: String?, maxId: Long?): List<Tweet> =
+    private suspend fun userTimeline(screenName: String?, maxId: Long?): TwitterApiResult<List<Tweet>> =
         handleResponse(apiService.userTimeline(MAX_RETRIEVE_COUNT, screenName, maxId))
 
-    private fun <T> handleCall(req: Call<T>): T = handleResponse(req.execute())
+    private fun <T> handleCall(req: Call<T>): TwitterApiResult<T> = handleResponse(req.execute())
 
-    private fun handleEmptyResponse(req: Call<Unit>) {
-        val res = req.execute()
-        if (!res.isSuccessful) {
-            handleError(res)
+    private fun <T> handleResponse(res: Response<T>): TwitterApiResult<T> =
+        if (res.isSuccessful) {
+            TwitterApiResult(res.body())
+        } else {
+            val url = res.raw().request.url.toString()
+            val statusCode = res.code()
+            val json = res.errorBody()?.string() ?: ""
+            val error = TwitterApiError(url, statusCode, json)
+            TwitterApiResult(error = error)
         }
-    }
-
-    private fun <T> handleResponse(res: Response<T>): T {
-        if (!res.isSuccessful) {
-            handleError(res)
-        }
-
-        return res.body()!!
-    }
-
-    private fun handleError(res: Response<*>) {
-        val url = res.raw().request.url
-        val statusCode = res.code()
-        val errors = res.errorBody()?.let {
-            val st = it.string()
-            println(st)
-            try {
-                val body = gson.fromJson(st, TwitterErrorResponse::class.java)
-                body.errors
-            } catch (e: Throwable) {
-                null
-            }
-        }
-        throw TwitterApiException(
-            "twitter API error: url=$url code=$statusCode",
-            statusCode,
-            errors
-        )
-    }
-
-    data class TwitterErrorResponse(val errors: List<TwitterErrorDetail>)
-    data class TwitterErrorDetail(val code: Int, val message: String)
 }
 
-class TwitterApiException(
-    message: String,
+class TwitterApiError(
+    val url: String,
     val statusCode: Int,
-    val errors: List<TwitterService.TwitterErrorDetail>?
-) : RuntimeException(message) {
+    val json: String
+) : RuntimeException() {
     companion object {
         const val STATUS_CODE_RATE_LIMIT = 429
     }
 
     fun isRateLimitExceeded(): Boolean = (statusCode == STATUS_CODE_RATE_LIMIT)
     override fun toString(): String {
-        val details = errors?.joinToString("\n") { "code=${it.code}, message=${it.message}" }
-
         return """
-        |[message]
-        |$message
+        |[url]
+        |$url
         |
-        |[httpStatusCode]
+        |[status code]
         |$statusCode
         |
-        |[errorDetails]
-        |$details
-        |
-        |[stacktrace]
-        |${stackTrace.joinToString("\n")}
-        |
+        |[error json]
+        |$json
         """.trimMargin()
     }
 }
+
+data class TwitterApiResult<T>(
+    val data: T? = null,
+    val error: TwitterApiError? = null
+)
 
 interface TwitterApi {
     @GET("account/verify_credentials.json")
