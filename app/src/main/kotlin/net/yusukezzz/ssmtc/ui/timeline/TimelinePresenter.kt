@@ -78,7 +78,7 @@ class TimelinePresenter(
                 if (shouldIgnoreIdsUpdate(now)) {
                     updateIgnoreIdsTask()
                 }
-                fetchTweetsTask.await().data!!
+                fetchTweetsTask.await().getOrThrow()
             } catch (e: Throwable) {
                 println(e)
                 listOf()
@@ -90,8 +90,8 @@ class TimelinePresenter(
         now.isAfter(ignoreIdsLastUpdatedAt.plusSeconds(IGNORE_IDS_CACHE_SECONDS))
 
     private suspend fun CoroutineScope.updateIgnoreIdsTask(): Unit = withIO {
-        val blockIds = async { twitter.blockedIds().data?.ids ?: listOf() }
-        val muteIds = async { twitter.mutedIds().data?.ids ?: listOf() }
+        val blockIds = async { twitter.blockedIds().getOrNull()?.ids ?: listOf() }
+        val muteIds = async { twitter.mutedIds().getOrNull()?.ids ?: listOf() }
         // save blocked and muted user ids
         ignoreIdsLastUpdatedAt = OffsetDateTime.now()
         ignoreUserIds = (blockIds.await() + muteIds.await()).distinct()
@@ -99,8 +99,8 @@ class TimelinePresenter(
 
     override fun loadLists(userId: Long): Job = task({
         view.showListsLoading()
-        val owned = async { twitter.ownedLists(userId).data?.lists ?: listOf() }
-        val subscribed = async { twitter.subscribedLists(userId).data?.lists ?: listOf() }
+        val owned = async { twitter.ownedLists(userId).getOrNull()?.lists ?: listOf() }
+        val subscribed = async { twitter.subscribedLists(userId).getOrNull()?.lists ?: listOf() }
         view.showListsSelector(owned.await() + subscribed.await())
     }, view::dismissListsLoading)
 
