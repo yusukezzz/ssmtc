@@ -6,9 +6,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import kotlinx.android.synthetic.main.video_player.media_video
-import kotlinx.android.synthetic.main.video_player.video_loading_bar
-import kotlinx.android.synthetic.main.video_player.video_time
+import kotlinx.android.synthetic.main.video_player.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
@@ -43,11 +41,11 @@ class VideoPlayerActivity : MediaBaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.video_player)
 
-        val info: VideoInfo = intent.getParcelableExtra(ARG_VIDEO_INFO)
-
-        media_video.setOnPreparedListener(this)
-        media_video.setOnCompletionListener(this)
-        media_video.setVideoURI(Uri.parse(info.mp4Mid.url))
+        intent.getParcelableExtra<VideoInfo>(ARG_VIDEO_INFO)?.let {
+            media_video.setOnPreparedListener(this)
+            media_video.setOnCompletionListener(this)
+            media_video.setVideoURI(Uri.parse(it.mp4Mid.url))
+        }
     }
 
     override fun onPrepared(mp: MediaPlayer?) {

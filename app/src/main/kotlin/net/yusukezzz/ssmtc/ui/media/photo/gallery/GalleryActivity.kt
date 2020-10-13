@@ -8,10 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.photo_gallery.currentPage
-import kotlinx.android.synthetic.main.photo_gallery.gallery
-import kotlinx.android.synthetic.main.photo_gallery.photo_gallery_download
-import kotlinx.android.synthetic.main.photo_gallery.photo_gallery_share
+import kotlinx.android.synthetic.main.photo_gallery.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
@@ -35,7 +32,9 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
     }
 
     private val images: List<Media> by lazy {
-        intent.getParcelableArrayExtra(ARG_IMAGES).map { (it as Media) }
+        intent.getParcelableArrayExtra(ARG_IMAGES)
+            ?.map { (it as Media) }
+            ?: listOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
