@@ -23,12 +23,12 @@ import net.yusukezzz.ssmtc.data.repository.TimelineRepository
 import net.yusukezzz.ssmtc.util.gson.DateTimeTypeConverter
 import net.yusukezzz.ssmtc.util.okhttp.RetryWithDelayInterceptor
 import okhttp3.OkHttpClient
-import org.threeten.bp.OffsetDateTime
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer
 import se.akerfeldt.okhttp.signpost.SigningInterceptor
 import java.io.File
+import java.time.OffsetDateTime
 import javax.inject.Named
 import javax.inject.Singleton
 

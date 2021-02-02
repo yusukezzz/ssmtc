@@ -7,14 +7,14 @@ import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.media_video.view.*
-import kotlinx.android.synthetic.main.open_graph.view.*
-import kotlinx.android.synthetic.main.tweet_item.view.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.data.og.OpenGraphService
+import net.yusukezzz.ssmtc.databinding.MediaVideoBinding
+import net.yusukezzz.ssmtc.databinding.OpenGraphBinding
+import net.yusukezzz.ssmtc.databinding.TweetItemBinding
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.ui.misc.ThumbnailTileLayout
 import net.yusukezzz.ssmtc.util.*
@@ -50,6 +50,9 @@ class TweetItemView @JvmOverloads constructor(
         fun onHashTagClick(hashTag: String)
     }
 
+    private val binding: TweetItemBinding = TweetItemBinding.bind(this)
+    private val openGraph: OpenGraphBinding = OpenGraphBinding.bind(this)
+
     fun setTweetListener(listener: TweetItemListener) {
         this.listener = listener
     }
@@ -65,17 +68,17 @@ class TweetItemView @JvmOverloads constructor(
     }
 
     private fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {
-        tweet_retweeted_container.gone()
-        quote_container.gone()
-        open_graph.gone()
-        thumbnail_tile.removeAllViews()
-        quote_thumbnail_tile.removeAllViews()
+        binding.tweetRetweetedContainer.gone()
+        binding.quoteContainer.gone()
+        openGraph.root.gone()
+        binding.thumbnailTile.removeAllViews()
+        binding.quoteThumbnailTile.removeAllViews()
 
         var removeUrl = ""
         if (tweet.hasVideo) {
-            handleVideo(tweet.videos.first(), thumbnail_tile)
+            handleVideo(tweet.videos.first(), binding.thumbnailTile)
         } else if (tweet.hasPhoto) {
-            handlePhoto(tweet.photos, thumbnail_tile)
+            handlePhoto(tweet.photos, binding.thumbnailTile)
         } else if (!removeQuote && tweet.entities.urls.isNotEmpty()) {
             val urls = tweet.entities.urls
             // ignore host only url
@@ -87,88 +90,88 @@ class TweetItemView @JvmOverloads constructor(
 
         val formatted = TextUtil.formattedText(tweet, listener, removeUrl, removeQuote)
         with(tweet) {
-            PicassoUtil.userIcon(user, tweet_user_image)
-            tweet_user_image.setOnClickListener { listener.onScreenNameClick(user.screenName) }
-            tweet_user_name.text = user.name
-            tweet_user_screen_name.text = "@" + user.screenName
-            tweet_user_protected_icon.beVisibleIf(user.isProtected)
-            tweet_user_verified_icon.beVisibleIf(user.isVerified)
-            tweet_date.text =
+            PicassoUtil.userIcon(user, binding.tweetUserImage)
+            binding.tweetUserImage.setOnClickListener { listener.onScreenNameClick(user.screenName) }
+            binding.tweetUserName.text = user.name
+            binding.tweetUserScreenName.text = "@" + user.screenName
+            binding.tweetUserProtectedIcon.beVisibleIf(user.isProtected)
+            binding.tweetUserVerifiedIcon.beVisibleIf(user.isVerified)
+            binding.tweetDate.text =
                 DateUtils.getRelativeTimeSpanString(created_at.toEpochSecond() * 1000L)
-            tweet_text.text = formatted
-            tweet_text.movementMethod = LinkMovementMethod.getInstance()
-            tweet_text.beVisibleIf(formatted.isNotEmpty())
+            binding.tweetText.text = formatted
+            binding.tweetText.movementMethod = LinkMovementMethod.getInstance()
+            binding.tweetText.beVisibleIf(formatted.isNotEmpty())
         }
         handleReaction(tweet)
     }
 
     private fun bindRetweeted(tweet: Tweet) {
         bindTweet(tweet.retweeted_status!!)
-        tweet_retweeted_message.text = tweet.user.name + resources.getString(R.string.retweeted_by)
-        tweet_retweeted_container.visible()
+        binding.tweetRetweetedMessage.text = tweet.user.name + resources.getString(R.string.retweeted_by)
+        binding.tweetRetweetedContainer.visible()
     }
 
     private fun bindQuoted(tweet: Tweet) {
         bindTweet(tweet, true)
         val quoted = tweet.quoted_status!!
-        quote_text.text = TextUtil.formattedText(quoted, listener)
-        quote_text.movementMethod = LinkMovementMethod.getInstance()
-        quote_user_name.text = quoted.user.name
-        quote_user_screen_name.text = "@" + quoted.user.screenName
-        if (quoted.hasVideo) handleVideo(quoted.videos.first(), quote_thumbnail_tile)
-        if (quoted.hasPhoto) handlePhoto(quoted.photos, quote_thumbnail_tile)
-        quote_container.visible()
+        binding.quoteText.text = TextUtil.formattedText(quoted, listener)
+        binding.quoteText.movementMethod = LinkMovementMethod.getInstance()
+        binding.quoteUserName.text = quoted.user.name
+        binding.quoteUserScreenName.text = "@" + quoted.user.screenName
+        if (quoted.hasVideo) handleVideo(quoted.videos.first(), binding.quoteThumbnailTile)
+        if (quoted.hasPhoto) handlePhoto(quoted.photos, binding.quoteThumbnailTile)
+        binding.quoteContainer.visible()
     }
 
     private fun handleReaction(tweet: Tweet) {
-        tweet_retweet_count.text = ""
-        tweet_like_count.text = ""
+        binding.tweetRetweetCount.text = ""
+        binding.tweetLikeCount.text = ""
 
-        ic_twitter_reply.setOnClickListener { listener.onReplyClick(tweet) }
+        binding.icTwitterReply.setOnClickListener { listener.onReplyClick(tweet) }
 
         if (0 < tweet.retweet_count) {
-            tweet_retweet_count.text = numberFormatter.format(tweet.retweet_count)
+            binding.tweetRetweetCount.text = numberFormatter.format(tweet.retweet_count)
         }
         if (tweet.user.isProtected) {
             // cant retweet
-            ic_twitter_retweet.setColorFilter(
+            binding.icTwitterRetweet.setColorFilter(
                 context.getCompatColor(R.color.action_retweet_protected)
             )
             // remove selectable effect
-            ic_twitter_retweet.setBackgroundResource(0)
-            ic_twitter_retweet.setOnClickListener { /* do nothing */ }
+            binding.icTwitterRetweet.setBackgroundResource(0)
+            binding.icTwitterRetweet.setOnClickListener { /* do nothing */ }
         } else {
             val retweetColor = if (tweet.retweeted) {
                 R.color.action_retweet_on
             } else {
                 R.color.action_icon_default
             }
-            ic_twitter_retweet.setColorFilter(context.getCompatColor(retweetColor))
-            ic_twitter_retweet.setBackgroundResource(
+            binding.icTwitterRetweet.setColorFilter(context.getCompatColor(retweetColor))
+            binding.icTwitterRetweet.setBackgroundResource(
                 context.resolveAttributeId(android.R.attr.selectableItemBackgroundBorderless)
             )
-            ic_twitter_retweet.setOnClickListener { listener.onRetweetClick(tweet) }
+            binding.icTwitterRetweet.setOnClickListener { listener.onRetweetClick(tweet) }
         }
 
         if (0 < tweet.favorite_count) {
-            tweet_like_count.text = numberFormatter.format(tweet.favorite_count)
+            binding.tweetLikeCount.text = numberFormatter.format(tweet.favorite_count)
         }
         val likeColor = if (tweet.favorited) {
             R.color.action_like_on
         } else {
             R.color.action_icon_default
         }
-        ic_twitter_like.setColorFilter(context.getCompatColor(likeColor))
-        ic_twitter_like.setOnClickListener { listener.onLikeClick(tweet) }
+        binding.icTwitterLike.setColorFilter(context.getCompatColor(likeColor))
+        binding.icTwitterLike.setOnClickListener { listener.onLikeClick(tweet) }
 
-        ic_tweet_share.setOnClickListener { listener.onShareClick(tweet) }
+        binding.icTweetShare.setOnClickListener { listener.onShareClick(tweet) }
     }
 
     fun cleanup() {
-        PicassoUtil.cancel(tweet_user_image)
-        open_graph.reset()
-        thumbnail_tile.children { PicassoUtil.cancel(it) }
-        quote_thumbnail_tile.children { PicassoUtil.cancel(it) }
+        PicassoUtil.cancel(binding.tweetUserImage)
+        openGraph.root.reset()
+        binding.thumbnailTile.children { PicassoUtil.cancel(it) }
+        binding.quoteThumbnailTile.children { PicassoUtil.cancel(it) }
     }
 
     private fun handlePhoto(photos: List<Media>, tile: ThumbnailTileLayout) {
@@ -185,24 +188,25 @@ class TweetItemView @JvmOverloads constructor(
         if (video.video_info == null) return
 
         val mediaVideo: View = this.inflate(R.layout.media_video)
-        mediaVideo.ic_play_circle.setImageResource(R.drawable.ic_play_video)
-        mediaVideo.media_video_time.text = if (video.isGif) {
+        val b: MediaVideoBinding = MediaVideoBinding.bind(mediaVideo)
+        b.icPlayCircle.setImageResource(R.drawable.ic_play_video)
+        b.mediaVideoTime.text = if (video.isGif) {
             "GIF"
         } else {
             TextUtil.milliSecToTime(video.video_info.duration_millis)
         }
-        tile.addView(mediaVideo)
-        val imgView = mediaVideo.media_video_thumbnail
+        tile.addView(b.root)
+        val imgView = b.mediaVideoThumbnail
         imgView.setOnClickListener { listener.onVideoClick(video.video_info) }
         PicassoUtil.thumbnail(video.smallUrl, imgView)
     }
 
     private fun handleOpenGraph(url: String) {
-        if (open_graph.isLoaded()) {
-            open_graph.visible()
+        if (openGraph.root.isLoaded()) {
+            openGraph.root.visible()
         } else {
-            open_graph.setListener(listener)
-            ogClient.load(url, open_graph)
+            openGraph.root.setListener(listener)
+            ogClient.load(url, openGraph.root)
         }
     }
 }

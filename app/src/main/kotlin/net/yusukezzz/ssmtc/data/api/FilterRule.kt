@@ -1,23 +1,18 @@
 package net.yusukezzz.ssmtc.data.api
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import net.yusukezzz.ssmtc.data.api.FilterRule.Showing.ALL
+import kotlinx.parcelize.Parcelize
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import java.util.regex.Pattern
 
 @Parcelize
 data class FilterRule(
-    val showing: Showing,
+    val showing: ContentShowing,
     val includeWords: List<String>,
     val excludeWords: List<String>
 ) : Parcelable {
     companion object {
-        fun default(): FilterRule = FilterRule(ALL, listOf(), listOf())
-    }
-
-    enum class Showing {
-        ALL, ANY_MEDIA, PHOTO, VIDEO
+        fun default(): FilterRule = FilterRule(ContentShowing.ALL, listOf(), listOf())
     }
 
     fun match(tweet: Tweet): Boolean {
@@ -29,10 +24,10 @@ data class FilterRule(
     }
 
     private fun matchMedia(tweet: Tweet): Boolean = when (showing) {
-        Showing.ALL -> true // include those without media
-        Showing.ANY_MEDIA -> tweet.hasPhoto || tweet.hasVideo
-        Showing.PHOTO -> tweet.hasPhoto
-        Showing.VIDEO -> tweet.hasVideo
+        ContentShowing.ALL -> true
+        ContentShowing.ANY_MEDIA -> tweet.hasPhoto || tweet.hasVideo
+        ContentShowing.PHOTO -> tweet.hasPhoto
+        ContentShowing.VIDEO -> tweet.hasVideo
     }
 
     private fun matchText(tweet: Tweet): Boolean {

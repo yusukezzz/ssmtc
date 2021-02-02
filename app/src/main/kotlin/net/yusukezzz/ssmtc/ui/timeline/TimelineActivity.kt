@@ -21,10 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.base_layout.*
-import kotlinx.android.synthetic.main.nav_header_main.*
-import kotlinx.android.synthetic.main.timeline_layout.*
-import kotlinx.android.synthetic.main.timeline_list.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
@@ -37,6 +33,8 @@ import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
 import net.yusukezzz.ssmtc.data.og.OpenGraphService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.databinding.TimelineLayoutBinding
+import net.yusukezzz.ssmtc.databinding.TimelineListBinding
 import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
@@ -68,7 +66,7 @@ class TimelineActivity : AppCompatActivity(),
     private lateinit var pagingScrollListener: PagingRecyclerOnScrollListener
     private var listsLoading: AlertDialog? = null
     private val timelineAdapter: TimelineAdapter by lazy {
-        timeline_list.adapter as TimelineAdapter
+        timeline.timelineList.adapter as TimelineAdapter
     }
     private val lastTimelineFile by lazy {
         File(applicationContext.cacheDir, "last_timeline.json")
@@ -94,6 +92,9 @@ class TimelineActivity : AppCompatActivity(),
 
     private fun currentAccount(): SsmtcAccount = accountRepo.find(prefs.currentUserId)!!
 
+    private lateinit var binding: TimelineLayoutBinding
+    private lateinit var timeline: TimelineListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -105,9 +106,12 @@ class TimelineActivity : AppCompatActivity(),
             return
         }
 
-        setContentView(R.layout.timeline_layout)
-        main_contents.setView(R.layout.timeline_list)
-        setSupportActionBar(toolbar)
+        binding = TimelineLayoutBinding.inflate(layoutInflater)
+        timeline = TimelineListBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
+        binding.base.mainContents.addView(timeline.root)
+        setSupportActionBar(binding.base.toolbar)
 
         setupDrawerView()
         setupTimelineView()
@@ -118,6 +122,7 @@ class TimelineActivity : AppCompatActivity(),
         } else {
             // initial load
             loadAccount()
+            og.cleanup()
         }
     }
 
@@ -128,17 +133,16 @@ class TimelineActivity : AppCompatActivity(),
         val json = gson.toJson(timelineAdapter.getAll())
         lastTimelineFile.writeText(json)
         // save last scroll position
-        outState.putParcelable(
-            STATE_RECYCLER_VIEW,
-            timeline_list.layoutManager!!.onSaveInstanceState()
-        )
+        timeline.timelineList.layoutManager?.let {
+            outState.putParcelable(STATE_RECYCLER_VIEW, it.onSaveInstanceState())
+        }
         // save oldest tweet id
         lastTweetId?.let { outState.putLong(STATE_OLDEST_TWEET_ID, it) }
     }
 
     private fun restoreTimeline(state: Bundle) {
         val current = currentAccount().currentTimeline()
-        toolbar_title.text = current.title
+        binding.base.toolbarTitle.text = current.title
         presenter.setTimeline(current)
         updateTimelineMenu()
 
@@ -147,7 +151,7 @@ class TimelineActivity : AppCompatActivity(),
         val tweets: List<Tweet> = gson.fromJson(json, object : TypeToken<List<Tweet>>() {}.type)
         val timelineState = state.getParcelable<Parcelable>(STATE_RECYCLER_VIEW)
         timelineAdapter.set(tweets)
-        timeline_list.layoutManager!!.onRestoreInstanceState(timelineState)
+        timeline.timelineList.layoutManager?.onRestoreInstanceState(timelineState)
         val oldestTweetId = state.getLong(STATE_OLDEST_TWEET_ID)
         if (oldestTweetId != 0L) {
             lastTweetId = oldestTweetId
@@ -158,7 +162,7 @@ class TimelineActivity : AppCompatActivity(),
 
     private fun setupDrawerView() {
         val drawerToggle = object : ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close
+            this, binding.drawer, binding.base.toolbar, R.string.nav_drawer_open, R.string.nav_drawer_close
         ) {
             override fun onDrawerClosed(drawerView: View) {
                 super.onDrawerClosed(drawerView)
@@ -166,38 +170,38 @@ class TimelineActivity : AppCompatActivity(),
                 showTimelineNavigation()
             }
         }
-        drawer.addDrawerListener(drawerToggle)
+        binding.drawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
-        nav_view.setNavigationItemSelectedListener(this)
+        binding.navView.setNavigationItemSelectedListener(this)
     }
 
     private fun setupTimelineView() {
-        timeline_list.adapter = TimelineAdapter(this, og).apply { setHasStableIds(true) }
-        timeline_list.setHasFixedSize(true)
+        timeline.timelineList.adapter = TimelineAdapter(this, og).apply { setHasStableIds(true) }
+        timeline.timelineList.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(this)
-        timeline_list.layoutManager = layoutManager
+        timeline.timelineList.layoutManager = layoutManager
         val decoration = DividerItemDecoration(this, layoutManager.orientation)
         decoration.setDrawable(getCompatDrawable(R.drawable.timeline_divider))
-        timeline_list.addItemDecoration(decoration)
+        timeline.timelineList.addItemDecoration(decoration)
 
         pagingScrollListener = PagingRecyclerOnScrollListener(layoutManager)
         pagingScrollListener.setLoadMoreListener(this)
-        timeline_list.addOnScrollListener(pagingScrollListener)
+        timeline.timelineList.addOnScrollListener(pagingScrollListener)
 
-        swipe_refresh.setOnRefreshListener(this)
-        swipe_refresh.setColorSchemeResources(
+        timeline.swipeRefresh.setOnRefreshListener(this)
+        timeline.swipeRefresh.setColorSchemeResources(
             R.color.green,
             R.color.red,
             R.color.blue,
             R.color.yellow
         )
 
-        toolbar_title.setOnClickListener {
-            timeline_list.scrollToPosition(0)
+        binding.base.toolbarTitle.setOnClickListener {
+            timeline.timelineList.scrollToPosition(0)
         }
 
-        tweet_btn.setOnClickListener {
+        timeline.tweetBtn.setOnClickListener {
             startActivity(StatusUpdateActivity.newIntent(this))
         }
     }
@@ -230,7 +234,7 @@ class TimelineActivity : AppCompatActivity(),
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawer.closeDrawer(GravityCompat.START)
+        binding.drawer.closeDrawer(GravityCompat.START)
 
         if (item.isChecked) {
             return true
@@ -286,7 +290,7 @@ class TimelineActivity : AppCompatActivity(),
         presenter.resetIgnoreIds()
         presenter.setTokens(account.credentials)
 
-        val headerView = nav_view.getHeaderView(0)
+        val headerView = binding.navView.getHeaderView(0)
         val profileImage: ImageView = headerView.findViewById(R.id.profile_image)
         val screenName: TextView = headerView.findViewById(R.id.screen_name)
         val accountSelectBtn: ImageView = headerView.findViewById(R.id.btn_account_selector)
@@ -306,7 +310,7 @@ class TimelineActivity : AppCompatActivity(),
      * toggle timeline and account navigation menu
      */
     private fun toggleNavigationContents() {
-        val isAccountNav = (nav_view.menu.findItem(R.id.nav_account_add) != null)
+        val isAccountNav = (binding.navView.menu.findItem(R.id.nav_account_add) != null)
         if (isAccountNav) {
             showTimelineNavigation()
         } else {
@@ -315,18 +319,21 @@ class TimelineActivity : AppCompatActivity(),
     }
 
     fun showTimelineNavigation() {
-        nav_view.menu.clear()
-        btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_down)
-        nav_view.inflateMenu(R.menu.menu_drawer_timeline)
+        binding.navView.menu.clear()
+        binding.navView.findViewById<ImageView>(R.id.btn_account_selector)
+            .setImageResource(R.drawable.ic_arrow_drop_down)
+        binding.navView.inflateMenu(R.menu.menu_drawer_timeline)
         updateTimelineMenu()
     }
 
     private fun showAccountNavigation() {
-        nav_view.menu.clear()
-        btn_account_selector.setImageResource(R.drawable.ic_arrow_drop_up)
-        nav_view.inflateMenu(R.menu.menu_drawer_account)
+        binding.navView.menu.clear()
+        binding.navView.findViewById<ImageView>(R.id.btn_account_selector)
+            .setImageResource(R.drawable.ic_arrow_drop_up)
+        binding.navView.inflateMenu(R.menu.menu_drawer_account)
         (accountRepo.findAll() - currentAccount()).forEachIndexed { i, account ->
-            nav_view.menu.add(R.id.menu_account, Menu.NONE, i, account.user.screenName)
+            binding.navView.menu.add(R.id.menu_account, Menu.NONE, i, account.user.screenName)
+                .setIcon(R.drawable.ic_timeline_user)
         }
     }
 
@@ -349,10 +356,10 @@ class TimelineActivity : AppCompatActivity(),
     }
 
     private fun updateTimelineMenu() {
-        nav_view.menu.removeGroup(R.id.menu_timeline)
+        binding.navView.menu.removeGroup(R.id.menu_timeline)
         val account = currentAccount()
         account.timelines.forEachIndexed { index, timeline ->
-            nav_view.menu.add(R.id.menu_timeline, Menu.NONE, index, timeline.title)
+            binding.navView.menu.add(R.id.menu_timeline, Menu.NONE, index, timeline.title)
                 .setCheckable(true)
                 .setIcon(timelineIcon(timeline.type))
                 .isChecked = (timeline.uuid == account.currentTimelineUuid)
@@ -369,7 +376,7 @@ class TimelineActivity : AppCompatActivity(),
     }
 
     private fun switchTimeline(timeline: Timeline) {
-        toolbar_title.text = timeline.title
+        binding.base.toolbarTitle.text = timeline.title
         presenter.setTimeline(timeline)
         updateTimelineMenu()
         initializeTimeline()
@@ -443,10 +450,10 @@ class TimelineActivity : AppCompatActivity(),
     override fun onBackPressed() = toggleDrawer()
 
     private fun toggleDrawer() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
+        if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
+            binding.drawer.closeDrawer(GravityCompat.START)
         } else {
-            drawer.openDrawer(GravityCompat.START)
+            binding.drawer.openDrawer(GravityCompat.START)
         }
     }
 
@@ -474,7 +481,7 @@ class TimelineActivity : AppCompatActivity(),
     override fun setTweets(tweets: List<Tweet>) {
         pagingScrollListener.reset()
         timelineAdapter.set(tweets)
-        swipe_refresh.isRefreshing = false
+        timeline.swipeRefresh.isRefreshing = false
     }
 
     /**
@@ -483,13 +490,13 @@ class TimelineActivity : AppCompatActivity(),
     override fun addTweets(tweets: List<Tweet>) = timelineAdapter.add(tweets)
 
     override fun timelineEdgeReached() {
-        swipe_refresh.isRefreshing = false
+        timeline.swipeRefresh.isRefreshing = false
         pagingScrollListener.disable()
         toast(resources.getString(R.string.end_of_timeline_reached))
     }
 
     override fun rateLimitExceeded() {
-        swipe_refresh.isRefreshing = false
+        timeline.swipeRefresh.isRefreshing = false
         pagingScrollListener.disable()
         toast(resources.getString(R.string.rate_limit_exceeded))
     }
@@ -499,9 +506,9 @@ class TimelineActivity : AppCompatActivity(),
     private fun initializeTimeline() {
         pagingScrollListener.reset()
         timelineAdapter.clear()
-        timeline_list.scrollToPosition(0)
-        swipe_refresh.post {
-            swipe_refresh.isRefreshing = true
+        timeline.timelineList.scrollToPosition(0)
+        timeline.swipeRefresh.post {
+            timeline.swipeRefresh.isRefreshing = true
             onRefresh()
         }
     }
@@ -555,7 +562,7 @@ class TimelineActivity : AppCompatActivity(),
 
     override fun handleError(error: Throwable) {
         snackbar(error)
-        swipe_refresh.isRefreshing = false
+        timeline.swipeRefresh.isRefreshing = false
         pagingScrollListener.stopLoading()
     }
 }

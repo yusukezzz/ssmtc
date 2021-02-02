@@ -8,15 +8,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import androidx.viewpager.widget.ViewPager
-import kotlinx.android.synthetic.main.photo_gallery.*
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.databinding.PhotoGalleryBinding
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.toast
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.RuntimePermissions
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RuntimePermissions
 class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
@@ -37,27 +37,31 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
             ?: listOf()
     }
 
+    private lateinit var binding: PhotoGalleryBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.photo_gallery)
+
+        binding = PhotoGalleryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val startPos = intent.getIntExtra(ARG_START_POSITION, 0)
         val adapter = GalleryPageAdapter(applicationContext, images)
 
-        gallery.adapter = adapter
-        gallery.currentItem = startPos
+        binding.gallery.adapter = adapter
+        binding.gallery.currentItem = startPos
 
-        photo_gallery_download.setOnClickListener {
+        binding.photoGalleryDownload.setOnClickListener {
             downloadImageWithPermissionCheck()
         }
 
-        photo_gallery_share.setOnClickListener {
+        binding.photoGalleryShare.setOnClickListener {
             shareImage()
         }
 
         if (images.size > 1) {
             setCurrentPage(startPos)
-            gallery.addOnPageChangeListener(this)
+            binding.gallery.addOnPageChangeListener(this)
         }
     }
 
@@ -74,12 +78,12 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
     private fun setCurrentPage(index: Int) {
         val page = index + 1
         val max = images.size
-        currentPage.text = "$page/$max"
+        binding.currentPage.text = "$page/$max"
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     fun downloadImage() {
-        val media = images[gallery.currentItem]
+        val media = images[binding.gallery.currentItem]
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
         val uri = Uri.parse(media.origUrl)
@@ -98,7 +102,7 @@ class GalleryActivity : MediaBaseActivity(), ViewPager.OnPageChangeListener {
     }
 
     private fun shareImage() {
-        val media = images[gallery.currentItem]
+        val media = images[binding.gallery.currentItem]
         val intent = Intent(Intent.ACTION_SEND)
             .setType("text/plain")
             .putExtra(Intent.EXTRA_TEXT, media.media_url) // default size url

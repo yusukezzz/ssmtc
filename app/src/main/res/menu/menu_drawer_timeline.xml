@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group
-        android:id="@+id/menu_timeline"
-        android:orderInCategory="0"
-        android:checkableBehavior="single" />
+    <item android:title="Timelines">
+        <group
+            android:id="@+id/menu_timeline"
+            android:checkableBehavior="single"
+            android:enabled="true"
+            android:orderInCategory="0"
+            android:visible="true" />
+    </item>
 
     <group
         android:id="@+id/menu_manage"
@@ -13,6 +17,8 @@
 
         <item
             android:id="@+id/nav_timeline_selector"
+            android:checkable="true"
+            android:enabled="true"
             android:icon="@drawable/ic_timeline_add"
             android:title="@string/nav_timeline_add" />
 

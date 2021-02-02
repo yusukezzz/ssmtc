@@ -23,16 +23,15 @@ import kotlinx.coroutines.*
 import net.yusukezzz.ssmtc.R
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
-import org.threeten.bp.OffsetDateTime
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
+import java.time.OffsetDateTime
 import kotlin.math.ceil
 
 fun ViewGroup.inflate(resId: Int): View = LayoutInflater.from(context).inflate(resId, this, false)
-fun ViewGroup.setView(resId: Int) = this.addView(inflate(resId), 0)
 fun ViewGroup.children(func: (View) -> Unit) {
     val max = this.childCount - 1
     (0..max).forEach {
@@ -167,11 +166,11 @@ fun CoroutineScope.launchUI(
 ): Job =
     launch(coroutineContext, start, block)
 
-suspend fun <T> CoroutineScope.async(
+fun <T> CoroutineScope.async(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> T
 ): Deferred<T> =
     async(Dispatchers.IO, start, block)
 
-suspend fun <T> CoroutineScope.withIO(block: suspend CoroutineScope.() -> T): T =
+suspend fun <T> withIO(block: suspend CoroutineScope.() -> T): T =
     withContext(Dispatchers.IO, block)

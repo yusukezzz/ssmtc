@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.photo_gallery_page.view.loading_bar
-import kotlinx.android.synthetic.main.photo_gallery_page.view.page_image
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.model.Media
+import net.yusukezzz.ssmtc.databinding.PhotoGalleryPageBinding
 import net.yusukezzz.ssmtc.util.toast
 
 class GalleryPageAdapter(private val context: Context, private val images: List<Media>) :
@@ -21,28 +20,25 @@ class GalleryPageAdapter(private val context: Context, private val images: List<
 
     override fun getCount(): Int = images.size
 
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = inflater.inflate(R.layout.photo_gallery_page, container, false)
-        val media = images[position]
+    override fun instantiateItem(container: ViewGroup, position: Int): Any =
+        PhotoGalleryPageBinding.inflate(inflater).apply {
+            val image = images[position]
+            Picasso.get().load(image.largeUrl)
+                .config(android.graphics.Bitmap.Config.ARGB_8888)
+                .fit().centerInside()
+                .into(pageImage, object : Callback {
+                    override fun onSuccess() {
+                        loadingBar.visibility = View.GONE
+                    }
 
-        Picasso.get().load(media.largeUrl)
-            .config(android.graphics.Bitmap.Config.ARGB_8888)
-            .fit().centerInside()
-            .into(view.page_image, object : Callback {
-                override fun onSuccess() {
-                    view.loading_bar.visibility = View.GONE
-                }
+                    override fun onError(e: Exception) {
+                        loadingBar.visibility = View.GONE
+                        context.toast(R.string.gallery_load_fail)
+                    }
+                })
 
-                override fun onError(e: Exception) {
-                    view.loading_bar.visibility = View.GONE
-                    context.toast(R.string.gallery_load_fail)
-                }
-            })
-
-        container.addView(view)
-
-        return view
-    }
+            container.addView(root)
+        }
 
     override fun destroyItem(container: ViewGroup, position: Int, obj: Any) =
         container.removeView((obj as View))

@@ -1,8 +1,8 @@
 package net.yusukezzz.ssmtc.data.api.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import org.threeten.bp.OffsetDateTime
+import kotlinx.parcelize.Parcelize
+import java.time.OffsetDateTime
 
 @Parcelize
 data class Tweet(

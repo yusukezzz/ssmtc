@@ -6,10 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.photo_selector.photo_selector_complete
-import kotlinx.android.synthetic.main.photo_selector.photo_selector_grid
-import kotlinx.android.synthetic.main.photo_selector.photo_selector_title
-import net.yusukezzz.ssmtc.R
+import net.yusukezzz.ssmtc.databinding.PhotoSelectorBinding
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 
 class PhotoSelectorActivity : MediaBaseActivity(),
@@ -18,9 +15,12 @@ class PhotoSelectorActivity : MediaBaseActivity(),
         const val RESULT_SELECTED_PHOTOS = "result_selected_photos"
     }
 
+    private lateinit var binding: PhotoSelectorBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.photo_selector)
+        binding = PhotoSelectorBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initView()
     }
@@ -30,13 +30,16 @@ class PhotoSelectorActivity : MediaBaseActivity(),
         val spanCount = 3
         val space = 3
         val deco = GridSpacingItemDecoration(spanCount, space)
-        photo_selector_grid.addItemDecoration(deco)
         val layoutManager = GridLayoutManager(this, spanCount)
-        photo_selector_grid.layoutManager = layoutManager
-        photo_selector_grid.setHasFixedSize(true)
-        photo_selector_grid.adapter = PhotoSelectorAdapter(photos, this)
+        val adapter = PhotoSelectorAdapter(photos, this)
+        binding.apply {
+            photoSelectorGrid.addItemDecoration(deco)
+            photoSelectorGrid.layoutManager = layoutManager
+            photoSelectorGrid.setHasFixedSize(true)
+            photoSelectorGrid.adapter = adapter
 
-        photo_selector_complete.setOnClickListener { onSelectCompleted() }
+            photoSelectorComplete.setOnClickListener { onSelectCompleted() }
+        }
     }
 
     private fun findPhotosFromGallery(): List<Uri> {
@@ -54,13 +57,13 @@ class PhotoSelectorActivity : MediaBaseActivity(),
     }
 
     override fun onSelectChanged(remainCount: Int) {
-        val title = photo_selector_title.text
-        photo_selector_title.text = title.replace(Regex("\\d"), remainCount.toString())
+        val title = binding.photoSelectorTitle.text
+        binding.photoSelectorTitle.text = title.replace(Regex("\\d"), remainCount.toString())
     }
 
     override fun onSelectCompleted() {
         val i = Intent()
-        val paths = (photo_selector_grid.adapter as PhotoSelectorAdapter).selectedPhotoPaths()
+        val paths = (binding.photoSelectorGrid.adapter as PhotoSelectorAdapter).selectedPhotoPaths()
         i.putExtra(RESULT_SELECTED_PHOTOS, paths)
         setResult(RESULT_OK, i)
         finish()

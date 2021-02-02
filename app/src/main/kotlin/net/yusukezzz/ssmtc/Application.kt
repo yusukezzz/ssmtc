@@ -1,7 +1,6 @@
 package net.yusukezzz.ssmtc
 
 import android.graphics.Bitmap.Config.RGB_565
-import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import net.yusukezzz.ssmtc.data.SlackService
@@ -39,7 +38,7 @@ open class Application : android.app.Application(), CoroutineScope {
 
         registerActivityLifecycleCallbacks(CustomTabsActivityLifecycleCallbacks())
 
-        savedUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
+        savedUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler()!!
         Thread.setDefaultUncaughtExceptionHandler(this@Application::handleUncaughtException)
 
         sendErrorLog()
@@ -50,7 +49,6 @@ open class Application : android.app.Application(), CoroutineScope {
     }
 
     protected open fun initComponent() {
-        AndroidThreeTen.init(this)
         component = DaggerAppComponent.builder()
             .appModule(AppModule(this))
             .build()

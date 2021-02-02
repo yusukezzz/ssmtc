@@ -6,9 +6,9 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import kotlinx.android.synthetic.main.video_player.*
-import net.yusukezzz.ssmtc.R
+import android.os.Looper
 import net.yusukezzz.ssmtc.data.api.model.VideoInfo
+import net.yusukezzz.ssmtc.databinding.VideoPlayerBinding
 import net.yusukezzz.ssmtc.ui.media.MediaBaseActivity
 import net.yusukezzz.ssmtc.util.TextUtil
 import net.yusukezzz.ssmtc.util.gone
@@ -27,36 +27,39 @@ class VideoPlayerActivity : MediaBaseActivity(),
             }
     }
 
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private val updateTask: Runnable by lazy {
         Runnable {
-            updateProgress(media_video.currentPosition)
+            updateProgress(binding.mediaVideo.currentPosition)
             handler.postDelayed(updateTask, 100)
         }
     }
     private var totalDurationMilliSec: Int = 0
     private var totalDurationTime: String = ""
 
+    private lateinit var binding: VideoPlayerBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.video_player)
+        binding = VideoPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         intent.getParcelableExtra<VideoInfo>(ARG_VIDEO_INFO)?.let {
-            media_video.setOnPreparedListener(this)
-            media_video.setOnCompletionListener(this)
-            media_video.setVideoURI(Uri.parse(it.mp4Mid.url))
+            binding.mediaVideo.setOnPreparedListener(this)
+            binding.mediaVideo.setOnCompletionListener(this)
+            binding.mediaVideo.setVideoURI(Uri.parse(it.mp4Mid.url))
         }
     }
 
     override fun onPrepared(mp: MediaPlayer?) {
-        video_loading_bar.gone()
-        video_time.visible()
+        binding.videoLoadingBar.gone()
+        binding.videoTime.visible()
 
-        totalDurationMilliSec = media_video.duration
+        totalDurationMilliSec = binding.mediaVideo.duration
         totalDurationTime = TextUtil.milliSecToTime(totalDurationMilliSec)
         handler.post(updateTask)
 
-        media_video.start()
+        binding.mediaVideo.start()
     }
 
     override fun onCompletion(mp: MediaPlayer?) {
@@ -66,12 +69,12 @@ class VideoPlayerActivity : MediaBaseActivity(),
 
     override fun onDestroy() {
         handler.removeCallbacks(updateTask)
-        media_video.stopPlayback()
+        binding.mediaVideo.stopPlayback()
         super.onDestroy()
     }
 
     private fun updateProgress(currentMilliSec: Int) {
         val currentTime = TextUtil.milliSecToTime(currentMilliSec)
-        video_time.text = "$currentTime/$totalDurationTime"
+        binding.videoTime.text = "$currentTime/$totalDurationTime"
     }
 }

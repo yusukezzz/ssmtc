@@ -4,16 +4,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.authorize.*
-import kotlinx.android.synthetic.main.base_layout.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.LifecycleScope
 import net.yusukezzz.ssmtc.Preferences
-import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
 import net.yusukezzz.ssmtc.data.repository.TimelineRepository
-import net.yusukezzz.ssmtc.util.setView
+import net.yusukezzz.ssmtc.databinding.AuthorizeBinding
+import net.yusukezzz.ssmtc.databinding.BaseLayoutBinding
 import net.yusukezzz.ssmtc.util.snackbar
 import javax.inject.Inject
 
@@ -32,19 +30,26 @@ class AuthorizeActivity : AppCompatActivity(), AuthorizeContract.View {
     @Inject
     lateinit var timelineRepo: TimelineRepository
 
+    private lateinit var baseLayout: BaseLayoutBinding
+    private lateinit var authorizeLayout: AuthorizeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Application.component.inject(this)
 
-        setContentView(R.layout.base_layout)
-        main_contents.setView(R.layout.authorize)
+        baseLayout = BaseLayoutBinding.inflate(layoutInflater)
+        authorizeLayout = AuthorizeBinding.inflate(layoutInflater)
+        setContentView(baseLayout.root)
+        baseLayout.mainContents.addView(authorizeLayout.root)
 
-        toolbar_title.text = "Authorization"
+        baseLayout.toolbarTitle.text = "Authorization"
         val presenter = AuthorizePresenter(this, prefs, twitter, timelineRepo, accountRepo)
 
-        btn_authorize_request.setOnClickListener { presenter.authorizeRequest() }
-        btn_authorize.setOnClickListener { presenter.authorize(edit_pin_code.text.toString()) }
+        authorizeLayout.apply {
+            btnAuthorizeRequest.setOnClickListener { presenter.authorizeRequest() }
+            btnAuthorize.setOnClickListener { presenter.authorize(editPinCode.text.toString()) }
+        }
     }
 
     override fun showAuthorizeWeb(url: String) {

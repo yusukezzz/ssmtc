@@ -1,10 +1,8 @@
 package net.yusukezzz.ssmtc.data.api
 
-import org.apache.commons.codec.net.URLCodec
+import java.net.URLEncoder
 
 object SearchQueryBuilder {
-    private val urlencoder = URLCodec("UTF-8")
-
     fun build(params: Timeline): String {
         val queries = mutableListOf(params.query)
 
@@ -13,14 +11,14 @@ object SearchQueryBuilder {
         }
 
         when (params.filter.showing) {
-            FilterRule.Showing.ANY_MEDIA -> queries.add("filter:media")
-            FilterRule.Showing.PHOTO -> queries.add("filter:images")
-            FilterRule.Showing.VIDEO -> queries.add("filter:videos")
+            ContentShowing.ANY_MEDIA -> queries.add("filter:media")
+            ContentShowing.PHOTO -> queries.add("filter:images")
+            ContentShowing.VIDEO -> queries.add("filter:videos")
             else -> {
                 /* do nothing */
             }
         }
 
-        return urlencoder.encode(queries.joinToString(" "))
+        return URLEncoder.encode(queries.joinToString(" "), "UTF-8")
     }
 }

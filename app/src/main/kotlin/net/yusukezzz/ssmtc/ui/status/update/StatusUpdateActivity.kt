@@ -10,11 +10,11 @@ import android.provider.BaseColumns
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.status_update.*
 import net.yusukezzz.ssmtc.Application
 import net.yusukezzz.ssmtc.Preferences
 import net.yusukezzz.ssmtc.R
 import net.yusukezzz.ssmtc.data.repository.SsmtcAccountRepository
+import net.yusukezzz.ssmtc.databinding.StatusUpdateBinding
 import net.yusukezzz.ssmtc.ui.media.photo.selector.PhotoSelectorActivity
 import net.yusukezzz.ssmtc.ui.misc.AspectRatioImageView
 import net.yusukezzz.ssmtc.util.*
@@ -49,36 +49,39 @@ class StatusUpdateActivity : AppCompatActivity() {
 
     private var photos: Array<Uri>? = null
 
+    private lateinit var binding: StatusUpdateBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Application.component.inject(this)
 
-        setContentView(R.layout.status_update)
+        binding = StatusUpdateBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
-        setSupportActionBar(status_update_toolbar)
+        setSupportActionBar(binding.statusUpdateToolbar)
 
         val replyStatusId = intent.getLongExtraOrNull(ARG_REPLY_STATUS_ID)
         val replyScreenName = intent.getStringExtraOrNull(ARG_REPLY_SCREEN_NAME)
-        replyScreenName?.let { status_input.setText("@$it ") }
+        replyScreenName?.let { binding.statusInput.setText("@$it ") }
 
-        status_input.requestFocus()
-        select_photos.setOnClickListener {
-            startPhotoSelectorWithPermissionCheck()
-        }
-
-        send_tweet.setOnClickListener {
-            val tweet = status_input.text.toString()
-            val i = StatusUpdateService.newIntent(applicationContext, tweet, replyStatusId, photos)
-            this.startService(i)
-            finish()
+        binding.apply {
+            statusInput.requestFocus()
+            selectPhotos.setOnClickListener {
+                startPhotoSelectorWithPermissionCheck()
+            }
+            sendTweet.setOnClickListener {
+                val tweet = statusInput.text.toString()
+                val i = StatusUpdateService.newIntent(applicationContext, tweet, replyStatusId, photos)
+                startService(i)
+                finish()
+            }
+            val account = accountRepo.find(prefs.currentUserId)!!
+            PicassoUtil.userIcon(account.user, toolbarAvatar)
+            toolbarScreenName.text = account.user.screenName
         }
 
         handleIntent(intent)
-
-        val account = accountRepo.find(prefs.currentUserId)!!
-        PicassoUtil.userIcon(account.user, toolbar_avatar)
-        toolbar_screen_name.text = account.user.screenName
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -127,13 +130,13 @@ class StatusUpdateActivity : AppCompatActivity() {
 
     private fun showSelectedPhotos(paths: Array<Uri>) {
         photos = null
-        status_thumbnail_tile.removeAllViews()
+        binding.statusThumbnailTile.removeAllViews()
         if (paths.isEmpty()) return
 
         photos = paths
         paths.forEachIndexed { _, path ->
             val imgView = AspectRatioImageView(this)
-            status_thumbnail_tile.addView(imgView)
+            binding.statusThumbnailTile.addView(imgView)
             PicassoUtil.thumbnail(path, imgView)
         }
     }

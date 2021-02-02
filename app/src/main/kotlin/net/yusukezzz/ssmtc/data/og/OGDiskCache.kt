@@ -2,8 +2,8 @@ package net.yusukezzz.ssmtc.data.og
 
 import com.google.gson.Gson
 import org.apache.commons.codec.digest.DigestUtils
-import org.threeten.bp.Instant
 import java.io.File
+import java.time.Instant
 
 class OGDiskCache(
     appCacheDir: File,
@@ -35,7 +35,7 @@ class OGDiskCache(
 
     fun removeOldCaches() = synchronized(OGDiskCache::class) {
         val expired = Instant.now().toEpochMilli() - CACHE_EXPIRE_MILLI_SECONDS
-        cacheDir.listFiles().toList().forEach {
+        cacheDir.listFiles()?.toList()?.forEach {
             if (it.lastModified() < expired) {
                 it.delete()
             }

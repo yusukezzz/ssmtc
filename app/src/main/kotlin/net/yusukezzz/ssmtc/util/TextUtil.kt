@@ -4,6 +4,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.view.View
+import com.twitter.twittertext.Extractor
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.Url
 import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
@@ -11,7 +12,7 @@ import org.apache.commons.text.StringEscapeUtils
 
 object TextUtil {
     private val SCREEN_NAME_PATTERN = Regex("@[a-zA-Z0-9_]+")
-    private val HASH_TAG_PATTERN = Regex("(?<!c)#\\w+", RegexOption.IGNORE_CASE)
+    private val EXTRACTOR = Extractor()
 
     fun milliSecToTime(millis: Int): String {
         val sec = millis / 1000
@@ -114,16 +115,16 @@ object TextUtil {
         spannable: SpannableStringBuilder,
         listener: TweetItemListener
     ) {
-        HASH_TAG_PATTERN.findAll(spannable).forEach {
+        EXTRACTOR.extractHashtagsWithIndices(spannable.toString()).forEach {
             val span = object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    listener.onHashTagClick(it.value)
+                    listener.onHashTagClick("#" + it.value)
                 }
             }
             spannable.setSpan(
                 span,
-                it.range.first,
-                it.range.last + 1,
+                it.start,
+                it.end,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }

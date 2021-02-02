@@ -10,7 +10,7 @@ import net.yusukezzz.ssmtc.data.api.TwitterService
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.util.async
 import net.yusukezzz.ssmtc.util.withIO
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 class TimelinePresenter(
     override val view: TimelineContract.View,
