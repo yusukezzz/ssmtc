@@ -25,8 +25,7 @@ class TweetItemView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
-) :
-    LinearLayout(context, attrs, defStyle) {
+) : LinearLayout(context, attrs, defStyle) {
 
     companion object {
         private val numberFormatter = DecimalFormat("#,###,###")
@@ -50,8 +49,8 @@ class TweetItemView @JvmOverloads constructor(
         fun onHashTagClick(hashTag: String)
     }
 
-    private val binding: TweetItemBinding = TweetItemBinding.bind(this)
-    private val openGraph: OpenGraphBinding = OpenGraphBinding.bind(this)
+    private lateinit var binding: TweetItemBinding
+    private lateinit var openGraph: OpenGraphBinding
 
     fun setTweetListener(listener: TweetItemListener) {
         this.listener = listener
@@ -61,10 +60,15 @@ class TweetItemView @JvmOverloads constructor(
         this.ogClient = client
     }
 
-    fun bind(tweet: Tweet) = when {
-        tweet.isRetweet -> bindRetweeted(tweet)
-        tweet.isRetweetWithQuoted -> bindQuoted(tweet)
-        else -> bindTweet(tweet)
+    fun bind(tweet: Tweet) {
+        binding = TweetItemBinding.bind(rootView)
+        openGraph = OpenGraphBinding.bind(binding.openGraph.root)
+
+        when {
+            tweet.isRetweet -> bindRetweeted(tweet)
+            tweet.isRetweetWithQuoted -> bindQuoted(tweet)
+            else -> bindTweet(tweet)
+        }
     }
 
     private fun bindTweet(tweet: Tweet, removeQuote: Boolean = false) {

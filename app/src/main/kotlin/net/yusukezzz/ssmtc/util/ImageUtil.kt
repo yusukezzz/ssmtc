@@ -55,7 +55,7 @@ class ImageUtil(
 
     private fun Bitmap.CompressFormat.extension() = when (this) {
         Bitmap.CompressFormat.PNG -> "png"
-        Bitmap.CompressFormat.WEBP -> "webp"
+        Bitmap.CompressFormat.WEBP_LOSSY, Bitmap.CompressFormat.WEBP_LOSSLESS -> "webp"
         else -> "jpg"
     }
 

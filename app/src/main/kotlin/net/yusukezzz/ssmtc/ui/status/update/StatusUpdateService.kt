@@ -26,9 +26,6 @@ import javax.inject.Inject
 
 class StatusUpdateService : IntentService("StatusUpdateService") {
     companion object {
-        const val ACTION_SUCCESS = "net.yusukezzz.ssmtc.ui.status.update.TWEET_SUCCESS"
-        const val ACTION_FAILURE = "net.yusukezzz.ssmtc.ui.status.update.TWEET_FAILURE"
-
         const val CHANNEL_ID = "status_update"
         const val CHANNEL_NAME = "tweets"
         const val CHANNEL_DESC = "Tweet sending ..."
@@ -71,6 +68,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
     @Inject
     lateinit var slack: SlackService
 
+    // TODO: use JobIntentService
     override fun onCreate() {
         super.onCreate()
         Application.component.inject(this)
@@ -161,7 +159,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         }
 
         println("[video] finalize")
-        twitter.uploadFinalize(mediaId).getOrNull()?.processing_info?.let {
+        twitter.uploadFinalize(mediaId).getOrThrow().processing_info?.let {
             println(it)
             Thread.sleep(it.check_after_secs * 1000L)
         }

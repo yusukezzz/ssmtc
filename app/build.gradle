@@ -77,19 +77,19 @@ configurations.all {
 dependencies {
     ext {
         kotlin_coroutines_version = '1.4.2'
-        lifecycle_version = '2.2.0'
+        lifecycle_version = '2.3.0'
         retrofit_version = '2.9.0'
         okhttp_version = '4.9.1'
         permission_dispatcher_version = '4.8.0'
-        dagger_version = '2.31.2'
-        leakcanary_version = '2.5'
+        dagger_version = '2.33'
+        leakcanary_version = '2.6'
     }
     // for java.time.* api
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    implementation "androidx.activity:activity-ktx:1.2.0-rc01"
+    implementation "androidx.activity:activity-ktx:1.2.0"
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
@@ -100,7 +100,7 @@ dependencies {
     implementation "androidx.drawerlayout:drawerlayout:1.1.1"
     implementation "androidx.viewpager:viewpager:1.0.0"
 
-    implementation "com.google.android.material:material:1.2.1"
+    implementation "com.google.android.material:material:1.3.0"
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
@@ -124,9 +124,9 @@ dependencies {
 
     implementation 'com.deploygate:sdk:4.3.0'
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
-    testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.mockito:mockito-core:3.7.7'
-    testImplementation 'org.robolectric:robolectric:4.5'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:3.8.0'
+    testImplementation 'org.robolectric:robolectric:4.5.1'
 }
 
 // ignore unstable releases
