@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<net.yusukezzz.ssmtc.ui.timeline.TweetItemView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tweet_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -296,11 +295,10 @@
                 android:src="@drawable/ic_share"
                 android:tint="@color/action_icon_default"
                 app:heightRatio="1"
-                app:widthRatio="1"
-                />
+                app:widthRatio="1" />
 
         </LinearLayout>
 
     </RelativeLayout>
 
-</net.yusukezzz.ssmtc.ui.timeline.TweetItemView>
+</LinearLayout>

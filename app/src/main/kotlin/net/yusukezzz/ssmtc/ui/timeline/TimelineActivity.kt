@@ -39,9 +39,18 @@ import net.yusukezzz.ssmtc.ui.authorize.AuthorizeActivity
 import net.yusukezzz.ssmtc.ui.media.photo.gallery.GalleryActivity
 import net.yusukezzz.ssmtc.ui.media.video.VideoPlayerActivity
 import net.yusukezzz.ssmtc.ui.status.update.StatusUpdateActivity
-import net.yusukezzz.ssmtc.ui.timeline.dialogs.*
-import net.yusukezzz.ssmtc.util.*
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.BaseDialogFragment
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.ConfirmTimelineSelectDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.ListsSelectDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.TextInputDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSelectDialog
+import net.yusukezzz.ssmtc.ui.timeline.dialogs.TimelineSettingDialog
+import net.yusukezzz.ssmtc.util.getCompatDrawable
+import net.yusukezzz.ssmtc.util.getVectorDrawable
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
+import net.yusukezzz.ssmtc.util.snackbar
+import net.yusukezzz.ssmtc.util.toBitmap
+import net.yusukezzz.ssmtc.util.toast
 import saschpe.android.customtabs.CustomTabsHelper
 import saschpe.android.customtabs.WebViewFallback
 import java.io.File
@@ -51,7 +60,7 @@ class TimelineActivity : AppCompatActivity(),
     TimelineContract.View,
     SwipeRefreshLayout.OnRefreshListener,
     PagingRecyclerOnScrollListener.ScrollListener,
-    TweetItemView.TweetItemListener,
+    TweetBinder.TweetItemListener,
     NavigationView.OnNavigationItemSelectedListener,
     TimelineSettingDialog.TimelineSettingListener,
     BaseDialogFragment.TimelineSelectListener {

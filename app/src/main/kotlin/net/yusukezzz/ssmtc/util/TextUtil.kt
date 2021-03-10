@@ -7,7 +7,7 @@ import android.view.View
 import com.twitter.twittertext.Extractor
 import net.yusukezzz.ssmtc.data.api.model.Tweet
 import net.yusukezzz.ssmtc.data.api.model.Url
-import net.yusukezzz.ssmtc.ui.timeline.TweetItemView.TweetItemListener
+import net.yusukezzz.ssmtc.ui.timeline.TweetBinder.TweetItemListener
 import org.apache.commons.text.StringEscapeUtils
 
 object TextUtil {

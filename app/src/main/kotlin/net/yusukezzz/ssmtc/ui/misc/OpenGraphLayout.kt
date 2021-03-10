@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import net.yusukezzz.ssmtc.data.og.OpenGraph
 import net.yusukezzz.ssmtc.data.og.OpenGraphLoadable
 import net.yusukezzz.ssmtc.databinding.OpenGraphBinding
-import net.yusukezzz.ssmtc.ui.timeline.TweetItemView
+import net.yusukezzz.ssmtc.ui.timeline.TweetBinder.TweetItemListener
 import net.yusukezzz.ssmtc.util.gone
 import net.yusukezzz.ssmtc.util.picasso.PicassoUtil
 import net.yusukezzz.ssmtc.util.visible
@@ -25,10 +25,10 @@ class OpenGraphLayout @JvmOverloads constructor(
         binding = OpenGraphBinding.bind(this)
     }
 
-    private lateinit var listener: TweetItemView.TweetItemListener
+    private lateinit var listener: TweetItemListener
     private var loaded: Boolean = false
 
-    fun setListener(listener: TweetItemView.TweetItemListener) {
+    fun setListener(listener: TweetItemListener) {
         this.listener = listener
     }
 
