@@ -51,7 +51,7 @@ class TimelineAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TweetViewHolder {
-        val binding = TweetItemBinding.inflate(LayoutInflater.from(parent.context))
+        val binding = TweetItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TweetViewHolder(binding)
     }
 
@@ -89,9 +89,10 @@ class TweetBinder(
         private val numberFormatter = DecimalFormat("#,###,###")
     }
 
-    private val openGraph = OpenGraphBinding.bind(binding.openGraph.root)
     private val context = binding.root.context
+    private val inflater = LayoutInflater.from(context)
     private val resources = binding.root.resources
+    private val openGraph = OpenGraphBinding.inflate(inflater, binding.root, false)
 
     interface TweetItemListener {
         fun onImageClick(images: List<Media>, pos: Int)
