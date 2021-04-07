@@ -74,19 +74,19 @@ android {
 dependencies {
     ext {
         kotlin_coroutines_version = '1.4.3'
-        lifecycle_version = '2.3.0'
+        lifecycle_version = '2.3.1'
         retrofit_version = '2.9.0'
         okhttp_version = '4.9.1'
         permission_dispatcher_version = '4.8.0'
         dagger_version = '2.33'
-        leakcanary_version = '2.6'
+        leakcanary_version = '2.7'
     }
     // for java.time.* api
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    implementation "androidx.activity:activity-ktx:1.2.1"
+    implementation "androidx.activity:activity-ktx:1.2.2"
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
