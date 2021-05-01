@@ -127,17 +127,15 @@ dependencies {
 }
 
 // ignore unstable releases
-dependencyUpdates.resolutionStrategy = {
-    componentSelection { rules ->
-        rules.all { ComponentSelection selection ->
-            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'eap'].any { qualifier ->
-                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
-            }
-            if (rejected) {
-                selection.reject('Release candidate')
-            }
-        }
-    }
+def isNonStable = { String version ->
+  def stable = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+  return !stable && !(version ==~ /^[0-9,.v-]+(-r)?$/)
+}
+tasks.named("dependencyUpdates").configure {
+  checkForGradleUpdate = true
+  rejectVersionIf {
+    isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)
+  }
 }
 task depupd(dependsOn: dependencyUpdates)
 
